@@ -1,4 +1,2 @@
 # IBID
-blublub
-ugasvdkvsa
-askjbasd
+Django project
