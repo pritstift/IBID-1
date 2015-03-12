@@ -1,0 +1,22 @@
+qBEGIN;
+CREATE TABLE "AddIdea_group" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "name" varchar(256) NOT NULL);
+CREATE TABLE "AddIdea_idea" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "title" varchar(400) NOT NULL, "date_added" date NOT NULL);
+CREATE TABLE "AddIdea_membership" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "group_id" integer NOT NULL REFERENCES "AddIdea_group" ("id"));
+CREATE TABLE "AddIdea_user" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "name" varchar(256) NOT NULL, "first_name" varchar(256) NOT NULL, "last_name" varchar(256) NOT NULL, "email" varchar(256) NOT NULL);
+CREATE TABLE "AddIdea_membership__new" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "group_id" integer NOT NULL REFERENCES "AddIdea_group" ("id"), "user_id" integer NOT NULL REFERENCES "AddIdea_user" ("id"));
+INSERT INTO "AddIdea_membership__new" ("group_id", "user_id", "id") SELECT "group_id", NULL, "id" FROM "AddIdea_membership";
+DROP TABLE "AddIdea_membership";
+ALTER TABLE "AddIdea_membership__new" RENAME TO "AddIdea_membership";
+CREATE INDEX "AddIdea_membership_0e939a4f" ON "AddIdea_membership" ("group_id");
+CREATE INDEX "AddIdea_membership_e8701ad4" ON "AddIdea_membership" ("user_id");
+CREATE TABLE "AddIdea_idea__new" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "title" varchar(400) NOT NULL, "date_added" date NOT NULL, "owner_id" integer NOT NULL REFERENCES "AddIdea_user" ("id"));
+INSERT INTO "AddIdea_idea__new" ("date_added", "owner_id", "id", "title") SELECT "date_added", NULL, "id", "title" FROM "AddIdea_idea";
+DROP TABLE "AddIdea_idea";
+ALTER TABLE "AddIdea_idea__new" RENAME TO "AddIdea_idea";
+CREATE INDEX "AddIdea_idea_5e7b1936" ON "AddIdea_idea" ("owner_id");
+CREATE TABLE "AddIdea_group__new" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "name" varchar(256) NOT NULL);
+INSERT INTO "AddIdea_group__new" ("id", "name") SELECT "id", "name" FROM "AddIdea_group";
+DROP TABLE "AddIdea_group";
+ALTER TABLE "AddIdea_group__new" RENAME TO "AddIdea_group";
+
+COMMIT;
