@@ -1,7 +1,7 @@
 {% if latest_ideas %}
     <ul>
     {% for idea in latest_ideas %}
-        <li><a href="/ideas/{{ idea.id }}/">{{ idea.title }}</a></li>
+        <li><a href="{% url 'AddIdea:detail' idea.id %} ">{{ idea.title }}</a></li>
     {% endfor %}
     </ul>
 {% else %}
