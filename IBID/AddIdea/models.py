@@ -30,7 +30,8 @@ class Idea(models.Model):
     title=models.CharField(max_length = 400, unique=True)
     owner = models.ForeignKey(User)
     date_added=models.DateField(default=timezone.now())
-    description_short=models.CharField(max_length=2048,default="this Idea has no description yet")
+    description_short=models.CharField(max_length=2048,default="this Idea has no short description yet")
+    description_long=models.CharField(max_length=2048,default="this Idea has no long description yet")
     tags=models.ForeignKey(Tag)
     def __str__(self):
         return self.title
