@@ -1,5 +1,5 @@
 """
-Django settings for IBID project.
+Django settings for IBIDE project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
@@ -49,9 +49,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'IBID.urls'
+ROOT_URLCONF = 'IBIDE.urls'
 
-WSGI_APPLICATION = 'IBID.wsgi.application'
+WSGI_APPLICATION = 'IBIDE.wsgi.application'
 
 
 # Database
