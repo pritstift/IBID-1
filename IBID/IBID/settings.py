@@ -1,5 +1,5 @@
 """
-Django settings for IBIDE project.
+Django settings for IBID project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.7/topics/settings/
