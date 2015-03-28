@@ -1,4 +1,7 @@
 import datetime
+from django.db import models as m
+from django.db import models
+from django.template.defaultfilters import title
 
 from django.utils import timezone
 from django.db import models
@@ -35,3 +38,13 @@ class Idea(models.Model):
     tags=models.ForeignKey(Tag)
     def __str__(self):
         return self.title
+    
+class Post(m.Model):                                                                      
+    content = m.CharField(max_length=256)                                                 
+    created_at = m.DateTimeField('Datetime created')                                      
+                                                                                          
+                                                                                          
+class Comment(m.Model):                                                                   
+    post = m.ForeignKey(Post)                                                             
+    message = m.TextField()                                                               
+    created_at = m.DateTimeField('Datetime created')
