@@ -49,9 +49,9 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
-ROOT_URLCONF = 'IBIDE.urls'
+ROOT_URLCONF = 'IBID.urls'
 
-WSGI_APPLICATION = 'IBIDE.wsgi.application'
+WSGI_APPLICATION = 'IBID.wsgi.application'
 
 
 # Database
