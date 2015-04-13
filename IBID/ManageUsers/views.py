@@ -14,8 +14,8 @@ def auth(request):
 	if request.method == 'GET':
 		return render(request, 'ManageUsers/login.html', {})
 	elif request.method == 'POST':
-		uname=request.POST['username']
-		passwd=request.POST['password']
+		uname=request.POST.get('Uname',None)
+		passwd=request.POST.get('Passwd',None)
 		user=authenticate(username=uname,password=passwd)
 		if user is not None:
 			if user.is_active:

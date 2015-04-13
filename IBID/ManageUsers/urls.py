@@ -5,5 +5,5 @@ from ManageUsers import views
 urlpatterns = patterns('',
     # ex: /users/sascha/
     url(r'^profile/(?P<User_username>\w+)/$', views.userprofile, name='userprofile'),
-    url(r'^auth/$', views.auth, name='auth'),
+    url('^login/','django.contrib.auth.views.login',name='login'),
 )
