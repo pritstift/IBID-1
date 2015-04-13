@@ -1,4 +1,4 @@
-<form action="{% url 'post_upload' %}" method="post">                                                             
+<form action="{% url 'index' %}" method="POST">                                                             
   {% csrf_token %}
   <label for="content"></label>
  <center>
