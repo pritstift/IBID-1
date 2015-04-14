@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.contrib.auth  import authenticate
 
 
-def userprofile(request, User_username):
+def userprofile(request,User_username):
 	return render(request, 'ManageUsers/profile.html', {'User':User_username})
 
 def auth(request):
