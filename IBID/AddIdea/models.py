@@ -1,28 +1,21 @@
 import datetime
-from django.db import models as m
 from django.db import models
 from django.template.defaultfilters import title
 
 from django.utils import timezone
 from django.db import models
 
-class User(models.Model):
-    name=models.CharField(max_length=256, unique=True)
-    first_name=models.CharField(max_length=256)
-    last_name=models.CharField(max_length=256)
-    email=models.CharField(max_length=256, unique=True)
-    def __str__(self):
-        return self.name
+from django.contrib.auth.models import User
 
-class Group(models.Model):
-    name=models.CharField(max_length=256, unique=True)
-    members=models.ManyToManyField(User, through='Membership')
-    def __str__(self):
-        return self.name
+# class Group(models.Model):
+#     name=models.CharField(max_length=256, unique=True)
+#     members=models.ManyToManyField(User, through='Membership')
+#     def __str__(self):
+#         return self.name
 
-class Membership(models.Model):
-    user=models.ForeignKey(User)
-    group=models.ForeignKey(Group)
+# class Membership(models.Model):
+#     user=models.ForeignKey(User)
+#     group=models.ForeignKey(Group)
 
 class Tag(models.Model):
     text=models.CharField(max_length=64)
@@ -38,13 +31,10 @@ class Idea(models.Model):
     tags=models.ForeignKey(Tag)
     def __str__(self):
         return self.title
-    
-class Post(m.Model):                                                                      
-    content = m.CharField(max_length=256)                                                 
-    created_at = m.DateTimeField('Datetime created')                                      
+                                                                                                                               
                                                                                           
-                                                                                          
-class Comment(m.Model):                                                                   
-    post = m.ForeignKey(Post)                                                             
-    message = m.TextField()                                                               
-    created_at = m.DateTimeField('Datetime created')
+class Comment(models.Model):
+    user = models.ForeignKey(User)                                                                  
+    idea = models.ForeignKey(Idea)                                                             
+    message = models.TextField(blank=False)                                                               
+    created_at = models.DateTimeField(default=timezone.now())

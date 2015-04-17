@@ -20,7 +20,7 @@
 </table>
 
 <input type="submit" value="login" name="login"/>
-<input type="hidden" name="next" value="{% url 'AddIdea:index' %}" />
+<input type="hidden" name="next" value="{{ next }}" />
 </form>
 
 {% endblock %}
