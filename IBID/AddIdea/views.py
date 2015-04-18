@@ -5,7 +5,9 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from AddIdea.models import Idea
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def detail(request, Idea_id):
 	idea = get_object_or_404(Idea, pk=Idea_id)
 	return render(request, 'AddIdea/detail.html', {'Idea':idea})
@@ -18,6 +20,7 @@ def index(request):
     })
     return HttpResponse(template.render(context))
 
+@login_required
 def post(request):
 	if request.method == 'GET':
 		return render(request, 'AddIdea/upload.html', {})
