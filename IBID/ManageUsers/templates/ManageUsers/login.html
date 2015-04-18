@@ -1,13 +1,19 @@
-<form action="" method="POST">                                                             
-  {% csrf_token %}
-  <label for="auth"></label>
- <center>
-  <h1>Login</h1>
-  <br>
-  <br>
-  <br>
-  <input type="text" name="Uname"/><br>
-  <input type="text" name="passwd" id="passwd"/>
-  <input type="submit" />
-  </center> 
- </form>
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>IBID</title>
+    </head>
+
+    <body>
+        <h1>Login to IBID</h1>
+
+        <form id="login_form" method="post" action="{% url 'ManageUsers:login' %}">
+            {% csrf_token %}
+            
+            {{ login_form.as_p }}
+
+            <input type="submit" value="submit" />
+        </form>
+
+    </body>
+</html>

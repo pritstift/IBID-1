@@ -4,8 +4,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
-from django.contrib.auth  import authenticate
-from ManageUsers.forms import UserForm, UserProfileForm
+from django.contrib.auth  import authenticate, login
+from ManageUsers.forms import UserForm, UserProfileForm, LoginForm
 
 
 def userprofile(request,User_username):
@@ -61,3 +61,40 @@ def register(request):
 
     #render template
 	return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
+
+def user_login(request):
+	if request.method == 'POST':
+		
+		#gather username and passwd from form
+		login_form = LoginForm(data=request.POST)
+
+		#validate
+		if login_form.is_valid():
+			username = login_form.cleaned_data['username']
+			password = login_form.cleaned_data['password']
+			
+			#authenticate
+			user = authenticate(username=username, password=password)
+			
+			#if user is a User Object, there is a user and credentials where correct
+			#else user == None
+			if user:
+				#active?
+				if user.is_active:
+					#log user in
+					login(request,user)
+					return HttpResponseRedirect('/index/')
+				else:
+					return HttpResponse("Your IBID account is inactive")
+			else:
+				print("Invalid login details: {0}, {1}".format(username, password))
+				return HttpResponse("Invalid login details supplied.")
+
+		else:
+			print( login_form.errors)
+		
+	else:
+		#create empty forms to distribute 
+		login_form = LoginForm()
+		#render login template
+		return render(request,'ManageUsers/login.html',{'login_form':login_form})
