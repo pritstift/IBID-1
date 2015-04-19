@@ -1,11 +1,9 @@
 from django import forms
- 
-class PostForm(forms.Form):
-    content = forms.CharField(max_length=1000)
-    created_at = forms.DateTimeField()
+from AddIdea.models import Idea
 
-'''
-Created on Mar 15, 2015
+class PostForm(forms.ModelForm):
+	description_long = forms.CharField(widget=forms.Textarea)
+	class Meta:
+		model = Idea
+		fields=['title', 'description_short','description_long','tags']
 
-@author: SRAONE
-'''

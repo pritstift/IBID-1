@@ -1,12 +1,25 @@
+<strong>Add Your Idea Here...</strong>
 <form action="" method="POST">                                                             
   {% csrf_token %}
-  <label for="content"></label>
- <center>
-  <h1>Add Your Idea Here...</h1>
-  <br>
-  <br>
-  <br>
-  <input type="text" name="content" id="content" size="55" />
-  <input type="submit" />
-  </center> 
+  <p> 
+  	{{ post_form.title.errors }}
+  	{{ post_form.title.label_tag }}
+  	{{ post_form.title }} 
+  </p>
+  <p> 
+  	{{ post_form.description_short.errors }}
+  	{{ post_form.description_short.label_tag }}
+  	{{ post_form.description_short }} 
+  </p>
+  <p> 
+  	{{ post_form.description_long.errors }}
+  	{{ post_form.description_long.label_tag }}
+  	{{ post_form.description_long }} 
+  </p>
+  <p> 
+  	{{ post_form.tags.errors }}
+  	{{ post_form.tags.label_tag }}
+  	{{ post_form.tags }} 
+  </p>
+  <input type="submit" /> 
  </form>
