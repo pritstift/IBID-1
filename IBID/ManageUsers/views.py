@@ -83,7 +83,7 @@ def user_login(request):
 				if user.is_active:
 					#log user in
 					login(request,user)
-					return HttpResponseRedirect('/index/')
+					return HttpResponseRedirect(request.POST['next'])
 				else:
 					return HttpResponse("Your IBID account is inactive")
 			else:
@@ -93,8 +93,13 @@ def user_login(request):
 		else:
 			print( login_form.errors)
 		
-	else:
+	elif request.method == 'GET':
 		#create empty forms to distribute 
 		login_form = LoginForm()
+		
+		if 'next' in request.GET:
+			next=request.GET['next']
+		else:
+			next=reverse('AddIdea:index')
 		#render login template
-		return render(request,'ManageUsers/login.html',{'login_form':login_form})
+		return render(request,'ManageUsers/login.html',{'login_form':login_form,'next':next})
