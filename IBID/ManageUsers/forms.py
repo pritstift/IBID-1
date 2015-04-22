@@ -4,10 +4,12 @@ from django import forms
 
 class UserForm(forms.ModelForm):
 	password = forms.CharField(widget=forms.PasswordInput())
-
+	first_name=forms.CharField(required=True)
+	last_name=forms.CharField(required=True)
+	email = forms.EmailField(required=True)
 	class Meta:
 		model = User
-		fields = ('username', 'email', 'password')
+		fields = ('username', 'email','first_name','last_name', 'password')
 
 class UserProfileForm(forms.ModelForm):
 	class Meta:

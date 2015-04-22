@@ -38,8 +38,6 @@ def post(request):
 			# add user and save to database
 			idea.owner=request.user
 			idea.save()
-
-			print(idea.id)
 			Idea_id=idea.id
 			
 			return HttpResponseRedirect(reverse('AddIdea:detail',args=[idea.id,]))
