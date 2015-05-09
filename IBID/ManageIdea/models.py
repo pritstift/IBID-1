@@ -7,6 +7,8 @@ from django.db import models
 
 from django.contrib.auth.models import User
 
+from sitecats.models import ModelWithCategory
+
 # class Group(models.Model):
 #     name=models.CharField(max_length=256, unique=True)
 #     members=models.ManyToManyField(User, through='Membership')
@@ -22,7 +24,7 @@ class Tag(models.Model):
     def __str__(self):
         return self.text
 
-class Idea(models.Model):
+class Idea(ModelWithCategory):
     title=models.CharField(max_length = 400, unique=True)
     owner = models.ForeignKey(User)
     date_added=models.DateField(default=timezone.now())
@@ -38,3 +40,4 @@ class Comment(models.Model):
     idea = models.ForeignKey(Idea)                                                             
     message = models.TextField(blank=False)                                                               
     created_at = models.DateTimeField(default=timezone.now())
+

@@ -1,3 +1,5 @@
+
+
 <h1>{{ Idea.title }}</h1>
 <div>
 {{ Idea.owner }}
@@ -8,3 +10,18 @@
 <div>
 {{ Idea.description_long }}
 </div>
+
+
+{% load sitecats %}
+
+{% block contents %}
+    <!-- Some additional functionality (e.g. categories cloud rendering,
+         editor enhancements) will require JS. -->
+    <script src="{{ STATIC_URL }}js/sitecats/sitecats.min.js"></script>
+
+    <h1>{{ Idea.title }}</h1>
+    <div id="article_categories">
+        
+    </div>
+    <!-- Form code goes somewhere here. -->
+{% endblock %}

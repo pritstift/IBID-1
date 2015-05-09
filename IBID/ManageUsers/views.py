@@ -111,4 +111,4 @@ def user_login(request):
 		else:
 			next=reverse(Home.views.index) 
 			#render login template
-			return render(request,'ManageUsers/login.html',{'login_form':login_form,'next':next})
+		return render(request,'ManageUsers/login.html',{'login_form':login_form,'next':next})

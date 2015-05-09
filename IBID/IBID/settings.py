@@ -38,7 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'ManageIdea',
     'ManageUsers',
-    'Home',	
+    'Home',
+    'sitecats',
 )
 
 MIDDLEWARE_CLASSES = (
