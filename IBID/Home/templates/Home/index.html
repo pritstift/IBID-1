@@ -7,10 +7,10 @@
 </head>
 <body>
 <p>Wow, what a fancy HomePage!</p>    
-<a href="ideas/">Ideas <br>
-<a href="admin/">Admin Page <br>
-<a href="accounts/login/">Login <br>
-<a href="accounts/register/">Register <br>
-<a href="ideas/post">Add your idea <br>
+<a href="{% url 'ManageIdea:index' %} ">List of ideas</a></br>
+<a href="{% url 'admin:index' %}">Admin Page <br>
+<a href="{% url 'ManageUsers:login' %}"> Login <br>
+<a href="{% url 'ManageUsers:register' %}"> Register <br>
+<a href="{% url 'ManageIdea:post' %}"> Add your idea <br>
 </body>
 </html>
