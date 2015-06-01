@@ -1,0 +1,9 @@
+{% if latest_ideas %}
+    <ul>
+    {% for idea in latest_ideas %}
+        <li><a href="{% url 'ManageIdea:detail' idea.id %} ">{{ idea.title }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No ideas available.</p>
+{% endif %}
