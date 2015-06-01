@@ -5,11 +5,18 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth  import authenticate, login
-from ManageUsers.forms import UserForm, UserProfileForm, LoginForm
+from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm
+from django.contrib.auth.models import User
 
 
 def userprofile(request,User_username):
-	return render(request, 'ManageUsers/profile.html', {'User':User_username})
+	try:
+		user = User.objects.get(username = User_username)
+		user_form = DisplayUserForm(instance = user)
+		return render(request, 'ManageUsers/profile.html', {'user_form':user_form})
+	except User.DoesNotExist:
+		return render(request, 'ManageUsers/profile_does_not_exist.html', {'user_name':User_username})
+	
 
 def logout_user(request):
 	logout(request)
@@ -100,6 +107,6 @@ def user_login(request):
 		if 'next' in request.GET:
 			next=request.GET['next']
 		else:
-			next=reverse('AddIdea:index')
+			next=reverse('ManageIdea:index')
 		#render login template
 		return render(request,'ManageUsers/login.html',{'login_form':login_form,'next':next})

@@ -1,0 +1,10 @@
+from django.conf.urls import patterns, url
+
+from ManageIdea import views
+
+urlpatterns = patterns('',
+    # ex: /ideas/
+    url(r'^$', views.index, name='index'),
+    # ex: /ideas/5/
+    url(r'^(?P<idea_id>\d+)/$', views.detail, name='detail'),
+    )
