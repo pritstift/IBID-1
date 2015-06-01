@@ -107,6 +107,6 @@ def user_login(request):
 		if 'next' in request.GET:
 			next=request.GET['next']
 		else:
-			next=reverse('AddIdea:index')
+			next=reverse('ManageIdea:index')
 		#render login template
 		return render(request,'ManageUsers/login.html',{'login_form':login_form,'next':next})
