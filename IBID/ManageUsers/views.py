@@ -100,7 +100,8 @@ def user_login(request):
 
 		else:
 			print( login_form.errors)
-		
+			return render(request, 'ManageUsers/login.html', {'login_form':login_form})
+
 	elif request.method == 'GET':
 		#create empty forms to distribute 
 		login_form = LoginForm()
@@ -108,6 +109,6 @@ def user_login(request):
 		if 'next' in request.GET:
 			next=request.GET['next']
 		else:
-			next=reverse(Home.views.index)
-		#render login template
-		return render(request,'ManageUsers/login.html',{'login_form':login_form,'next':next})
+			next=reverse(Home.views.index) 
+			#render login template
+			return render(request,'ManageUsers/login.html',{'login_form':login_form,'next':next})
