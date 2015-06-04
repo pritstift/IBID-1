@@ -12,16 +12,3 @@
 </div>
 
 
-{% load sitecats %}
-
-{% block contents %}
-    <!-- Some additional functionality (e.g. categories cloud rendering,
-         editor enhancements) will require JS. -->
-    <script src="{{ STATIC_URL }}js/sitecats/sitecats.min.js"></script>
-
-    <h1>{{ Idea.title }}</h1>
-    <div id="Idea_categories">
-        {% sitecats_categories from Idea %} <!-- And that's it. -->
-    </div>
-    <!-- Form code goes somewhere here. -->
-{% endblock %}

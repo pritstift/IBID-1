@@ -39,7 +39,6 @@ INSTALLED_APPS = (
     'ManageIdea',
     'ManageUsers',
     'Home',
-    'sitecats',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -95,5 +94,3 @@ TEMPLATE_LOADERS = (
 )
 
 LOGIN_URL = '/accounts/login'
-
-#SITECATS_MODEL_CATEGORY='ManageIdea.IdeaCategory'
