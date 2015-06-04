@@ -38,7 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'ManageIdea',
     'ManageUsers',
-    'Home',	
+    'Home',
+    'sitecats',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -94,3 +95,5 @@ TEMPLATE_LOADERS = (
 )
 
 LOGIN_URL = '/accounts/login'
+
+#SITECATS_MODEL_CATEGORY='ManageIdea.IdeaCategory'

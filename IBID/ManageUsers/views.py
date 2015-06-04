@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.contrib.auth  import authenticate, login
 from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm
 from django.contrib.auth.models import User
+import Home
 
 
 def userprofile(request,User_username):
@@ -99,7 +100,8 @@ def user_login(request):
 
 		else:
 			print( login_form.errors)
-		
+			return render(request, 'ManageUsers/login.html', {'login_form':login_form})
+
 	elif request.method == 'GET':
 		#create empty forms to distribute 
 		login_form = LoginForm()
@@ -107,6 +109,6 @@ def user_login(request):
 		if 'next' in request.GET:
 			next=request.GET['next']
 		else:
-			next=reverse('ManageIdea:index')
-		#render login template
+			next=reverse(Home.views.index) 
+			#render login template
 		return render(request,'ManageUsers/login.html',{'login_form':login_form,'next':next})

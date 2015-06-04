@@ -23,3 +23,18 @@
   </p>
   <input type="submit" /> 
  </form>
+
+
+{% load sitecats %}
+
+{% block contents %}
+    <!-- Some additional functionality (e.g. categories cloud rendering,
+         editor enhancements) will require JS. -->
+    <script src="{{ STATIC_URL }}js/sitecats/sitecats.min.js"></script>
+
+    <h1>{{ idea.title }}</h1>
+    <div id="idea_categories">
+        {% sitecats_categories from idea %} <!-- And that's it. -->
+    </div>
+    <!-- Form code goes somewhere here. -->
+{% endblock %}
