@@ -1,15 +1,18 @@
 
 
 <h1>{{ Idea.title }}</h1>
-<div>
-{{ Idea.owner }}
-</div>	
-<div>
+<p>
+<p><b>Owner:</b>
+<a href= "{% url 'ManageUsers:userprofile' Idea.owner %}">{{ Idea.owner }}</a></p>
+</p>	
+<p><b>Short description:</b>
 {{ Idea.description_short }}
-</div>
-<div>
+<p/>
+<p><b>Long description:</b> 
 {{ Idea.description_long }}
-</div>
-<div>
-{{ Idea.tags.names }}
-</div>
+</p>
+<p><b>Tags:</b></br></br>
+	{% for tag in Idea.tags.names %}
+	{{ tag }}</br>
+	{% endfor %}
+</p>
