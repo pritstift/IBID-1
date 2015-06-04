@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from django.contrib.auth  import authenticate, login
 from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm
 from django.contrib.auth.models import User
+from ManageIdea.models import Idea
 import Home
 
 
@@ -14,7 +15,8 @@ def userprofile(request,User_username):
 	try:
 		user = User.objects.get(username = User_username)
 		user_form = DisplayUserForm(instance = user)
-		return render(request, 'ManageUsers/profile.html', {'user_form':user_form})
+		ideas=Idea.objects.filter(owner=user)
+		return render(request, 'ManageUsers/profile.html', {'user_form':user_form, 'ideas':ideas})
 	except User.DoesNotExist:
 		return render(request, 'ManageUsers/profile_does_not_exist.html', {'user_name':User_username})
 	
