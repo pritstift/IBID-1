@@ -95,3 +95,5 @@ TEMPLATE_LOADERS = (
 )
 
 LOGIN_URL = '/accounts/login'
+
+#SITECATS_MODEL_CATEGORY='ManageIdea.IdeaCategory'
