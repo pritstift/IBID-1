@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'ManageIdea',
     'ManageUsers',
     'Home',
+    'taggit',
 )
 
 MIDDLEWARE_CLASSES = (
