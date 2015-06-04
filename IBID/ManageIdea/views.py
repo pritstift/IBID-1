@@ -8,6 +8,7 @@ from ManageIdea.models import Idea
 from django.contrib.auth.decorators import login_required
 from ManageIdea.forms import PostForm
 from django.contrib.auth.models import User
+from taggit.managers import TaggableManager
 
 @login_required
 def detail(request, Idea_id):
@@ -43,6 +44,7 @@ def post(request):
 			# add user and save to database
 			idea.owner=request.user
 			idea.save()
+			post_form.save_m2m()
 			Idea_id=idea.id
 			
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))

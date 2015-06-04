@@ -31,7 +31,7 @@ class Idea(models.Model):
     date_added=models.DateField(default=timezone.now())
     description_short=models.CharField(max_length=2048,default="this Idea has no short description yet")
     description_long=models.CharField(max_length=2048,default="this Idea has no long description yet")
-    tags = TaggableManager()
+    tags = TaggableManager(help_text="A comma-separated list of tags.")
     def __str__(self):
         return self.title
                                                                                                                                
