@@ -8,12 +8,11 @@ from ManageIdea.models import Idea
 from django.contrib.auth.decorators import login_required
 from ManageIdea.forms import PostForm
 from django.contrib.auth.models import User
-from sitecats.toolbox import get_category_aliases_under
+from taggit.managers import TaggableManager
 
 @login_required
 def detail(request, Idea_id):
 	idea = get_object_or_404(Idea, pk=Idea_id)
-	idea.set_category_lists_init_kwargs({'show_title': True})
 	return render(request, 'ManageIdea/detail.html', {'Idea':idea})
 
 def index(request):
@@ -26,10 +25,6 @@ def index(request):
 
 def edit(request, Idea_id):
 	idea = get_object_or_404(Idea, pk=Idea_id)
-	idea.enable_category_lists_editor(request,
-                            editor_init_kwargs={'allow_new': True, 'allow_add': True, 'allow_remove': True},
-                            lists_init_kwargs={'show_title': True},
-                            additional_parents_aliases=get_category_aliases_under(),handler_init_kwargs={'error_messages_extra_tags': 'alert alert-danger'})
 	return render(request, 'ManageIdea/detail.html', {'Idea':idea})
 
 @login_required
@@ -37,10 +32,6 @@ def post(request):
 	if request.method == 'GET':
 		post_form = PostForm()
 		idea=post_form.save(commit=False)
-		idea.enable_category_lists_editor(request,
-                            editor_init_kwargs={'allow_new': True},
-                            lists_init_kwargs={'show_title': True},
-                            additional_parents_aliases=['language', 'os'],handler_init_kwargs={})
 		return render(request, 'ManageIdea/upload.html', {'post_form':post_form, 'idea':idea})
 	elif request.method == 'POST':
 		#get PostForm data
@@ -53,6 +44,7 @@ def post(request):
 			# add user and save to database
 			idea.owner=request.user
 			idea.save()
+			post_form.save_m2m()
 			Idea_id=idea.id
 			
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
