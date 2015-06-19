@@ -40,6 +40,8 @@ INSTALLED_APPS = (
     'ManageUsers',
     'Home',
     'taggit',
+    'taggit_selectize',
+    'guardian',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -94,4 +96,12 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.load_template_source',
 )
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
+
+
 LOGIN_URL = '/accounts/login'
+
+ANONYMOUS_USER_ID = -1

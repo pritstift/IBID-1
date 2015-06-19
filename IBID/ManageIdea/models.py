@@ -31,7 +31,15 @@ class Idea(models.Model):
     date_added=models.DateField(default=timezone.now())
     description_short=models.CharField(max_length=2048,default="this Idea has no short description yet")
     description_long=models.CharField(max_length=2048,default="this Idea has no long description yet")
+    description_long_ip=models.BooleanField(default=False)
     tags = TaggableManager(help_text="A comma-separated list of tags.")
+    tags_ip = models.BooleanField(default=False)
+    
+    class Meta:
+        permissions = (
+            ('view_idea', 'View idea'),
+        )
+
     def __str__(self):
         return self.title
                                                                                                                                
