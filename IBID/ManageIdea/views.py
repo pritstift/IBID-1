@@ -9,15 +9,20 @@ from django.contrib.auth.decorators import login_required
 from ManageIdea.forms import PostForm
 from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
-from guardian.shortcuts import assign_perm
+from guardian.shortcuts import assign_perm, get_perms
 import re
 
 @login_required
 def detail(request, Idea_id):
-
-	idea = get_object_or_404(Idea, pk=Idea_id)	
-	#get_ip_fields(idea)
-	return render(request, 'ManageIdea/detail.html', {'Idea':idea})
+	#check for 'view_idea' permission of authenticated user on certain idea
+	idea = get_object_or_404(Idea, pk=Idea_id)
+	if 'view_idea' in get_perms(request.user, idea):
+		#has 'view_idea' permission
+		return render(request, 'ManageIdea/detail.html', {'Idea':idea})
+	else:
+		#only print public fields
+		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(idea)})
+	
 
 def index(request):
     latest_ideas = Idea.objects.order_by('-date_added')[:5]
@@ -51,8 +56,9 @@ def post(request):
 			idea.save()
 			post_form.save_m2m()
 			Idea_id=idea.id
-			assign_perm('view_idea', idea.owner,'idea')
-			
+			assign_perm('view_idea', idea.owner,idea)
+			assign_perm('delete_idea', idea.owner,idea)
+			assign_perm('edit_idea', idea.owner,idea)
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
 		#if form data is invalid
 		else:
@@ -60,13 +66,16 @@ def post(request):
 			return render(request, 'ManageIdea/upload.html', {'post_form':post_form})
 
 	
-def get_ip_fields(Instance):
-	exclude_list = []
-	fields=Instance._meta.get_fields()
-	print(fields)
+def get_ip_instance(Instance):
+	modInstance=Instance
+	fields=modInstance._meta.get_fields()
 	ip_pattern=re.compile(r'.*_ip$')
 	for i in fields:
 		m=ip_pattern.match(i.name)
 		if m:
-			exclude_list.append(re.sub('_ip$','',m.group(0)))
-	return exclude_list
+			ip_field=re.sub('_ip$','',m.group(0))
+			print(ip_field)
+			print(getattr(modInstance,ip_field+'_ip')==False)
+			if getattr(modInstance,ip_field+'_ip')==False:
+				setattr(modInstance, ip_field, None)
+	return modInstance
