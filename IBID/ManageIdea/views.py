@@ -18,10 +18,13 @@ def detail(request, Idea_id):
 	idea = get_object_or_404(Idea, pk=Idea_id)
 	if 'view_idea' in get_perms(request.user, idea):
 		#has 'view_idea' permission
+		print("user has permission")
 		return render(request, 'ManageIdea/detail.html', {'Idea':idea})
 	else:
 		#only print public fields
+		print("user has no permission")
 		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(idea)})
+		
 	
 
 def index(request):
@@ -41,7 +44,6 @@ def post(request):
 	if request.method == 'GET':
 		post_form = PostForm()
 		idea=post_form.save(commit=False)
-		print(get_ip_fields(idea))
 		return render(request, 'ManageIdea/upload.html', {'post_form':post_form, 'idea':idea})
 	elif request.method == 'POST':
 		#get PostForm data
@@ -58,7 +60,7 @@ def post(request):
 			Idea_id=idea.id
 			assign_perm('view_idea', idea.owner,idea)
 			assign_perm('delete_idea', idea.owner,idea)
-			assign_perm('edit_idea', idea.owner,idea)
+			assign_perm('change_idea', idea.owner,idea)
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
 		#if form data is invalid
 		else:
@@ -67,15 +69,35 @@ def post(request):
 
 	
 def get_ip_instance(Instance):
-	modInstance=Instance
-	fields=modInstance._meta.get_fields()
+	
+	fieldList=[]
+	ipList=[]
+	modInstance = Object()
+	fields=Instance._meta.get_fields()
 	ip_pattern=re.compile(r'.*_ip$')
 	for i in fields:
-		m=ip_pattern.match(i.name)
-		if m:
-			ip_field=re.sub('_ip$','',m.group(0))
-			print(ip_field)
-			print(getattr(modInstance,ip_field+'_ip')==False)
-			if getattr(modInstance,ip_field+'_ip')==False:
-				setattr(modInstance, ip_field, None)
+		if i.concrete:
+			m=ip_pattern.match(i.name)
+			i.name
+			if m:
+				ip_field=re.sub('_ip$','',m.group(0))
+				print(ip_field)
+				if getattr(Instance,ip_field+'_ip')==False:
+					ipList.append(ip_field)
+	for i in fields:
+		if i.concrete:
+			if i.name in ipList:
+				pass
+			else:
+				fieldList.append(i.name)
+	print(fieldList)
+	for field in fieldList:
+		setattr(modInstance,field,getattr(Instance, field))
 	return modInstance
+
+
+class Object(object):
+	pass
+
+
+
