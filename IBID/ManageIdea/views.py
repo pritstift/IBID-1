@@ -1,16 +1,17 @@
-from django.http import HttpResponse
 from django.template import RequestContext, loader
-from django.http import HttpResponse, HttpResponseRedirect 
+from django.http import HttpResponse, HttpResponseRedirect
 from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
-from ManageIdea.models import Idea
 from django.contrib.auth.decorators import login_required
-from ManageIdea.forms import PostForm
 from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
 from guardian.shortcuts import assign_perm, get_perms
 import re
+
+from ManageIdea.models import Idea, statusRelationship, Status
+
+from ManageIdea.forms import PostForm, StatusForm
 
 @login_required
 def detail(request, Idea_id):
@@ -24,8 +25,8 @@ def detail(request, Idea_id):
 		#only print public fields
 		print("user has no permission")
 		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(idea)})
-		
-	
+
+
 
 def index(request):
     latest_ideas = Idea.objects.order_by('-date_added')[:5]
@@ -44,19 +45,26 @@ def post(request):
 	if request.method == 'GET':
 		post_form = PostForm()
 		idea=post_form.save(commit=False)
-		return render(request, 'ManageIdea/upload.html', {'post_form':post_form, 'idea':idea})
+		status_form = StatusForm()
+		statusRelationship=status_form.save(commit=False)
+		return render(request, 'ManageIdea/upload.html', {'post_form':post_form,'status_form':status_form})
 	elif request.method == 'POST':
 		#get PostForm data
 		post_form=PostForm(data=request.POST)
-
+		print(post_form)
+		status_form = StatusForm(data=request.POST)
 		#validate
-		if post_form.is_valid():
+		if post_form.is_valid() and status_form.is_valid():
+			print(status_form)
 			idea=post_form.save(commit=False)
-
 			# add user and save to database
 			idea.owner=request.user
 			idea.save()
 			post_form.save_m2m()
+			statusRelationship=status_form.save(commit=False)
+			statusRelationship.idea=idea
+			statusRelationship.save()
+			status_form.save_m2m()
 			Idea_id=idea.id
 			assign_perm('view_idea', idea.owner,idea)
 			assign_perm('delete_idea', idea.owner,idea)
@@ -65,11 +73,11 @@ def post(request):
 		#if form data is invalid
 		else:
 			print(post_form.errors)
-			return render(request, 'ManageIdea/upload.html', {'post_form':post_form})
+			return render(request, 'ManageIdea/upload.html', {'post_form':post_form,'status_form':status_form})
 
-	
+
 def get_ip_instance(Instance):
-	
+
 	fieldList=[]
 	ipList=[]
 	modInstance = Object()
@@ -98,6 +106,3 @@ def get_ip_instance(Instance):
 
 class Object(object):
 	pass
-
-
-
