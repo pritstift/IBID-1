@@ -51,8 +51,9 @@ def post(request):
 	elif request.method == 'POST':
 		#get PostForm data
 		post_form=PostForm(data=request.POST)
-		print(post_form)
+		#print(post_form)
 		status_form = StatusForm(data=request.POST)
+		print(status_form)
 		#validate
 		if post_form.is_valid() and status_form.is_valid():
 			print(status_form)
@@ -63,6 +64,7 @@ def post(request):
 			post_form.save_m2m()
 			statusRelationship=status_form.save(commit=False)
 			statusRelationship.idea=idea
+			#statusRelationship.status=status_form.status
 			statusRelationship.save()
 			status_form.save_m2m()
 			Idea_id=idea.id
