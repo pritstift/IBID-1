@@ -5,34 +5,78 @@
 
 
 <strong>Add Your Idea Here...</strong>
-<form action="" method="POST">                                                             
+<form action="" method="POST">
   {% csrf_token %}
-  <p> 
+  <p>
   	{{ post_form.title.errors }}
   	{{ post_form.title.label_tag }}
-  	{{ post_form.title }} 
+  	{{ post_form.title }}
   </p>
-  <p> 
+  <p>
   	{{ post_form.description_short.errors }}
   	{{ post_form.description_short.label_tag }}
-  	{{ post_form.description_short }} 
+  	{{ post_form.description_short }}
   </p>
-  <p> 
+  <p>
   	{{ post_form.description_long.errors }}
   	{{ post_form.description_long.label_tag }}
-  	{{ post_form.description_long }} 
-    {{ post_form.description_long_ip }} 
+  	{{ post_form.description_long }}
+    {{ post_form.description_long_ip }}
   </p>
-  <p> 
+  <p>
   	{{ post_form.tags.errors }}
   	{{ post_form.tags.label_tag }}
     {{ post_form.tags.help_text }}
-  	{{ post_form.tags }} 
-    {{ post_form.tags_ip }} 
-    
+  	{{ post_form.tags }}
+    {{ post_form.tags_ip }}
+
   </p>
-  
-  <input type="submit" /> 
+{% for status in status_form.status %}
+  <p>
+    {{ status_form.species.errors }}
+    {{ status }}
+    {{ status_form.species }}
+  </p>
+
+{% endfor %}
+
+  <p>
+    {{ post_form.pictures.errors }}
+    {{ post_form.pictures.label_tag }}
+    {{ post_form.pictures }}
+    {{ post_form.pictures_ip }}
+
+  </p>
+  <p>
+    {{ post_form.files.errors }}
+    {{ post_form.files.label_tag }}
+    {{ post_form.files }}
+    {{ post_form.files_ip }}
+
+  </p>
+
+  What should be public. (Visible to all Customers.)
+  <div style="border&#58; solid 2px;">
+  <p>
+    The ressources your project needs:
+    {{ post_form.ressources_ip }}
+  </p>
+  <p>
+    The score your project gets:
+    {{ post_form.score_ip }}
+  </p>
+  <p>
+    The status of your project:
+    {{ post_form.status_ip }}
+  </p>
+  <p>
+    The maintenance status of your Project:
+    {{ post_form.maintenanceStatus_ip }}
+  </p>
+  </div>
+
+
+  <input type="submit" />
  </form>
 
 
