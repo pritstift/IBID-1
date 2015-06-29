@@ -1,12 +1,8 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html lang="en">
-<head>
-    <title>My Home Page</title>           
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css" media="screen" />
- 
-</head>
-<body>
-<p>Wow, what a fancy HomePage!</p>    
+{% extends 'base.html' %}
+
+{% block body_block %}
+
+<p>Wow, what a fancy HomePage!</p>
 <a href="{% url 'ManageIdea:index' %} ">List of ideas</a></br>
 <a href="{% url 'admin:index' %}">Admin Page <br>
 {% if user.is_authenticated %}
@@ -17,5 +13,5 @@
 	<a href="{% url 'ManageUsers:register' %}"> Register <br>
 {% endif %}
 <a href="{% url 'ManageIdea:post' %}"> Add your idea <br>
-</body>
-</html>
+
+{% endblock %}

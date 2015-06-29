@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+
 {% if latest_ideas %}
     <ul>
     {% for idea in latest_ideas %}
@@ -7,3 +11,5 @@
 {% else %}
     <p>No ideas available.</p>
 {% endif %}
+
+{% endblock %}

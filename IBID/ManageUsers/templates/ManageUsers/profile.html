@@ -1,6 +1,12 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+
 {{ user_form.as_p }}
 </br>
 List of related ideas: <br> </br>
   {% for idea in ideas %}
   <a href = "{% url 'ManageIdea:detail' idea.id %}"> {{ idea.title }} </a> </br>
   {% endfor %}
+
+  {% endblock %}
