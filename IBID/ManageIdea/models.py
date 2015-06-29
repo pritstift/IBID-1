@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.db import models
 
 from django.contrib.auth.models import User
+from django.contrib import admin
 
 from taggit.managers import TaggableManager
 
@@ -40,7 +41,6 @@ class Idea(models.Model):
     description_long_ip=models.BooleanField(default=False)
     tags = TaggableManager(help_text="A comma-separated list of tags.")
     tags_ip = models.BooleanField(default=False)
-
     status_ip = models.BooleanField(default=False)
     #ressources = models.ForeignKey(Ressources)
     ressources_ip = models.BooleanField(default=False)
@@ -77,6 +77,16 @@ class statusRelationship(models.Model):
     status = models.ForeignKey(Status)
     date_added = models.DateField(default=timezone.now())
     species = models.CharField(max_length=10,choices=CHOICES,default='EMPTY')
+    def __str__(self):
+        return self.species
+
+class statusRelationshipInline(admin.TabularInline):
+    model = statusRelationship
+    extra = 2 # how many rows to show
+
+class StatusAdmin(admin.ModelAdmin):
+    inlines = (statusRelationshipInline,)
+
 
 
 class Ressources(models.Model):

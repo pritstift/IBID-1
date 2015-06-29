@@ -51,22 +51,24 @@ def post(request):
 	elif request.method == 'POST':
 		#get PostForm data
 		post_form=PostForm(data=request.POST)
-		#print(post_form)
 		status_form = StatusForm(data=request.POST)
-		print(status_form)
+		print(request.POST)
 		#validate
 		if post_form.is_valid() and status_form.is_valid():
-			print(status_form)
+			print('all valid')
 			idea=post_form.save(commit=False)
 			# add user and save to database
 			idea.owner=request.user
 			idea.save()
 			post_form.save_m2m()
-			statusRelationship=status_form.save(commit=False)
-			statusRelationship.idea=idea
+			for status in status_form.status:
+				statusRelationship = statusRelationship.objects.create(Idea_id = idea.Idea_id,Status_id = status.Status_id, species=request.POST.species[status.Status_id])
+				print(statusRelationship.objects.filter(Idea_id = idea.Idea_id))
+				#statusRelationship.save()
+				status_form.save_m2m()
 			#statusRelationship.status=status_form.status
-			statusRelationship.save()
-			status_form.save_m2m()
+			#statusRelationship.save()
+			#status_form.save_m2m()
 			Idea_id=idea.id
 			assign_perm('view_idea', idea.owner,idea)
 			assign_perm('delete_idea', idea.owner,idea)
