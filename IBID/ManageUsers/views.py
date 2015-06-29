@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 from django.template import RequestContext, loader
-from django.http import HttpResponse, HttpResponseRedirect 
+from django.http import HttpResponse, HttpResponseRedirect
 from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
@@ -19,7 +19,7 @@ def userprofile(request,User_username):
 		return render(request, 'ManageUsers/profile.html', {'user_form':user_form, 'ideas':ideas})
 	except User.DoesNotExist:
 		return render(request, 'ManageUsers/profile_does_not_exist.html', {'user_name':User_username})
-	
+
 
 def logout_user(request):
 	logout(request)
@@ -32,7 +32,7 @@ def register(request):
 		#grab information form from the POST data
 		user_form = UserForm(data=request.POST)
 		profile_form = UserProfileForm(data=request.POST)
-		
+
 		#if the form is valid
 		if user_form.is_valid() and profile_form.is_valid():
 			user = user_form.save()
@@ -74,7 +74,7 @@ def register(request):
 
 def user_login(request):
 	if request.method == 'POST':
-		
+
 		#gather username and passwd from form
 		login_form = LoginForm(data=request.POST)
 
@@ -82,10 +82,10 @@ def user_login(request):
 		if login_form.is_valid():
 			username = login_form.cleaned_data['username']
 			password = login_form.cleaned_data['password']
-			
+
 			#authenticate
 			user = authenticate(username=username, password=password)
-			
+
 			#if user is a User Object, there is a user and credentials where correct
 			#else user == None
 			if user:
@@ -105,12 +105,12 @@ def user_login(request):
 			return render(request, 'ManageUsers/login.html', {'login_form':login_form})
 
 	elif request.method == 'GET':
-		#create empty forms to distribute 
+		#create empty forms to distribute
 		login_form = LoginForm()
-		
+
 		if 'next' in request.GET:
 			next=request.GET['next']
 		else:
-			next=reverse(Home.views.index) 
+			next=reverse('Home:index') 
 			#render login template
 		return render(request,'ManageUsers/login.html',{'login_form':login_form,'next':next})
