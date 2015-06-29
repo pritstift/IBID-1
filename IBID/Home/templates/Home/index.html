@@ -3,8 +3,5 @@
 {% block body_block %}
 
 <a href="{% url 'ManageIdea:index' %} ">List of ideas</a></br>
-{% if user.is_authenticated %}
-	<a href="{% url 'ManageUsers:logout' %}"> Logout <br>
-{% endif %}
 
 {% endblock %}

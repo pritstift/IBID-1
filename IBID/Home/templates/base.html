@@ -35,6 +35,7 @@
             {% if user.is_authenticated %}
             <li><a href="{% url 'ManageIdea:post' %}"> Add Idea </a></li>
             <li><a href="{% url 'ManageUsers:userprofile' user %}"> {{ user.get_username }}</a></li>
+            <li><a href="{% url 'ManageUsers:logout' %}"> Logout </a></li>
             {% else %}
             <li><a href="{% url 'ManageUsers:register' %}"> Register </a></li>
             <li><a href="{% url 'ManageUsers:login' %}"> Login </a></li>
