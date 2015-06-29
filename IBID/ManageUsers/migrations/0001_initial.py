@@ -17,12 +17,12 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='UserProfile',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('company', models.CharField(max_length=256, blank=True)),
                 ('occupation', models.CharField(max_length=256, blank=True)),
                 ('website', models.URLField(blank=True)),
                 ('picture', models.ImageField(upload_to='profile_images', blank=True)),
-                ('date_joined', models.DateField(default=datetime.datetime(2015, 6, 4, 20, 15, 18, 824541, tzinfo=utc))),
+                ('date_joined', models.DateField(default=datetime.datetime(2015, 6, 29, 19, 58, 49, 23178, tzinfo=utc))),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
