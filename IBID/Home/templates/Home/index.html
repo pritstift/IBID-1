@@ -2,16 +2,9 @@
 
 {% block body_block %}
 
-<p>Wow, what a fancy HomePage!</p>
 <a href="{% url 'ManageIdea:index' %} ">List of ideas</a></br>
-<a href="{% url 'admin:index' %}">Admin Page <br>
 {% if user.is_authenticated %}
 	<a href="{% url 'ManageUsers:logout' %}"> Logout <br>
-	<a href="{% url 'ManageUsers:userprofile' user %}"> Show Userprofile <br>
-{% else %}
-	<a href="{% url 'ManageUsers:login' %}"> Login <br>
-	<a href="{% url 'ManageUsers:register' %}"> Register <br>
 {% endif %}
-<a href="{% url 'ManageIdea:post' %}"> Add your idea <br>
 
 {% endblock %}
