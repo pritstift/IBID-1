@@ -1,5 +1,5 @@
 from django import forms
-from ManageIdea.models import Idea, statusRelationship, Status
+from ManageIdea.models import Idea, StatusRelationship, Status
 
 
 class PostForm(forms.ModelForm):
@@ -10,8 +10,8 @@ class PostForm(forms.ModelForm):
 		exclude=['owner','date_added']
 
 class StatusForm(forms.ModelForm):
-	species=forms.ChoiceField(statusRelationship.CHOICES)
+	#species=forms.ChoiceField(StatusRelationship.CHOICES)
 	status=Status.objects.all()
 	class Meta:
-		model = statusRelationship
+		model = StatusRelationship
 		fields = ['species']

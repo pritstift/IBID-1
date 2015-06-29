@@ -62,12 +62,12 @@ class Idea(models.Model):
 
 class Status(models.Model):
     title = models.CharField(max_length = 400, unique=True)
-    ideas = models.ManyToManyField(Idea, through='statusRelationship')
+    ideas = models.ManyToManyField(Idea, through='StatusRelationship')
     date_added=models.DateField(default=timezone.now())
     def __str__(self):
         return self.title
 
-class statusRelationship(models.Model):
+class StatusRelationship(models.Model):
     CHOICES = (
     ('EMPTY', ''),
     ('FINISHED', 'Abgeschlossen'),
@@ -80,12 +80,12 @@ class statusRelationship(models.Model):
     def __str__(self):
         return self.species
 
-class statusRelationshipInline(admin.TabularInline):
-    model = statusRelationship
+class StatusRelationshipInline(admin.TabularInline):
+    model = StatusRelationship
     extra = 2 # how many rows to show
 
 class StatusAdmin(admin.ModelAdmin):
-    inlines = (statusRelationshipInline,)
+    inlines = (StatusRelationshipInline,)
 
 
 
