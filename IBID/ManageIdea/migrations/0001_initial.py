@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from django.utils.timezone import utc
 from django.conf import settings
+from django.utils.timezone import utc
 import taggit.managers
 import datetime
 
@@ -11,27 +11,27 @@ import datetime
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('taggit', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('taggit', '0001_initial'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Comment',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('message', models.TextField()),
-                ('date_added', models.DateTimeField(default=datetime.datetime(2015, 6, 29, 19, 58, 49, 21866, tzinfo=utc))),
+                ('date_added', models.DateTimeField(default=datetime.datetime(2015, 6, 29, 21, 21, 17, 557005, tzinfo=utc))),
             ],
         ),
         migrations.CreateModel(
             name='Idea',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('title', models.CharField(unique=True, max_length=400)),
-                ('date_added', models.DateField(default=datetime.datetime(2015, 6, 29, 19, 58, 49, 16475, tzinfo=utc))),
-                ('description_short', models.CharField(default='this Idea has no short description yet', max_length=2048)),
-                ('description_long', models.CharField(default='this Idea has no long description yet', max_length=2048)),
+                ('date_added', models.DateField(default=datetime.datetime(2015, 6, 29, 21, 21, 17, 523724, tzinfo=utc))),
+                ('description_short', models.CharField(max_length=2048, default='this Idea has no short description yet')),
+                ('description_long', models.CharField(max_length=2048, default='this Idea has no long description yet')),
                 ('description_long_ip', models.BooleanField(default=False)),
                 ('tags_ip', models.BooleanField(default=False)),
                 ('status_ip', models.BooleanField(default=False)),
@@ -43,7 +43,7 @@ class Migration(migrations.Migration):
                 ('score_ip', models.BooleanField(default=False)),
                 ('maintenanceStatus_ip', models.BooleanField(default=False)),
                 ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-                ('tags', taggit.managers.TaggableManager(to='taggit.Tag', help_text='A comma-separated list of tags.', verbose_name='Tags', through='taggit.TaggedItem')),
+                ('tags', taggit.managers.TaggableManager(through='taggit.TaggedItem', verbose_name='Tags', help_text='A comma-separated list of tags.', to='taggit.Tag')),
             ],
             options={
                 'permissions': (('view_idea', 'View idea'),),
@@ -52,9 +52,9 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='MaintenanceStatus',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('title', models.CharField(unique=True, max_length=400)),
-                ('date_added', models.DateTimeField(default=datetime.datetime(2015, 6, 29, 19, 58, 49, 20477, tzinfo=utc))),
+                ('date_added', models.DateTimeField(default=datetime.datetime(2015, 6, 29, 21, 21, 17, 539800, tzinfo=utc))),
                 ('idea', models.ForeignKey(to='ManageIdea.Idea')),
                 ('supervisor', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
             ],
@@ -62,26 +62,26 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Ressources',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('title', models.CharField(unique=True, max_length=400)),
-                ('date_added', models.DateTimeField(default=datetime.datetime(2015, 6, 29, 19, 58, 49, 19800, tzinfo=utc))),
+                ('date_added', models.DateTimeField(default=datetime.datetime(2015, 6, 29, 21, 21, 17, 538269, tzinfo=utc))),
                 ('idea', models.ForeignKey(to='ManageIdea.Idea')),
             ],
         ),
         migrations.CreateModel(
             name='Status',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
                 ('title', models.CharField(unique=True, max_length=400)),
-                ('date_added', models.DateField(default=datetime.datetime(2015, 6, 29, 19, 58, 49, 18117, tzinfo=utc))),
+                ('date_added', models.DateField(default=datetime.datetime(2015, 6, 29, 21, 21, 17, 534647, tzinfo=utc))),
             ],
         ),
         migrations.CreateModel(
-            name='statusRelationship',
+            name='StatusRelationship',
             fields=[
-                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
-                ('date_added', models.DateField(default=datetime.datetime(2015, 6, 29, 19, 58, 49, 18985, tzinfo=utc))),
-                ('species', models.CharField(default='EMPTY', max_length=10, choices=[('EMPTY', ''), ('FINISHED', 'Abgeschlossen'), ('CURRENT', 'Aktiv')])),
+                ('id', models.AutoField(serialize=False, verbose_name='ID', auto_created=True, primary_key=True)),
+                ('date_added', models.DateField(default=datetime.datetime(2015, 6, 29, 21, 21, 17, 536514, tzinfo=utc))),
+                ('species', models.CharField(max_length=10, choices=[('EMPTY', ''), ('FINISHED', 'Abgeschlossen'), ('CURRENT', 'Aktiv')], default='EMPTY')),
                 ('idea', models.ForeignKey(to='ManageIdea.Idea')),
                 ('status', models.ForeignKey(to='ManageIdea.Status')),
             ],
@@ -89,7 +89,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='status',
             name='ideas',
-            field=models.ManyToManyField(through='ManageIdea.statusRelationship', to='ManageIdea.Idea'),
+            field=models.ManyToManyField(through='ManageIdea.StatusRelationship', to='ManageIdea.Idea'),
         ),
         migrations.AddField(
             model_name='comment',

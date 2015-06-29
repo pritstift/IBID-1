@@ -9,7 +9,7 @@ from taggit.managers import TaggableManager
 from guardian.shortcuts import assign_perm, get_perms
 import re
 
-from ManageIdea.models import Idea, statusRelationship, Status
+from ManageIdea.models import Idea, StatusRelationship, Status
 
 from ManageIdea.forms import PostForm, StatusForm
 
@@ -44,9 +44,7 @@ def edit(request, Idea_id):
 def post(request):
 	if request.method == 'GET':
 		post_form = PostForm()
-		idea=post_form.save(commit=False)
 		status_form = StatusForm()
-		statusRelationship=status_form.save(commit=False)
 		return render(request, 'ManageIdea/upload.html', {'post_form':post_form,'status_form':status_form})
 	elif request.method == 'POST':
 		#get PostForm data
@@ -55,20 +53,12 @@ def post(request):
 		print(request.POST)
 		#validate
 		if post_form.is_valid() and status_form.is_valid():
-			print('all valid')
 			idea=post_form.save(commit=False)
 			# add user and save to database
 			idea.owner=request.user
 			idea.save()
-			post_form.save_m2m()
-			for status in status_form.status:
-				statusRelationship = statusRelationship.objects.create(Idea_id = idea.Idea_id,Status_id = status.Status_id, species=request.POST.species[status.Status_id])
-				print(statusRelationship.objects.filter(Idea_id = idea.Idea_id))
-				#statusRelationship.save()
-				status_form.save_m2m()
-			#statusRelationship.status=status_form.status
-			#statusRelationship.save()
-			#status_form.save_m2m()
+			for state in status_form.status:
+				statusRelationship = StatusRelationship.objects.create(idea = idea,status = state, species=request.POST.getlist('species')[state.id - 1])
 			Idea_id=idea.id
 			assign_perm('view_idea', idea.owner,idea)
 			assign_perm('delete_idea', idea.owner,idea)
