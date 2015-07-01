@@ -12,16 +12,9 @@ from ManageUsers.models import UserProfile
 import Home
 import re
 
-if 'view_idea' in get_perms(request.user, idea):
-	#has 'view_idea' permission
-	print("user has permission")
-	return render(request, 'ManageIdea/detail.html', {'Idea':idea})
-else:
-	#only print public fields
-	print("user has no permission")
-	return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(idea)})
+
 def userprofile(request,User_username):
-	
+	try:
 		print(User_username)
 		user = User.objects.get(username = User_username)
 		print(user.id)
