@@ -8,15 +8,27 @@ from django.contrib.auth  import authenticate, login
 from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm
 from django.contrib.auth.models import User
 from ManageIdea.models import Idea
+from ManageUsers.models import UserProfile
 import Home
+import re
 
-
+if 'view_idea' in get_perms(request.user, idea):
+	#has 'view_idea' permission
+	print("user has permission")
+	return render(request, 'ManageIdea/detail.html', {'Idea':idea})
+else:
+	#only print public fields
+	print("user has no permission")
+	return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(idea)})
 def userprofile(request,User_username):
-	try:
+	
+		print(User_username)
 		user = User.objects.get(username = User_username)
+		print(user.id)
+		userprofile = UserProfile.objects.get(user=user)
 		user_form = DisplayUserForm(instance = user)
 		ideas=Idea.objects.filter(owner=user)
-		return render(request, 'ManageUsers/profile.html', {'user_form':user_form, 'ideas':ideas})
+		return render(request, 'ManageUsers/profile.html', {'profile_form':get_ip_instance(userprofile),'user_form':user_form, 'ideas':ideas})
 	except User.DoesNotExist:
 		return render(request, 'ManageUsers/profile_does_not_exist.html', {'user_name':User_username})
 
@@ -111,6 +123,37 @@ def user_login(request):
 		if 'next' in request.GET:
 			next=request.GET['next']
 		else:
-			next=reverse('Home:index') 
+			next=reverse('Home:index')
 			#render login template
 		return render(request,'ManageUsers/login.html',{'login_form':login_form,'next':next})
+
+
+def get_ip_instance(Instance):
+
+	fieldList=[]
+	ipList=[]
+	modInstance = Object()
+	fields=Instance._meta.get_fields()
+	ip_pattern=re.compile(r'.*_ip$')
+	for i in fields:
+		if i.concrete:
+			m=ip_pattern.match(i.name)
+			i.name
+			if m:
+				ip_field=re.sub('_ip$','',m.group(0))
+				#print(ip_field)
+				if getattr(Instance,ip_field+'_ip')==False:
+					ipList.append(ip_field)
+	for i in fields:
+		if i.concrete:
+			if i.name in ipList:
+				pass
+			else:
+				fieldList.append(i.name)
+	#print(fieldList)
+	for field in fieldList:
+		setattr(modInstance,field,getattr(Instance, field))
+	return modInstance
+
+class Object(object):
+	pass

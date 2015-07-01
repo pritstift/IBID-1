@@ -102,7 +102,6 @@ AUTHENTICATION_BACKENDS = (
     'guardian.backends.ObjectPermissionBackend',
 )
 
-
 LOGIN_URL = '/accounts/login'
 
 ANONYMOUS_USER_ID = -1
