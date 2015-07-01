@@ -22,7 +22,47 @@
                  (<p>) element. This ensures each element appears on a new line,
                  making everything look neater. -->
             {{ user_form.as_p }}
-            {{ profile_form.as_p }}
+            <p>
+            	{{ profile_form.occupation.errors }}
+            	{{ profile_form.occupation.label_tag }}
+            	{{ profile_form.occupation }}
+            </p>
+            <p>
+              {{ profile_form.website.errors }}
+              {{ profile_form.website.label_tag }}
+              {{ profile_form.website }}
+            </p>
+            <p>
+              {{ profile_form.picture.errors }}
+              {{ profile_form.picture.label_tag }}
+              {{ profile_form.picture }}
+            </p>
+            <p>
+              {{ profile_form.files.errors }}
+              {{ profile_form.files.label_tag }}
+              {{ profile_form.files }}
+            </p>
+            What should be public. (Visible to all Customers.)
+            <p>
+              The company you working at:
+              {{ profile_form.company_ip }}
+            </p>
+            <p>
+              Your occupation:
+              {{ profile_form.occupation_ip }}
+            </p>
+            <p>
+              Your website:
+              {{ profile_form.website_ip }}
+            </p>
+            <p>
+              Your profile picture:
+              {{ profile_form.picture_ip }}
+            </p>
+            <p>
+              Your uploaded files:
+              {{ profile_form.files_ip }}
+            </p>
 
             <!-- Provide a button to click to submit the form. -->
             <input type="submit" name="submit" value="Register" />
