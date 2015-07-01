@@ -14,7 +14,7 @@ class UserForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
 	class Meta:
 		model = UserProfile
-		fields = ('occupation','website', 'picture')
+		exclude=['user','date_added','date_joined']
 
 class LoginForm(forms.Form):
 	username = forms.CharField()
