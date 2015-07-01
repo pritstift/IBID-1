@@ -23,6 +23,11 @@
                  making everything look neater. -->
             {{ user_form.as_p }}
             <p>
+            	{{ profile_form.company.errors }}
+            	{{ profile_form.company.label_tag }}
+            	{{ profile_form.company }}
+            </p>
+            <p>
             	{{ profile_form.occupation.errors }}
             	{{ profile_form.occupation.label_tag }}
             	{{ profile_form.occupation }}
