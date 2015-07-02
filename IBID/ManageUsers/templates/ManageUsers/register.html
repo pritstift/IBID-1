@@ -1,72 +1,70 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>IBID</title>
-    </head>
+{% extends 'base.html' %}
+{% load widget_tweaks %}
 
-    <body>
-        <h1>Register with IBID</h1>
+{% block body_block %}
+<div class="col-md-2"><!--Column left--></div>
+<div class="col-md-8"><!--Column middle-->
+ {% if registered %}
+  <strong>Thank you for registering!</strong>
+  <a href="{% url 'ManageIdea:index' %}">Return to the homepage.</a><br />
+  {% else %}
+  <strong>Register here!</strong><br />
+  <form class="form-horizontal" role="form" action="." method="post">
+  {% csrf_token %}
+  {% for field in user_form %}
+    {% if field.errors %}
+      <div class="form-group has-error">
+          <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+          <div class="col-md-10">
+              {{ field|attr:"class:form-control" }}
+              <span class="help-block">
+                  {% for error in  field.errors %}{{ error }}{% endfor %}
+              </span>
+          </div>
+      </div>
+    {% else %}
+      <div class="form-group">
+          <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+          <div class="col-md-10">
+              {{ field|attr:"class:form-control" }}
+              {% if field.help_text %}
+                  <p class="help-block"><small>{{ field.help_text }}</small></p>
+              {% endif %}
+          </div>
+      </div>
+  {% endif %}
+{% endfor %}
 
-        {% if registered %}
-        <strong>Thank you for registering!</strong>
-        <a href="{% url 'ManageIdea:index' %}">Return to the homepage.</a><br />
-        {% else %}
-        <strong>Register here!</strong><br />
-
-        <form id="user_form" method="post" action="{% url 'ManageUsers:register' %}"
-                enctype="multipart/form-data">
-
-            {% csrf_token %}
-
-            <!-- Display each form. The as_p method wraps each element in a paragraph
-                 (<p>) element. This ensures each element appears on a new line,
-                 making everything look neater. -->
-            {{ user_form.as_p }}
-            <p>
-            	{{ profile_form.occupation.errors }}
-            	{{ profile_form.occupation.label_tag }}
-            	{{ profile_form.occupation }}
-            </p>
-            <p>
-              {{ profile_form.website.errors }}
-              {{ profile_form.website.label_tag }}
-              {{ profile_form.website }}
-            </p>
-            <p>
-              {{ profile_form.picture.errors }}
-              {{ profile_form.picture.label_tag }}
-              {{ profile_form.picture }}
-            </p>
-            <p>
-              {{ profile_form.files.errors }}
-              {{ profile_form.files.label_tag }}
-              {{ profile_form.files }}
-            </p>
-            What should be public. (Visible to all Customers.)
-            <p>
-              The company you working at:
-              {{ profile_form.company_ip }}
-            </p>
-            <p>
-              Your occupation:
-              {{ profile_form.occupation_ip }}
-            </p>
-            <p>
-              Your website:
-              {{ profile_form.website_ip }}
-            </p>
-            <p>
-              Your profile picture:
-              {{ profile_form.picture_ip }}
-            </p>
-            <p>
-              Your uploaded files:
-              {{ profile_form.files_ip }}
-            </p>
-
-            <!-- Provide a button to click to submit the form. -->
-            <input type="submit" name="submit" value="Register" />
-        </form>
-        {% endif %}
-    </body>
-</html>
+      {% for field in profile_form %}
+          {% if field.errors %}
+              <div class="form-group has-error">
+                  <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                  <div class="col-md-10">
+                      {{ field|attr:"class:form-control" }}
+                      <span class="help-block">
+                          {% for error in  field.errors %}{{ error }}{% endfor %}
+                      </span>
+                  </div>
+              </div>
+          {% else %}
+              <div class="form-group">
+                  <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                  <div class="col-md-10">
+                      {{ field|attr:"class:form-control" }}
+                      {% if field.help_text %}
+                          <p class="help-block"><small>{{ field.help_text }}</small></p>
+                      {% endif %}
+                  </div>
+              </div>
+          {% endif %}
+      {% endfor %}
+      <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+              <button type="submit" class="btn btn-default" name="submit" value="Register">"Submit"</button>
+          </div>
+      </div>
+  </form>
+  {% endif %}
+</div>
+<div class="col-md-2"><!--Column right--></div>
+{% endblock body_block %}

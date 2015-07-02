@@ -1,16 +1,63 @@
 {% extends 'base.html' %}
 
+{% load widget_tweaks %}
+
 {% block body_block %}
 
-  <h1>Login to IBID</h1>
 
-  <form id="login_form" method="post" action="{% url 'ManageUsers:login' %}">
-      {% csrf_token %}
+
+  <!-- <form id="login_form" method="post" action="{% url 'ManageUsers:login' %}">
+  {% csrf_token %}
 
       {{ login_form.as_p }}
-      
+
       <input type="submit" value="submit" />
       <input type="hidden" name="next" value="{{ next }}" />
-</form>
+</form> -->
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4"><!--Column left--></div>
+    <div class="col-md-4">
+      <h1>Login to IBID</h1>
+
+      <form role="form" action="." method="post">
+        {% csrf_token %}
+        {% if login_form.username.errors %}
+          <div class="form-group has-error">
+            <label for="id_username">Username</label>
+            <input type="text" class="form-control" id="id_username" name="username" placeholder="Username">
+              <span class="help-block">
+                {% for error in  login_form.username.errors %}{{ error }}{% endfor %}
+              </span>
+            </input>
+          </div>
+        {% else %}
+        <div class="form-group">
+          <label for ="id_username" >Username</label>
+          <input type="text" class="form-control" id="id_username" name="username" placeholder="Username">
+        </div>
+        {% endif %}
+        {% if login_form.password.errors %}
+          <div class="form-group has-error">
+            <label for="id_password">Password</label>
+            <input type="password" class="form-control" id="id_password" name="password" placeholder="Password">
+              <span class="help-block">
+                {% for error in  login_form.password.errors %}{{ error }}{% endfor %}
+              </span>
+            </input>
+          </div>
+        {% else %}
+        <div class="form-group">
+          <label for="password" for="id_password" >Password</label>
+          <input type="password" class="form-control" id="id_password" name="password" placeholder="Password">
+        </div>
+        {% endif %}
+        <button type="submit" class="btn btn-default" name="next" value="{{ next }}">Submit</button>
+      </form>
+    </div>
+    <div class="col-md-4"><!--Column right--></div>
+  </div>
+</div>
 
 {% endblock %}

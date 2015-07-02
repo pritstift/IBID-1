@@ -6,31 +6,38 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth  import authenticate, login
 from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.decorators import login_required
 from ManageIdea.models import Idea
+from ManageIdea.views import get_ip_instance, Object
 from ManageUsers.models import UserProfile
+from guardian.shortcuts import assign_perm, get_perms
 import Home
 import re
 
-if 'view_idea' in get_perms(request.user, idea):
-	#has 'view_idea' permission
-	print("user has permission")
-	return render(request, 'ManageIdea/detail.html', {'Idea':idea})
-else:
-	#only print public fields
-	print("user has no permission")
-	return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(idea)})
+
+def detail(request, Idea_id):
+	#check for 'view_idea' permission of authenticated user on certain idea
+	idea = get_object_or_404(Idea, pk=Idea_id)
+	if 'view_idea' in get_perms(request.user, idea):
+		#has 'view_idea' permission
+		print("user has permission")
+		return render(request, 'ManageIdea/detail.html', {'Idea':idea})
+	else:
+		#only print public fields
+		print("user has no permission")
+		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(idea)})
+
+@login_required
 def userprofile(request,User_username):
-	
-		print(User_username)
-		user = User.objects.get(username = User_username)
-		print(user.id)
-		userprofile = UserProfile.objects.get(user=user)
-		user_form = DisplayUserForm(instance = user)
-		ideas=Idea.objects.filter(owner=user)
+	user = get_object_or_404(User,username = User_username)
+	userprofile = get_object_or_404(UserProfile,user=user)
+	user_form = DisplayUserForm(instance = user)
+	ideas=Idea.objects.filter(owner=user)
+	if 'view_userprofile' in get_perms(request.user,userprofile):
+		return render(request, 'ManageUsers/profile.html', {'profile_form':userprofile,'user_form':user_form, 'ideas':ideas})
+	else:
 		return render(request, 'ManageUsers/profile.html', {'profile_form':get_ip_instance(userprofile),'user_form':user_form, 'ideas':ideas})
-	except User.DoesNotExist:
-		return render(request, 'ManageUsers/profile_does_not_exist.html', {'user_name':User_username})
 
 
 def logout_user(request):
@@ -58,6 +65,14 @@ def register(request):
 			# This delays saving the model until we're ready to avoid integrity problems.
 			profile = profile_form.save(commit=False)
 			profile.user=user
+			profile.save()
+			staff = Group.objects.get(name='staff')
+			assign_perm('view_userprofile', profile.user,profile)
+			assign_perm('delete_userprofile', profile.user,profile)
+			assign_perm('change_userprofile', profile.user,profile)
+			assign_perm('view_userprofile', staff,profile)
+			assign_perm('delete_userprofile', staff,profile)
+			assign_perm('change_userprofile', staff,profile)
 
 			# Did the user provide a profile picture?
 			# If so, we need to get it from the input form and put it in the UserProfile model.
@@ -126,34 +141,3 @@ def user_login(request):
 			next=reverse('Home:index')
 			#render login template
 		return render(request,'ManageUsers/login.html',{'login_form':login_form,'next':next})
-
-
-def get_ip_instance(Instance):
-
-	fieldList=[]
-	ipList=[]
-	modInstance = Object()
-	fields=Instance._meta.get_fields()
-	ip_pattern=re.compile(r'.*_ip$')
-	for i in fields:
-		if i.concrete:
-			m=ip_pattern.match(i.name)
-			i.name
-			if m:
-				ip_field=re.sub('_ip$','',m.group(0))
-				#print(ip_field)
-				if getattr(Instance,ip_field+'_ip')==False:
-					ipList.append(ip_field)
-	for i in fields:
-		if i.concrete:
-			if i.name in ipList:
-				pass
-			else:
-				fieldList.append(i.name)
-	#print(fieldList)
-	for field in fieldList:
-		setattr(modInstance,field,getattr(Instance, field))
-	return modInstance
-
-class Object(object):
-	pass

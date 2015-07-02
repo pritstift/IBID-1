@@ -18,5 +18,9 @@ class UserProfile(models.Model):
     files_ip = models.BooleanField(default=False)
     date_joined = models.DateField(default=timezone.now())
     # Override the __unicode__() method to return out something meaningful!
+    class Meta:
+        permissions = (
+            ('view_userprofile', 'View userprofile'),
+        )
     def __unicode__(self):
         return self.user.username

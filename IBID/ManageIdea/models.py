@@ -42,7 +42,7 @@ class Idea(models.Model):
     tags = TaggableManager(help_text="A comma-separated list of tags.")
     tags_ip = models.BooleanField(default=False)
     status_ip = models.BooleanField(default=False)
-    #ressources = models.ForeignKey(Ressources)
+    ressources = models.CharField(max_length=2048,default="Any ressources in need?")
     ressources_ip = models.BooleanField(default=False)
     pictures = models.ImageField(upload_to='idea_images', blank=True)
     pictures_ip = models.BooleanField(default=False)
@@ -89,10 +89,10 @@ class StatusAdmin(admin.ModelAdmin):
 
 
 
-class Ressources(models.Model):
-    idea = models.ForeignKey(Idea)
-    title = models.CharField(max_length = 400, unique=True)
-    date_added = models.DateTimeField(default=timezone.now())
+#class Ressources(models.Model):
+#    idea = models.ForeignKey(Idea)
+#    title = models.CharField(max_length = 400, unique=True)
+#    date_added = models.DateTimeField(default=timezone.now())
 
 class MaintenanceStatus(models.Model):
     supervisor = models.ManyToManyField(User)              # User mit staffpermission
