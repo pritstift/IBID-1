@@ -43,7 +43,8 @@ INSTALLED_APPS = (
     'taggit_selectize',
     'guardian',
     'bootstrap3',
-    'widget_tweaks'
+    'widget_tweaks',
+    'bootstrapform',
 )
 
 MIDDLEWARE_CLASSES = (
