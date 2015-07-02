@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth  import authenticate, login
 from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from ManageIdea.models import Idea
 from ManageIdea.views import get_ip_instance, Object
@@ -65,9 +65,14 @@ def register(request):
 			# This delays saving the model until we're ready to avoid integrity problems.
 			profile = profile_form.save(commit=False)
 			profile.user=user
+			profile.save()
+			staff = Group.objects.get(name='staff')
 			assign_perm('view_userprofile', profile.user,profile)
-			assign_perm('delete_userprofile', profile.owner,profile)
-			assign_perm('change_userprofile', profile.owner,profile)
+			assign_perm('delete_userprofile', profile.user,profile)
+			assign_perm('change_userprofile', profile.user,profile)
+			assign_perm('view_userprofile', staff,profile)
+			assign_perm('delete_userprofile', staff,profile)
+			assign_perm('change_userprofile', staff,profile)
 
 			# Did the user provide a profile picture?
 			# If so, we need to get it from the input form and put it in the UserProfile model.

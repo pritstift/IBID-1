@@ -4,13 +4,11 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from taggit.managers import TaggableManager
 from guardian.shortcuts import assign_perm, get_perms
 import re
-
 from ManageIdea.models import Idea, StatusRelationship, Status
-
 from ManageIdea.forms import PostForm, StatusForm
 
 @login_required
@@ -60,9 +58,11 @@ def post(request):
 			for state in status_form.status:
 				statusRelationship = StatusRelationship.objects.create(idea = idea,status = state, species=request.POST.getlist('species')[state.id - 1])
 			Idea_id=idea.id
-			assign_perm('view_idea', idea.owner,idea)
-			assign_perm('delete_idea', idea.owner,idea)
-			assign_perm('change_idea', idea.owner,idea)
+			ideagroup = Group.objects.create(name=str(idea.title))
+			assign_permissions(user=idea.owner,instance=idea)
+			assign_perm('view_idea', ideagroup,idea)
+			assign_perm('delete_idea', ideagroup,idea)
+			assign_perm('change_idea', ideagroup,idea)
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
 		#if form data is invalid
 		else:
@@ -100,3 +100,12 @@ def get_ip_instance(Instance):
 
 class Object(object):
 	pass
+
+def assign_permissions(**kwargs):
+	staff = Group.objects.get(name='staff')
+	assign_perm('view_idea', kwargs["user"],kwargs["instance"])
+	assign_perm('delete_idea', kwargs["user"],kwargs["instance"])
+	assign_perm('change_idea', kwargs["user"],kwargs["instance"])
+	assign_perm('view_idea', staff,kwargs["instance"])
+	assign_perm('delete_idea', staff,kwargs["instance"])
+	assign_perm('change_idea', staff,kwargs["instance"])

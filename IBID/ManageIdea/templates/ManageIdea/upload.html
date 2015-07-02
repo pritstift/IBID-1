@@ -23,6 +23,12 @@
     {{ post_form.description_long_ip }}
   </p>
   <p>
+  	{{ post_form.ressources.errors }}
+  	{{ post_form.ressources.label_tag }}
+  	{{ post_form.ressources }}
+    {{ post_form.ressources_ip }}
+  </p>
+  <p>
   	{{ post_form.tags.errors }}
   	{{ post_form.tags.label_tag }}
     {{ post_form.tags.help_text }}
