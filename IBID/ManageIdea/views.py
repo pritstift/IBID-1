@@ -15,7 +15,7 @@ from ManageIdea.forms import PostForm, StatusForm
 def detail(request, Idea_id):
 	#check for 'view_idea' permission of authenticated user on certain idea
 	idea = get_object_or_404(Idea, pk=Idea_id)
-	if 'view_idea' in get_perms(request.user, idea):
+	if 'view' in get_perms(request.user, idea):
 		#has 'view_idea' permission
 		print("user has permission")
 		return render(request, 'ManageIdea/detail.html', {'Idea':idea})
@@ -48,7 +48,7 @@ def post(request):
 		#get PostForm data
 		post_form=PostForm(data=request.POST)
 		status_form = StatusForm(data=request.POST)
-		print(request.POST)
+		#print(request.POST)
 		#validate
 		if post_form.is_valid() and status_form.is_valid():
 			idea=post_form.save(commit=False)
@@ -58,11 +58,10 @@ def post(request):
 			for state in status_form.status:
 				statusRelationship = StatusRelationship.objects.create(idea = idea,status = state, species=request.POST.getlist('species')[state.id - 1])
 			Idea_id=idea.id
+			post_form.save_m2m()
 			ideagroup = Group.objects.create(name=str(idea.title))
 			assign_permissions(user=idea.owner,instance=idea)
-			assign_perm('view_idea', ideagroup,idea)
-			assign_perm('delete_idea', ideagroup,idea)
-			assign_perm('change_idea', ideagroup,idea)
+			assign_perm('view', ideagroup,idea)
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
 		#if form data is invalid
 		else:
@@ -103,9 +102,5 @@ class Object(object):
 
 def assign_permissions(**kwargs):
 	staff = Group.objects.get(name='staff')
-	assign_perm('view_idea', kwargs["user"],kwargs["instance"])
-	assign_perm('delete_idea', kwargs["user"],kwargs["instance"])
-	assign_perm('change_idea', kwargs["user"],kwargs["instance"])
-	assign_perm('view_idea', staff,kwargs["instance"])
-	assign_perm('delete_idea', staff,kwargs["instance"])
-	assign_perm('change_idea', staff,kwargs["instance"])
+	assign_perm('view', kwargs["user"],kwargs["instance"])
+	assign_perm('view', staff,kwargs["instance"])
