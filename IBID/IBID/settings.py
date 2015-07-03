@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'ManageIdea',
     'ManageUsers',
+    'ManageConnections',
     'Home',
     'taggit',
     'taggit_selectize',

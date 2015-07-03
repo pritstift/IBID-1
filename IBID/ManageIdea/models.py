@@ -54,7 +54,7 @@ class Idea(models.Model):
     maintenanceStatus_ip = models.BooleanField(default=False)
     class Meta:
         permissions = (
-            ('view_idea', 'View idea'),
+            ('view', 'View Idea'),
         )
 
     def __str__(self):
