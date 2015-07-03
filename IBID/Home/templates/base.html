@@ -12,9 +12,9 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html lang="en">
 <head>
-    <title>IBID</title>
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/style.css" media="screen" />
-
+  <title>IBID</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1"> 
 </head>
 
 <body>
@@ -65,9 +65,9 @@
     </div><!-- /.container-fluid -->
   </nav>
 
-{% block body_block %}
+{% block body_block %}{% endblock %}
 
-{% endblock %}
+
 </body>
 </html>
 {% bootstrap_javascript jquery=1 %}

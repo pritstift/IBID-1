@@ -68,19 +68,23 @@ def register(request):
 
 			#template registration was successful
 			registered=True
-
-        # Invalid form or forms - mistakes or something else?
-        # Print problems to the terminal.
-        # They'll also be shown to the user.
+			
+			username = request.POST['username']
+			password = request.POST['password']
+			user = authenticate(username=username, password=password)
+			login(request, user)
+		# Invalid form or forms - mistakes or something else?
+		# Print problems to the terminal.
+		# They'll also be shown to the user.
 		else:
 			print( user_form.errors, profile_form.errors)
 
-    # GET
+	# GET
 	else:
 		user_form = UserForm()
 		profile_form = UserProfileForm()
 
-    #render template
+	#render template
 	return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
 
 def user_login(request):
