@@ -2,8 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import datetime
 from django.utils.timezone import utc
+import datetime
 
 
 class Migration(migrations.Migration):
@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='userprofile',
             name='date_joined',
-            field=models.DateField(default=datetime.datetime(2015, 6, 30, 10, 56, 30, 558667, tzinfo=utc)),
+            field=models.DateField(default=datetime.datetime(2015, 7, 6, 18, 35, 44, 530557, tzinfo=utc)),
         ),
     ]

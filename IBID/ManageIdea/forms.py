@@ -6,12 +6,13 @@ class PostForm(forms.ModelForm):
 	description_long = forms.CharField(widget=forms.Textarea)
 	class Meta:
 		model = Idea
-		#fields=['title', 'description_short','description_long','description_long_ip','tags','tags_ip']
-		exclude = [field.name for field in Idea._meta.fields if not '_ip' in field.name]+['owner','date_added']
+		exclude = ['owner','date_added']
 
 class StatusForm(forms.ModelForm):
-	#species=forms.ChoiceField(StatusRelationship.CHOICES)
-	status=Status.objects.all()
+	species=forms.ChoiceField(StatusRelationship.CHOICES)
 	class Meta:
 		model = StatusRelationship
 		fields = ['species']
+	def __init__(self, *args, **kwargs):
+		super(StatusForm,self).__init__(*args, **kwargs)
+		self.status=Status.objects.all()

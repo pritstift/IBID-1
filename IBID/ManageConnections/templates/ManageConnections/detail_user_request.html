@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<h1>{{ User_request.title }}</h1>
+<p>
+<p><b>Owner:</b>
+<a href= "{% url 'ManageUsers:userprofile' User_request.owner %}">{{ User_request.owner }}</a></p>
+</p>
+<p><b>Short description:</b>
+{{ User_request.description_short }}
+<p/>
+
+<p><b>Long description:</b>
+{{ User_request.description_long }}
+</p>
+
+{% endblock %}

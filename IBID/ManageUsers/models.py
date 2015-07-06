@@ -20,7 +20,7 @@ class UserProfile(models.Model):
     # Override the __unicode__() method to return out something meaningful!
     class Meta:
         permissions = (
-            ('view_userprofile', 'View userprofile'),
+            ('view', 'View UserProfile'),
         )
     def __unicode__(self):
         return self.user.username
