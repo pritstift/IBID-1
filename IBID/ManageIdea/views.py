@@ -15,7 +15,7 @@ from ManageIdea.forms import PostForm, StatusForm
 def detail(request, Idea_id):
 	#check for 'view_idea' permission of authenticated user on certain idea
 	idea = get_object_or_404(Idea, pk=Idea_id)
-	if 'view' in get_perms(request.user, idea):
+	if 'view' and idea.title in get_perms(request.user, idea):
 		#has 'view_idea' permission
 		print("user has permission")
 		return render(request, 'ManageIdea/detail.html', {'Idea':idea})
@@ -59,7 +59,7 @@ def post(request):
 				statusRelationship = StatusRelationship.objects.create(idea = idea,status = state, species=request.POST.getlist('species')[state.id - 1])
 			Idea_id=idea.id
 			post_form.save_m2m()
-			ideagroup = Group.objects.create(name=str(idea.title))
+			ideagroup = Group.objects.create(name=idea.title)
 			assign_permissions(user=idea.owner,instance=idea)
 			assign_perm('view', ideagroup,idea)
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
