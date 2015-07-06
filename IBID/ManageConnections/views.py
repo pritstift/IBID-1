@@ -15,7 +15,7 @@ def post_idea_request(request, Idea_id):
 	if request.method == 'GET':
 		post_form = AnnounceIdeaForm()
 		idea = get_object_or_404(Idea,pk=Idea_id)
-		return render(request, 'ManageConnections/upload.html', {'post_form':post_form})
+		return render(request, 'ManageConnections/upload_idea_request.html', {'post_form':post_form})
 	elif request.method == 'POST':
 		#get PostForm data
 		idea = get_object_or_404(Idea,pk=Idea_id)
@@ -28,14 +28,41 @@ def post_idea_request(request, Idea_id):
 			idea_request.owner=request.user
 			idea_request.save()
 			assign_permissions(user=idea_request.owner,instance=idea_request)
-			return HttpResponseRedirect(reverse('ManageConnections:detail_idea_request',args=[idea.id,idea_request.id]))
+			return HttpResponseRedirect(reverse('ManageConnections:detail_idea_request',args=[idea_request.id]))
 		#if form data is invalid
 		else:
 			print(post_form.errors)
-			return render(request, 'ManageConnections/upload.html', {'post_form':post_form})
+			return render(request, 'ManageConnections/upload_idea_request.html', {'post_form':post_form})
 
 @login_required
-def detail_idea_request(request, Idea_id, Request_id):
+def detail_idea_request(request, Request_id):
 	#check for 'view_idea' permission of authenticated user on certain idea
 	idea_request = get_object_or_404(AnnounceIdea, pk=Request_id)
-	return render(request, 'ManageConnections/detail.html', {'Idea_request':idea_request})
+	return render(request, 'ManageConnections/detail_idea_request.html', {'Idea_request':idea_request})
+
+@login_required
+def post_user_request(request):
+	if request.method == 'GET':
+		post_form = AnnounceUserForm()
+		return render(request, 'ManageConnections/upload_user_request.html', {'post_form':post_form})
+	elif request.method == 'POST':
+		#get PostForm data
+		post_form=AnnounceUserForm(data=request.POST)
+		#validate
+		if post_form.is_valid():
+			user_request=post_form.save(commit=False)
+			# add user and save to database
+			user_request.owner=request.user
+			user_request.save()
+			assign_permissions(user=user_request.owner,instance=user_request)
+			return HttpResponseRedirect(reverse('ManageConnections:detail_user_request',args=[user_request.id]))
+		#if form data is invalid
+		else:
+			print(post_form.errors)
+			return render(request, 'ManageConnections/upload_user_request.html', {'post_form':post_form})
+
+@login_required
+def detail_user_request(request, Request_id):
+	#check for 'view_idea' permission of authenticated user on certain idea
+	user_request = get_object_or_404(AnnounceUser, pk=Request_id)
+	return render(request, 'ManageConnections/detail_user_request.html', {'User_request':user_request})
