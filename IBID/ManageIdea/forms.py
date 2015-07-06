@@ -10,7 +10,9 @@ class PostForm(forms.ModelForm):
 
 class StatusForm(forms.ModelForm):
 	species=forms.ChoiceField(StatusRelationship.CHOICES)
-	status=Status.objects.all()
 	class Meta:
 		model = StatusRelationship
 		fields = ['species']
+	def __init__(self, *args, **kwargs):
+		super(StatusForm,self).__init__(*args, **kwargs)
+		self.status=Status.objects.all()
