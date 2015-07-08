@@ -20,46 +20,47 @@
 <body>
 
   <nav class="navbar navbar-default" role="navigation">
-    <div class="container-fluid" id="navfluid">
-      <div class="col-md-2"><!--Column left--></div>
-      <div class="col-md-8"><!--Column middle-->
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar">
-            <span class="sr-only">Toggle navigation</span>
-            {% if user.is_superuser %}
-            <span class="icon-bar"></span>
-            {% endif %}
-            {% if user.is_authenticated %}
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            {% else %}
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            {% endif %}
-          </button>
-          <a class="navbar-brand" href="{% url 'Home:index' %}">IBID</a>
-        </div>
-
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="navigationbar">
-          <ul class="nav navbar-nav navbar-right">
+    <div class="container" id="navfluid">
+      <div class="row">
+        <div class="col-md-10"><!--Column middle-->
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar">
+              <span class="sr-only">Toggle navigation</span>
               {% if user.is_superuser %}
-              <li><a href="{% url 'admin:index' %}">Admin Panel</a></li>
+              <span class="icon-bar"></span>
               {% endif %}
               {% if user.is_authenticated %}
-              <li><a href="{% url 'ManageIdea:post' %}"> Add Idea </a></li>
-              <li><a href="{% url 'ManageUsers:userprofile' user %}"> {{ user.get_username }} </a></li>
-              <li><a href="{% url 'ManageUsers:logout' %}"> Logout </a></li>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
               {% else %}
-              <li><a href="{% url 'ManageUsers:register' %}"> Register </a></li>
-              <li><a href="{% url 'ManageUsers:login' %}"> Login </a></li>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
               {% endif %}
-          </ul>
-        </div><!-- /.navbar-collapse -->
-      </div>
-      <div class="col-md-2"><!--Column right--></div>
+            </button>
+            <a class="navbar-brand" href="{% url 'Home:index' %}">IBID</a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="navigationbar">
+            <ul class="nav navbar-nav navbar-right">
+                {% if user.is_superuser %}
+                <li><a href="{% url 'admin:index' %}">Admin Panel</a></li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'ManageIdea:post' %}"> Add Idea </a></li>
+                <li><a href="{% url 'ManageUsers:userprofile' user %}"> {{ user.get_username }} </a></li>
+                <li><a href="{% url 'ManageUsers:logout' %}"> Logout </a></li>
+                {% else %}
+                <li><a href="{% url 'ManageUsers:register' %}"> Register </a></li>
+                <li><a href="{% url 'ManageUsers:login' %}"> Login </a></li>
+                {% endif %}
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div>
+        <div class="col-md-2"></div>
+      </div><!-- /.row -->
     </div><!-- /.container-fluid -->
   </nav>
 
