@@ -14,11 +14,10 @@
 <head>
   <title>IBID</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1"> 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 
 <body>
-
 
   <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid" id="navfluid">
@@ -49,10 +48,9 @@
               {% if user.is_superuser %}
               <li><a href="{% url 'admin:index' %}">Admin Panel</a></li>
               {% endif %}
-
               {% if user.is_authenticated %}
               <li><a href="{% url 'ManageIdea:post' %}"> Add Idea </a></li>
-              <li><a href="{% url 'ManageUsers:userprofile' user %}"> {{ user.get_username }}</a></li>
+              <li><a href="{% url 'ManageUsers:userprofile' user %}"> {{ user.get_username }} </a></li>
               <li><a href="{% url 'ManageUsers:logout' %}"> Logout </a></li>
               {% else %}
               <li><a href="{% url 'ManageUsers:register' %}"> Register </a></li>
@@ -64,6 +62,18 @@
       <div class="col-md-2"><!--Column right--></div>
     </div><!-- /.container-fluid -->
   </nav>
+
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10">{% block body_middle_block-1 %}{% endblock %}</div>
+      <div class="col-md-2">{% block body_right_block-1 %}{% endblock %}</div>
+    </div>
+    <div class="row">
+      <div class="col-md-4">{% block body_left_block-2 %}{% endblock %}</div>
+      <div class="col-md-4">{% block body_middle_block-2 %}{% endblock %}</div>
+      <div class="col-md-4">{% block body_right_block-2 %}{% endblock %}</div>
+    </div>
+  </div>
 
 {% block body_block %}{% endblock %}
 
