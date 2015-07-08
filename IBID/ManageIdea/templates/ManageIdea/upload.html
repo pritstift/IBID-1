@@ -3,97 +3,108 @@
 
 {% block body_block %}
 
-<div class="row">
-  <div class="col-md-3"></div>
-  <div class="col-md-6"></div>
-  <div class="col-md-3"></div>
-</div>
 
 <form action="" method="POST">
   {% csrf_token %}
-  <p>
-  	{{ post_form.title.errors }}
-  	{{ post_form.title.label_tag }}
-  	{{ post_form.title }}
-  </p>
-  <p>
-  	{{ post_form.description_short.errors }}
-  	{{ post_form.description_short.label_tag }}
-  	{{ post_form.description_short }}
-  </p>
-  <p>
-  	{{ post_form.description_long.errors }}
-  	{{ post_form.description_long.label_tag }}
-  	{{ post_form.description_long }}
-    {{ post_form.description_long_ip }}
-  </p>
-  <p>
-  	{{ post_form.ressources.errors }}
-  	{{ post_form.ressources.label_tag }}
-  	{{ post_form.ressources }}
-    {{ post_form.ressources_ip }}
-  </p>
-  <p>
-  	{{ post_form.tags.errors }}
-  	{{ post_form.tags.label_tag }}
-    {{ post_form.tags.help_text }}
-  	{{ post_form.tags }}
-    {{ post_form.tags_ip }}
+  <div>
 
-  </p>
-{% for status in status_form.status %}
-  <p>
-    {{ status_form.species.errors }}
-    {{ status }}
-    {{ status_form.species }}
-  </p>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li role="presentation" class="active"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a></li>
+      <li role="presentation"><a href="#status" aria-controls="status" role="tab" data-toggle="tab">Status</a></li>
+      <li role="presentation"><a href="#files" aria-controls="files" role="tab" data-toggle="tab">Files</a></li>
+      <li role="presentation"><a href="#permissions" aria-controls="permissions" role="tab" data-toggle="tab">Permissions</a></li>
+      <li role="presentation"><a href="#submit" aria-controls="submit" role="tab" data-toggle="tab">Submit</a></li>
+    </ul>
 
-{% endfor %}
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="description">
+        <p>
+          {{ post_form.title.errors }}
+          {{ post_form.title.label_tag }}
+          {{ post_form.title }}
+        </p>
+        <p>
+          {{ post_form.description_short.errors }}
+          {{ post_form.description_short.label_tag }}
+          {{ post_form.description_short }}
+        </p>
+        <p>
+          {{ post_form.description_long.errors }}
+          {{ post_form.description_long.label_tag }}
+          {{ post_form.description_long }}
+          {{ post_form.description_long_ip }}
+        </p>
+        <p>
+          {{ post_form.ressources.errors }}
+          {{ post_form.ressources.label_tag }}
+          {{ post_form.ressources }}
+          {{ post_form.ressources_ip }}
+        </p>
+        <p>
+          {{ post_form.tags.errors }}
+          {{ post_form.tags.label_tag }}
+          {{ post_form.tags.help_text }}
+          {{ post_form.tags }}
+          {{ post_form.tags_ip }}
+        </p>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="status">
+        {% for status in status_form.status %}
+          <p>
+            {{ status_form.species.errors }}
+            {{ status }}
+            {{ status_form.species }}
+          </p>
 
-  <p>
-    {{ post_form.pictures.errors }}
-    {{ post_form.pictures.label_tag }}
-    {{ post_form.pictures }}
-    {{ post_form.pictures_ip }}
+        {% endfor %}
+      </div>
+      <div role="tabpanel" class="tab-pane" id="files">
+        <p>
+          {{ post_form.pictures.errors }}
+          {{ post_form.pictures.label_tag }}
+          {{ post_form.pictures }}
+          {{ post_form.pictures_ip }}
 
-  </p>
-  <p>
-    {{ post_form.files.errors }}
-    {{ post_form.files.label_tag }}
-    {{ post_form.files }}
-    {{ post_form.files_ip }}
+        </p>
+        <p>
+          {{ post_form.files.errors }}
+          {{ post_form.files.label_tag }}
+          {{ post_form.files }}
+          {{ post_form.files_ip }}
 
-  </p>
-  <p>
-    {{ post_form.ressources.errors }}
-    {{ post_form.ressources.label_tag }}
-    {{ post_form.ressources }}
-    {{ post_form.ressources_ip }}
+        </p>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="permissions">
+        What should be public. (Visible to all Customers.)
+        <div style="border&#58; solid 2px;">
+        <p>
+          The ressources your project needs:
+          {{ post_form.ressources_ip }}
+        </p>
+        <p>
+          The score your project gets:
+          {{ post_form.score_ip }}
+        </p>
+        <p>
+          The status of your project:
+          {{ post_form.status_ip }}
+        </p>
+        <p>
+          The maintenance status of your Project:
+          {{ post_form.maintenanceStatus_ip }}
+        </p>
+        </div>
+      </div>
+      <div role="tabpanel" class="tab-pane" id="submit">
+        Are you sure to submit this data? <br>
+        <input type="submit" />
+      </div>
+    </div>
 
-  </p>
-  What should be public. (Visible to all Customers.)
-  <div style="border&#58; solid 2px;">
-  <p>
-    The ressources your project needs:
-    {{ post_form.ressources_ip }}
-  </p>
-  <p>
-    The score your project gets:
-    {{ post_form.score_ip }}
-  </p>
-  <p>
-    The status of your project:
-    {{ post_form.status_ip }}
-  </p>
-  <p>
-    The maintenance status of your Project:
-    {{ post_form.maintenanceStatus_ip }}
-  </p>
   </div>
 
-
-  <input type="submit" />
  </form>
 
 {% endblock %}
-
