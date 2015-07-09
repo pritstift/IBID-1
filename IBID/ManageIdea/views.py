@@ -15,7 +15,7 @@ from ManageIdea.forms import PostForm, StatusForm
 def detail(request, Idea_id):
 	#check for 'view_idea' permission of authenticated user on certain idea
 	idea = get_object_or_404(Idea, pk=Idea_id)
-	if 'view' and idea.title in get_perms(request.user, idea):
+	if 'view' or idea.title in get_perms(request.user, idea):
 		#has 'view_idea' permission
 		print("user has permission")
 		return render(request, 'ManageIdea/detail.html', {'Idea':idea})
