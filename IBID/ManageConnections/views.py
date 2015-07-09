@@ -7,12 +7,32 @@ from django.contrib.auth.decorators import login_required
 from ManageConnections.forms import AnnouncementForm
 from ManageConnections.models import Announcement
 from ManageIdea.models import Idea
+from ManageUsers.models import UserProfile
 from django.contrib.auth.models import User, Group
-from guardian.shortcuts import assign_perm
+from guardian.shortcuts import assign_perm, get_perms
+
+def index(request):
+	announcements = Announcement.objects.all()
+	template = loader.get_template('ManageConnections/index.html')
+	context = RequestContext(request, {
+		'announcements': announcements,
+	})
+	return HttpResponse(template.render(context))
 
 @login_required
 def post_announcement(request,**kwargs):
 	if request.method == 'GET':
+		if "Idea_id" in kwargs:
+			Idea_id = kwargs["Idea_id"]
+			idea = get_object_or_404(Idea,pk=Idea_id)
+			if not "edit" in get_perms(request.user,idea):
+				return HttpResponse("You have no permission for this idea")
+		else:
+			User_id = kwargs["User_id"]
+			user=get_object_or_404(User, pk=User_id)
+			userprofile = get_object_or_404(UserProfile,user=user)
+			if not "edit" in get_perms(request.user,userprofile):
+				return HttpResponse(" You have no permission for this Userprofile")
 		post_form = AnnouncementForm()
 		return render(request, 'ManageConnections/post_announcement.html', {'post_form':post_form})
 	elif request.method == 'POST':

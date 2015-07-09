@@ -55,7 +55,6 @@ def register(request):
 			profile = profile_form.save(commit=False)
 			profile.user=user
 			profile.save()
-			staff = Group.objects.get(name='staff')
 			assign_permissions(user=profile.user,instance=profile)
 
 			# Did the user provide a profile picture?

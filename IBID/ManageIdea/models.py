@@ -10,28 +10,6 @@ from django.contrib import admin
 
 from taggit.managers import TaggableManager
 
-# class Group(models.Model):
-#     name=models.CharField(max_length=256, unique=True)
-#     members=models.ManyToManyField(User, through='Membership')
-#     def __str__(self):
-#         return self.name
-
-# class Membership(models.Model):
-#     user=models.ForeignKey(User)
-#     group=models.ForeignKey(Group)
-
-#Titel
-#Customer
-#Kurzbeschreibung
-#Beschreibung (is_public || has_customer_permission)
-#Benötigte Ressourcen (is_public || has_ staff_permission)
-#Fotos (is_public || has_ customer_permission)
-#Dateien (is_public || has_ customer_permission)
-#Score (is_public || has_ staff_permission)
-#Betreuungsstatus (is_public || has_customer_permission || has_ staff_permission)
-#Staff Kommentare (has_staff_permission)
-#Staff Dateien (has_staff_permission)
-
 class Idea(models.Model):
     title=models.CharField(max_length = 400, unique=True)
     owner = models.ForeignKey(User)
@@ -55,6 +33,7 @@ class Idea(models.Model):
     class Meta:
         permissions = (
             ('view', 'View Idea'),
+            ('edit', 'Edit Idea'),
         )
 
     def __str__(self):
@@ -86,13 +65,6 @@ class StatusRelationshipInline(admin.TabularInline):
 
 class StatusAdmin(admin.ModelAdmin):
     inlines = (StatusRelationshipInline,)
-
-
-
-#class Ressources(models.Model):
-#    idea = models.ForeignKey(Idea)
-#    title = models.CharField(max_length = 400, unique=True)
-#    date_added = models.DateTimeField(default=timezone.now())
 
 class MaintenanceStatus(models.Model):
     supervisor = models.ManyToManyField(User)              # User mit staffpermission

@@ -15,7 +15,7 @@ from ManageIdea.forms import PostForm, StatusForm
 def detail(request, Idea_id):
 	#check for 'view_idea' permission of authenticated user on certain idea
 	idea = get_object_or_404(Idea, pk=Idea_id)
-	if 'view' or idea.title in get_perms(request.user, idea):
+	if ('view' or idea.title) in get_perms(request.user, idea):
 		#has 'view_idea' permission
 		print("user has permission")
 		return render(request, 'ManageIdea/detail.html', {'Idea':idea})
@@ -27,10 +27,10 @@ def detail(request, Idea_id):
 
 
 def index(request):
-    latest_ideas = Idea.objects.order_by('-date_added')[:5]
+    all_ideas = Idea.objects.all()
     template = loader.get_template('ManageIdea/index.html')
     context = RequestContext(request, {
-        'latest_ideas': latest_ideas,
+        'latest_ideas': all_ideas,
     })
     return HttpResponse(template.render(context))
 
@@ -60,6 +60,7 @@ def post(request):
 			Idea_id=idea.id
 			post_form.save_m2m()
 			ideagroup = Group.objects.create(name=idea.title)
+			ideagroup.user_set.add(idea.owner)
 			assign_permissions(user=idea.owner,instance=idea)
 			assign_perm('view', ideagroup,idea)
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
@@ -104,3 +105,5 @@ def assign_permissions(**kwargs):
 	staff = Group.objects.get(name='staff')
 	assign_perm('view', kwargs["user"],kwargs["instance"])
 	assign_perm('view', staff,kwargs["instance"])
+	assign_perm('edit', staff,kwargs["instance"])
+	assign_perm('edit', kwargs["user"],kwargs["instance"])

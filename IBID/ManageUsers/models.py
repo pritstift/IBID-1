@@ -21,6 +21,7 @@ class UserProfile(models.Model):
     class Meta:
         permissions = (
             ('view', 'View UserProfile'),
+            ('edit', 'Edit UserProfile'),
         )
     def __unicode__(self):
         return self.user.username
