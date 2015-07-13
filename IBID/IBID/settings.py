@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'widget_tweaks',
     'bootstrapform',
+    'crispy_forms',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -108,3 +109,5 @@ AUTHENTICATION_BACKENDS = (
 LOGIN_URL = '/users/login'
 
 ANONYMOUS_USER_ID = -1
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'

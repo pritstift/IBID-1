@@ -1,120 +1,29 @@
 
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
 {% block body_middle_block-1 %}
 
 
+
+
 <form action="" method="POST">
   {% csrf_token %}
-  <div>
 
     <!-- Nav tabs -->
-    <ul class="nav nav-tabs" role="tablist">
-      <li role="presentation" class="active"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a></li>
-      <li role="presentation"><a href="#status" aria-controls="status" role="tab" data-toggle="tab">Status</a></li>
-      <li role="presentation"><a href="#files" aria-controls="files" role="tab" data-toggle="tab">Files</a></li>
-      <li role="presentation"><a href="#permissions" aria-controls="permissions" role="tab" data-toggle="tab">Permissions</a></li>
-      <li role="presentation"><a href="#submit" aria-controls="submit" role="tab" data-toggle="tab">Submit</a></li>
-    </ul>
+<ul class="nav nav-tabs" role="tablist">
+  <li role="presentation" class="active"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a></li>
+  <li role="presentation"><a href="#status" aria-controls="status" role="tab" data-toggle="tab">Status</a></li>
+  <li role="presentation"><a href="#files" aria-controls="files" role="tab" data-toggle="tab">Files</a></li>
+  <li role="presentation"><a href="#privacy" aria-controls="privacy" role="tab" data-toggle="tab">Privacy</a></li>
+  <li role="presentation"><a href="#submit" aria-controls="submit" role="tab" data-toggle="tab">Submit</a></li>
+</ul>
 
-    <!-- Tab panes -->
-    <div class="tab-content">
-      <div role="tabpanel" class="tab-pane active" id="description">
-        <p>
-          {{ post_form.title.errors }}
-          {{ post_form.title.label_tag }}
-          {{ post_form.title }}
-        </p>
-        <p>
-          {{ post_form.description_short.errors }}
-          {{ post_form.description_short.label_tag }}
-          {{ post_form.description_short }}
-        </p>
-        <p>
-          {{ post_form.description_long.errors }}
-          {{ post_form.description_long.label_tag }}
-          {{ post_form.description_long }}
-        </p>
-        <p>
-          {{ post_form.ressources.errors }}
-          {{ post_form.ressources.label_tag }}
-          {{ post_form.ressources }}
-        </p>
-        <p>
-          {{ post_form.tags.errors }}
-          {{ post_form.tags.label_tag }}
-          {{ post_form.tags.help_text }}
-          {{ post_form.tags }}
-        </p>
-      </div>
-      <div role="tabpanel" class="tab-pane" id="status">
-        {% for status in status_form.status %}
-          <p>
-            {{ status_form.species.errors }}
-            {{ status }}
-            {{ status_form.species }}
-          </p>
-
-        {% endfor %}
-      </div>
-      <div role="tabpanel" class="tab-pane" id="files">
-        <p>
-          {{ post_form.pictures.errors }}
-          {{ post_form.pictures.label_tag }}
-          {{ post_form.pictures }}
-        </p>
-        <p>
-          {{ post_form.files.errors }}
-          {{ post_form.files.label_tag }}
-          {{ post_form.files }}
-        </p>
-      </div>
-      <div role="tabpanel" class="tab-pane" id="permissions">
-        What should be public. (Visible to all Customers.)
-        <div style="border&#58; solid 2px;">
-          <p>
-            The Long description of your project:
-             {{ post_form.description_long_ip }}
-          </p>
-          <p>
-            The Project tags:
-            {{ post_form.tags_ip }}
-          </p>
-        <p>
-          The ressources your project needs:
-          {{ post_form.ressources_ip }}
-        </p>
-        <p>
-          The pictures to your project:
-          {{ post_form.pictures_ip }}
-        </p>
-        <p>
-          The files to your project:
-          {{ post_form.files_ip }}
-        </p>
-        <p>
-          The score your project gets:
-          {{ post_form.score_ip }}
-        </p>
-        <p>
-          The status of your project:
-          {{ post_form.status_ip }}
-        </p>
-        <p>
-          The maintenance status of your Project:
-          {{ post_form.maintenanceStatus_ip }}
-        </p>
-        </div>
-      </div>
-      <div role="tabpanel" class="tab-pane" id="submit">
-        Are you sure to submit this data? <br>
-
-        <button type="submit" class="btn btn-default" name="next" value="{{ next }}">Submit</button>
-      </div>
-    </div>
-
-  </div>
-
+<div class="tab-content" >
+    {% crispy post_form %}
+    {% crispy status_form %}
+</div>    
+   
  </form>
 
 {% endblock %}

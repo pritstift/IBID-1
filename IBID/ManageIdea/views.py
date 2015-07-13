@@ -27,12 +27,12 @@ def detail(request, Idea_id):
 
 
 def index(request):
-    all_ideas = Idea.objects.all()
-    template = loader.get_template('ManageIdea/index.html')
-    context = RequestContext(request, {
-        'latest_ideas': all_ideas,
-    })
-    return HttpResponse(template.render(context))
+	all_ideas = Idea.objects.all()
+	template = loader.get_template('ManageIdea/index.html')
+	context = RequestContext(request, {
+		'latest_ideas': all_ideas,
+	})
+	return HttpResponse(template.render(context))
 
 def edit(request, Idea_id):
 	idea = get_object_or_404(Idea, pk=Idea_id)
@@ -96,6 +96,8 @@ def get_ip_instance(Instance):
 	for field in fieldList:
 		setattr(modInstance,field,getattr(Instance, field))
 	return modInstance
+
+
 
 
 class Object(object):
