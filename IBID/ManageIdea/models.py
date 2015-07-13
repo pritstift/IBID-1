@@ -39,6 +39,15 @@ class Idea(models.Model):
     def __str__(self):
         return self.title
 
+class IdeaPrivacy(models.Model):
+    idea = models.ForeignKey(Idea)
+    description_long=models.BooleanField(default=False)
+    tags = models.BooleanField(default=False)
+    status = models.BooleanField(default=False)
+    ressources = models.BooleanField(default=False)
+    pictures = models.BooleanField(default=False)
+    files = models.BooleanField(default=False)
+
 class Status(models.Model):
     title = models.CharField(max_length = 400, unique=True)
     ideas = models.ManyToManyField(Idea, through='StatusRelationship')
