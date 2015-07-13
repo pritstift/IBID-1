@@ -5,7 +5,7 @@
 <h1>{{ Idea.title }}</h1>
 <p>
 <p><b>Owner:</b>
-<a href= "{% url 'ManageUsers:userprofile' Idea.owner %}">{{ Idea.owner }}</a></p>
+<a href= "{% url 'ManageUsers:userprofile' Idea.owner.id %}">{{ Idea.owner }}</a></p>
 </p>
 <p><b>Short description:</b>
 {{ Idea.description_short }}

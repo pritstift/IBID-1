@@ -21,6 +21,15 @@ class UserProfile(models.Model):
     class Meta:
         permissions = (
             ('view', 'View UserProfile'),
+            ('edit', 'Edit UserProfile'),
         )
     def __unicode__(self):
         return self.user.username
+
+class UserProfilePrivacy(models.Model):
+    userprofile = models.ForeignKey(UserProfile)
+    company = models.BooleanField(default=False)
+    occupation = models.BooleanField(default=False)
+    website = models.BooleanField(default=False)
+    picture = models.BooleanField(default=False)
+    files = models.BooleanField(default=False)

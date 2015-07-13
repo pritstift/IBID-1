@@ -46,6 +46,7 @@ INSTALLED_APPS = (
     'bootstrap3',
     'widget_tweaks',
     'bootstrapform',
+    'crispy_forms',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -105,6 +106,8 @@ AUTHENTICATION_BACKENDS = (
     'guardian.backends.ObjectPermissionBackend',
 )
 
-LOGIN_URL = '/accounts/login'
+LOGIN_URL = '/users/login'
 
 ANONYMOUS_USER_ID = -1
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'

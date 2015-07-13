@@ -1,16 +1,10 @@
 from django import forms
 from ManageIdea.models import Idea
-from ManageConnections.models import AnnounceIdea, AnnounceUser
+from ManageConnections.models import Announcement
 
 
-class AnnounceIdeaForm(forms.ModelForm):
+class AnnouncementForm(forms.ModelForm):
 	description_long = forms.CharField(widget=forms.Textarea)
 	class Meta:
-		model = AnnounceIdea
+		model = Announcement
 		exclude = ['owner','date_added','idea']
-
-class AnnounceUserForm(forms.ModelForm):
-	description_long = forms.CharField(widget=forms.Textarea)
-	class Meta:
-		model = AnnounceUser
-		exclude = ['owner','date_added']

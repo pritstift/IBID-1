@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+
+{% if announcements %}
+    <ul>
+    {% for announcement in announcements %}
+        <li><a href="{% url 'ManageConnections:detail_announcement' announcement.id %} ">{{ announcement.title }}</a></li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No announcements available.</p>
+{% endif %}
+
+{% endblock %}

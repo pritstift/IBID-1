@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block body_block %}
+<h1>{{ announcement.title }}</h1>
+<p>
+	{% if announcement.idea %}
+	<p><b>Idea:</b>
+	<a href= "{% url 'ManageIdea:detail' announcement.idea.id %}">{{ announcement.idea }}</a></p>
+	</p>
+	{% endif %}
+<p><b>Owner:</b>
+<a href= "{% url 'ManageUsers:userprofile' announcement.owner.id %}">{{ announcement.owner }}</a></p>
+</p>
+<p><b>Short description:</b>
+{{ announcement.description_short }}
+<p/>
+
+<p><b>Long description:</b>
+{{ announcement.description_long }}
+</p>
+
+{% endblock %}

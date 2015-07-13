@@ -18,8 +18,8 @@ import re
 
 
 @login_required
-def userprofile(request,User_username):
-	user = get_object_or_404(User,username = User_username)
+def userprofile(request,User_id):
+	user = get_object_or_404(User,pk = User_id)
 	userprofile = get_object_or_404(UserProfile,user=user)
 	user_form = DisplayUserForm(instance = user)
 	ideas=Idea.objects.filter(owner=user)
@@ -55,7 +55,6 @@ def register(request):
 			profile = profile_form.save(commit=False)
 			profile.user=user
 			profile.save()
-			staff = Group.objects.get(name='staff')
 			assign_permissions(user=profile.user,instance=profile)
 
 			# Did the user provide a profile picture?
@@ -68,7 +67,7 @@ def register(request):
 
 			#template registration was successful
 			registered=True
-			
+
 			username = request.POST['username']
 			password = request.POST['password']
 			user = authenticate(username=username, password=password)
@@ -129,3 +128,7 @@ def user_login(request):
 			next=reverse('Home:index')
 			#render login template
 		return render(request,'ManageUsers/login.html',{'login_form':login_form,'next':next})
+
+@login_required
+def edit(request, User_id):
+	pass
