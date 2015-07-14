@@ -48,7 +48,6 @@ class UserProfileForm(forms.ModelForm):
 				'company',
 				'occupation',
 				'website',
-				'website',
 				css_class="tab-pane",
 				css_id="additional_data",
 				role="tabpanel" ,
