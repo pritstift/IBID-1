@@ -56,7 +56,7 @@ def register(request):
 			profile.user=user
 			profile.save()
 			privacy = privacy_form.save(commit=False)
-			privacy.instance = user
+			privacy.instance = profile
 			privacy.save()
 			assign_permissions(user=profile.user,instance=profile)
 
