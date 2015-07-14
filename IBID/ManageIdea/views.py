@@ -15,6 +15,7 @@ from ManageIdea.forms import PostForm, StatusForm, PrivacyForm
 def detail(request, Idea_id):
 	#check for 'view_idea' permission of authenticated user on certain idea
 	idea = get_object_or_404(Idea, pk=Idea_id)
+	ideaprivacy = get_object_or_404(IdeaPrivacy, instance=idea)
 	if ('view' or idea.title) in get_perms(request.user, idea):
 		#has 'view_idea' permission
 		print("user has permission")
@@ -22,7 +23,7 @@ def detail(request, Idea_id):
 	else:
 		#only print public fields
 		print("user has no permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(idea)})
+		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy)})
 
 
 
@@ -58,8 +59,9 @@ def post(request):
 			idea.owner=request.user
 			idea.save()
 			privacy=privacy_form.save(commit=False)
-			privacy.idea = idea
+			privacy.instance = idea
 			privacy.save()
+			print (IdeaPrivacy.objects.all().values())
 			for state in status_form.status:
 				statusRelationship = StatusRelationship.objects.create(idea = idea,status = state, species=request.POST.getlist('species')[state.id - 1])
 			Idea_id=idea.id
@@ -78,17 +80,17 @@ def post(request):
 def get_ip_instance(Instance):
 	ipList = []
 	modInstance = Object()
-	privacyInstance = IdeaPrivacy.objects.get(idea=Instance)
-	fields=privacyInstance._meta.get_fields()
-	modInstance.idea = Instance
+	fields=Instance._meta.get_fields()
+	modInstance.instance = Instance.instance
 	for i in fields:
 		if i.concrete:
-			if getattr(privacyInstance,i.name)==True:
+			if getattr(Instance,i.name)==True:
 				ipList.append(i.name)
-	for i in Instance._meta.get_fields():
+	print(ipList)
+	for i in Instance.instance._meta.get_fields():
 		if i.concrete:
 			if i.name not in ipList:
-				setattr(modInstance,i.name,getattr(Instance, i.name))
+				setattr(modInstance,i.name,getattr(Instance.instance, i.name))
 	return modInstance
 
 

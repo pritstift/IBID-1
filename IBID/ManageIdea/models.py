@@ -16,20 +16,12 @@ class Idea(models.Model):
     date_added=models.DateField(default=timezone.now())
     description_short=models.CharField(max_length=2048,default="this Idea has no short description yet")
     description_long=models.CharField(max_length=2048,default="this Idea has no long description yet")
-    description_long_ip=models.BooleanField(default=False)
     tags = TaggableManager(help_text="A comma-separated list of tags.")
-    tags_ip = models.BooleanField(default=False)
-    status_ip = models.BooleanField(default=False)
     ressources = models.CharField(max_length=2048,default="Any ressources in need?")
-    ressources_ip = models.BooleanField(default=False)
     pictures = models.ImageField(upload_to='idea_images', blank=True)
-    pictures_ip = models.BooleanField(default=False)
     files = models.FileField(upload_to='idea_files', blank=True)
-    files_ip = models.BooleanField(default=False)
     #score = models.IntegerField(default=2)
-    score_ip = models.BooleanField(default=False)
     #maintenanceStatus = models.ForeignKey(MaintenanceStatus)
-    maintenanceStatus_ip = models.BooleanField(default=False)
     class Meta:
         permissions = (
             ('view', 'View Idea'),
@@ -40,13 +32,15 @@ class Idea(models.Model):
         return self.title
 
 class IdeaPrivacy(models.Model):
-    idea = models.ForeignKey(Idea)
-    description_long=models.BooleanField(default=False)
-    tags = models.BooleanField(default=False)
-    status = models.BooleanField(default=False)
-    ressources = models.BooleanField(default=False)
-    pictures = models.BooleanField(default=False)
-    files = models.BooleanField(default=False)
+    instance = models.ForeignKey(Idea)
+    description_long_ip = models.BooleanField(default=False)
+    tags_ip = models.BooleanField(default=False)
+    status_ip = models.BooleanField(default=False)
+    ressources_ip = models.BooleanField(default=False)
+    pictures_ip = models.BooleanField(default=False)
+    files_ip = models.BooleanField(default=False)
+    def __str__(self):
+        return self.instance.title
 
 class Status(models.Model):
     title = models.CharField(max_length = 400, unique=True)
