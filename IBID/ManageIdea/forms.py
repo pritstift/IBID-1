@@ -1,6 +1,5 @@
 from django import forms
 from ManageIdea.models import Idea, StatusRelationship, Status, IdeaPrivacy
-from IBID.functions import get_ip_fields
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Button, Div, HTML, MultiField, Field
 from crispy_forms.bootstrap import FormActions

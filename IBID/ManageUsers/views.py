@@ -5,7 +5,7 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth  import authenticate, login
-from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm
+from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from ManageIdea.models import Idea
@@ -40,9 +40,9 @@ def register(request):
 		#grab information form from the POST data
 		user_form = UserForm(data=request.POST)
 		profile_form = UserProfileForm(data=request.POST)
-
+		privacy_form = PrivacyForm(data=request.POST)
 		#if the form is valid
-		if user_form.is_valid() and profile_form.is_valid():
+		if user_form.is_valid() and profile_form.is_valid() and privacy_form.is_valid():
 			user = user_form.save()
 
 			#hash password and save
@@ -55,6 +55,9 @@ def register(request):
 			profile = profile_form.save(commit=False)
 			profile.user=user
 			profile.save()
+			privacy = privacy_form.save(commit=False)
+			privacy.instance = user
+			privacy.save()
 			assign_permissions(user=profile.user,instance=profile)
 
 			# Did the user provide a profile picture?
@@ -82,9 +85,10 @@ def register(request):
 	else:
 		user_form = UserForm()
 		profile_form = UserProfileForm()
+		privacy_form = PrivacyForm()
 
 	#render template
-	return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
+	return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form,'privacy_form':privacy_form, 'registered': registered})
 
 def user_login(request):
 	if request.method == 'POST':
