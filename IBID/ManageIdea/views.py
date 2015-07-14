@@ -9,21 +9,22 @@ from taggit.managers import TaggableManager
 from guardian.shortcuts import assign_perm, get_perms
 import re
 from ManageIdea.models import Idea, StatusRelationship, Status, IdeaPrivacy
-from ManageIdea.forms import PostForm, StatusForm, PrivacyForm
+from ManageIdea.forms import PostForm, StatusForm, PrivacyForm, DisplayIdeaForm
 
 @login_required
 def detail(request, Idea_id):
 	#check for 'view_idea' permission of authenticated user on certain idea
 	idea = get_object_or_404(Idea, pk=Idea_id)
 	ideaprivacy = get_object_or_404(IdeaPrivacy, instance=idea)
+	detail_form = DisplayIdeaForm(instance=idea)
 	if ('view' or idea.title) in get_perms(request.user, idea):
 		#has 'view_idea' permission
 		print("user has permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':idea})
+		return render(request, 'ManageIdea/detail.html', {'Idea':idea, 'detail_form':detail_form})
 	else:
 		#only print public fields
 		print("user has no permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy)})
+		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy),'detail_form':detail_form})
 
 
 
@@ -61,7 +62,6 @@ def post(request):
 			privacy=privacy_form.save(commit=False)
 			privacy.instance = idea
 			privacy.save()
-			print (IdeaPrivacy.objects.all().values())
 			for state in status_form.status:
 				statusRelationship = StatusRelationship.objects.create(idea = idea,status = state, species=request.POST.getlist('species')[state.id - 1])
 			Idea_id=idea.id

@@ -91,3 +91,31 @@ class PrivacyForm(forms.ModelForm):
 		self.helper[0].wrap(Div,css_id="privacy",role="tabpanel" , css_class="tab-pane")
 		self.helper[1].wrap(Div,css_id="submit",role="tabpanel" , css_class="tab-pane")
 		self.helper.form_tag = False
+
+class DisplayIdeaForm(forms.ModelForm):
+	class Meta:
+		model = Idea
+		exclude = ['owner', 'date_added']
+	def __init__(self, *args, **kwargs):
+		super(DisplayIdeaForm, self).__init__(*args, **kwargs)
+		instance = getattr(self, 'instance', None)
+		if instance and instance.pk:
+			self.fields['title'].widget.attrs['readonly'] = True
+			self.fields['description_short'].widget.attrs['readonly'] = True
+			self.fields['description_long'].widget.attrs['readonly'] = True
+			self.fields['ressources'].widget.attrs['readonly'] = True
+			self.fields['tags'].widget.attrs['readonly'] = True
+		self.helper = FormHelper()
+		self.helper.form_tag = False
+		self.helper.layout = Layout(
+			Div(
+				'title',
+				'description_short',
+				'description_long',
+				'ressources',
+				'tags',
+				css_class="tab-pane active",
+				css_id="description",
+				role="tabpanel" ,
+				),
+		)

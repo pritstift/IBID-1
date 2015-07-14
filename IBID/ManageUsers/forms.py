@@ -77,10 +77,10 @@ class PrivacyForm(forms.ModelForm):
 		self.helper.layout=Layout(
 			Div(
 				'company_ip',
-			    'occupation_ip',
-			    'website_ip',
-			    'picture_ip',
-			    'files_ip',
+				'occupation_ip',
+				'website_ip',
+				'picture_ip',
+				'files_ip',
 				),
 			FormActions(
 				Submit('save', 'Save changes'),
@@ -95,11 +95,57 @@ class LoginForm(forms.Form):
 	username = forms.CharField()
 	password = forms.CharField(widget=forms.PasswordInput())
 
+
 class DisplayUserForm(forms.ModelForm):
-	username=forms.CharField(widget=forms.TextInput(attrs={'class':'disabled', 'readonly':'readonly'}))
-	last_name=forms.CharField(widget=forms.TextInput(attrs={'class':'disabled', 'readonly':'readonly'}))
-	first_name=forms.CharField(widget=forms.TextInput(attrs={'class':'disabled', 'readonly':'readonly'}))
-	email = forms.EmailField(widget=forms.TextInput(attrs={'class':'disabled', 'readonly':'readonly'}))
 	class Meta:
 		model = User
 		fields = ('username', 'email','first_name','last_name')
+	def __init__(self, *args, **kwargs):
+		super(DisplayUserForm, self).__init__(*args, **kwargs)
+		instance = getattr(self, 'instance', None)
+		if instance and instance.pk:
+			self.fields['username'].widget.attrs['readonly'] = True
+			self.fields['email'].widget.attrs['readonly'] = True
+			self.fields['first_name'].widget.attrs['readonly'] = True
+			self.fields['last_name'].widget.attrs['readonly'] = True
+		self.helper = FormHelper()
+		self.helper.form_tag = False
+		self.helper.layout = Layout(
+			Div(
+				'username',
+				'email',
+				'first_name',
+				'last_name',
+				css_class="tab-pane active",
+				css_id="user",
+				role="tabpanel" ,
+				),
+		)
+
+class DisplayProfileForm(forms.ModelForm):
+	class Meta:
+		model = UserProfile
+		exclude = ['user', 'date_joined']
+	def __init__(self, *args, **kwargs):
+		super(DisplayProfileForm, self).__init__(*args, **kwargs)
+		instance = getattr(self, 'instance', None)
+		if instance and instance.pk:
+			self.fields['company'].widget.attrs['readonly'] = True
+			self.fields['occupation'].widget.attrs['readonly'] = True
+			self.fields['website'].widget.attrs['readonly'] = True
+			self.fields['picture'].widget.attrs['readonly'] = True
+			self.fields['files'].widget.attrs['readonly'] = True
+		self.helper = FormHelper()
+		self.helper.form_tag = False
+		self.helper.layout = Layout(
+			Div(
+				'company',
+				'occupation',
+				'website',
+				'picture',
+				'files',
+				css_class="tab-pane",
+				css_id="profile",
+				role="tabpanel" ,
+				),
+		)

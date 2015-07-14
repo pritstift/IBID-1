@@ -1,16 +1,22 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 
-{% block body_block %}
+{% block body_middle_block-1 %}
 
+<div class="col-md-2"><!--Column left--></div>
+<div class="col-md-8"><!--Column middle-->
+    {% csrf_token %}
 
-{{ user_form.as_p }}</br>
-<b> Company: </b>{{ profile_form.company }}</br>
-<b> Website: </b>{{ profile_form.website }}</br>
-<b> Occupation: </b>{{ profile_form.occupation }}</br>
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#user" aria-controls="user" role="tab" data-toggle="tab">User</a></li>
+        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
+        </ul>
 
-List of related ideas: <br> </br>
-  {% for idea in ideas %}
-  <a href = "{% url 'ManageIdea:detail' idea.id %}"> {{ idea.title }} </a> </br>
-  {% endfor %}
+  <div class="tab-content" >
+    {% crispy view_user_form %}
+      {% crispy view_profile_form %}
+  </div>
 
-  {% endblock %}
+   </form>
+{% endblock %}

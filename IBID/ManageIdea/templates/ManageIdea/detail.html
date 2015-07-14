@@ -1,23 +1,17 @@
 
 {% extends 'base.html'%}
 
-{% block body_block %}
-<h1>{{ Idea.title }}</h1>
-<p>
-<p><b>Owner:</b>
-<a href= "{% url 'ManageUsers:userprofile' Idea.owner.id %}">{{ Idea.owner }}</a></p>
-</p>
-<p><b>Short description:</b>
-{{ Idea.description_short }}
-<p/>
+{% load crispy_forms_tags %}
 
-<p><b>Long description:</b>
-{{ Idea.description_long }}
-</p>
-<p><b>Tags:</b></br></br>
-	{% for tag in Idea.tags.names %}
-	{{ tag }}</br>
-	{% endfor %}
-</p>
+{% block body_middle_block-1 %}
+
+<ul class="nav nav-tabs" role="tablist">
+  <li role="presentation" class="active"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a></li>
+  </ul>
+
+<div class="tab-content" >
+    {% crispy detail_form %}
+</div>
+
 
 {% endblock %}

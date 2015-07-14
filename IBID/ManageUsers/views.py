@@ -5,7 +5,7 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth  import authenticate, login
-from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm
+from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm, DisplayProfileForm
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from ManageIdea.models import Idea
@@ -21,10 +21,11 @@ import re
 def userprofile(request,User_id):
 	user = get_object_or_404(User,pk = User_id)
 	userprofile = get_object_or_404(UserProfile,user=user)
-	user_form = DisplayUserForm(instance = user)
+	view_user_form = DisplayUserForm(instance = user)
+	view_profile_form = DisplayProfileForm(instance = user)
 	ideas=Idea.objects.filter(owner=user)
 	if 'view' in get_perms(request.user,userprofile):
-		return render(request, 'ManageUsers/profile.html', {'profile_form':userprofile,'user_form':user_form, 'ideas':ideas})
+		return render(request, 'ManageUsers/profile.html', {'view_user_form':view_user_form,'view_profile_form':view_profile_form, 'ideas':ideas})
 	else:
 		return render(request, 'ManageUsers/profile.html', {'profile_form':get_ip_instance(userprofile),'user_form':user_form, 'ideas':ideas})
 
