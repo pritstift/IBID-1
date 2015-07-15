@@ -36,6 +36,27 @@ class UserForm(forms.ModelForm):
 		)
 		self.helper.form_tag = False
 
+class UserEditForm(forms.ModelForm):
+	first_name=forms.CharField(required=True)
+	last_name=forms.CharField(required=True)
+	email = forms.EmailField(required=True)
+	class Meta:
+		model = User
+		fields = ('first_name','last_name', 'email')
+	def __init__(self, *args, **kwargs):
+		super(UserEditForm, self).__init__(*args, **kwargs)
+		self.helper=FormHelper()
+		self.helper.layout=Layout(
+			Div(
+				'first_name',
+				'last_name',
+				css_class="tab-pane active",
+				css_id="personal_data",
+				role="tabpanel" ,
+				),
+		)
+		self.helper.form_tag = False
+
 class UserProfileForm(forms.ModelForm):
 	class Meta:
 		model = UserProfile
@@ -104,10 +125,10 @@ class DisplayUserForm(forms.ModelForm):
 		super(DisplayUserForm, self).__init__(*args, **kwargs)
 		instance = getattr(self, 'instance', None)
 		if instance and instance.pk:
-			self.fields['username'].widget.attrs['readonly'] = True
-			self.fields['email'].widget.attrs['readonly'] = True
-			self.fields['first_name'].widget.attrs['readonly'] = True
-			self.fields['last_name'].widget.attrs['readonly'] = True
+			self.fields['username'].widget.attrs['disabled'] = True
+			self.fields['email'].widget.attrs['disabled'] = True
+			self.fields['first_name'].widget.attrs['disabled'] = True
+			self.fields['last_name'].widget.attrs['disabled'] = True
 		self.helper = FormHelper()
 		self.helper.form_tag = False
 		self.helper.layout = Layout(
@@ -130,11 +151,11 @@ class DisplayProfileForm(forms.ModelForm):
 		super(DisplayProfileForm, self).__init__(*args, **kwargs)
 		instance = getattr(self, 'instance', None)
 		if instance and instance.pk:
-			self.fields['company'].widget.attrs['readonly'] = True
-			self.fields['occupation'].widget.attrs['readonly'] = True
-			self.fields['website'].widget.attrs['readonly'] = True
-			self.fields['picture'].widget.attrs['readonly'] = True
-			self.fields['files'].widget.attrs['readonly'] = True
+			self.fields['company'].widget.attrs['disabled'] = True
+			self.fields['occupation'].widget.attrs['disabled'] = True
+			self.fields['website'].widget.attrs['disabled'] = True
+			self.fields['picture'].widget.attrs['disabled'] = True
+			self.fields['files'].widget.attrs['disabled'] = True
 		self.helper = FormHelper()
 		self.helper.form_tag = False
 		self.helper.layout = Layout(

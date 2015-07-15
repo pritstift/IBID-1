@@ -1,0 +1,33 @@
+
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body_middle_block-1 %}
+
+<div class="col-md-2"><!--Column left--></div>
+<div class="col-md-8"><!--Column middle-->
+ {% if registered %}
+  <strong>Thank you for registering!</strong>
+  <a href="{% url 'ManageIdea:index' %}">Return to the homepage.</a><br />
+  {% else %}
+    <form action="" method="POST">
+    {% csrf_token %}
+
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#personal_data" aria-controls="personal_date" role="tab" data-toggle="tab">Personal Data</a></li>
+        <li role="presentation"><a href="#additional_data" aria-controls="additional_data" role="tab" data-toggle="tab">Additional Data</a></li>
+        <li role="presentation"><a href="#files" aria-controls="files" role="tab" data-toggle="tab">Files</a></li>
+        <li role="presentation"><a href="#privacy" aria-controls="privacy" role="tab" data-toggle="tab">Privacy</a></li>
+        <li role="presentation"><a href="#submit" aria-controls="submit" role="tab" data-toggle="tab">Submit</a></li>
+      </ul>
+
+  <div class="tab-content" >
+      {% crispy user_form %}
+      {% crispy profile_form %}
+      {% crispy privacy_form %}
+  </div>
+
+   </form>
+{% endif %}
+{% endblock %}

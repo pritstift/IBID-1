@@ -5,12 +5,12 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth  import authenticate, login
-from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm, DisplayProfileForm
+from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm, DisplayProfileForm, UserEditForm
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from ManageIdea.models import Idea
 from ManageIdea.views import get_ip_instance, Object
-from ManageUsers.models import UserProfile
+from ManageUsers.models import UserProfile, UserProfilePrivacy
 from guardian.shortcuts import assign_perm, get_perms
 from ManageIdea.views import assign_permissions
 import Home
@@ -136,4 +136,32 @@ def user_login(request):
 
 @login_required
 def edit(request, User_id):
-	pass
+	user = get_object_or_404(User,pk = User_id)
+	profile= get_object_or_404(UserProfile, user=user)
+	privacy=get_object_or_404(UserProfilePrivacy, instance=profile)
+	if not 'edit' in get_perms(request.user, profile):
+		return HttpResponse('You have no permissions to edit this profile')
+	else:
+		if request.method == 'POST':
+			#grab information form from the POST data
+			user_form=UserEditForm(data=request.POST, instance=user)
+			profile_form = UserProfileForm(data=request.POST, instance=profile)
+			privacy_form = PrivacyForm(data=request.POST, instance=privacy)
+			#if the form is valid
+			if  user_form.is_valid() and profile_form.is_valid() and privacy_form.is_valid():
+				user_form.save()
+				profile.save()
+				privacy.save()
+				return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[user.id,]))
+			else:
+				print( profile_form.errors, privacy_form.errors)
+
+		# GET
+		else:
+			user_form=UserEditForm(instance=user)
+			profile_form = UserProfileForm(instance=profile)
+			privacy_form = PrivacyForm(instance=privacy)
+			
+			#render template
+			return render(request, 'ManageUsers/edit.html', {'user_form':user_form, 'profile_form': profile_form,'privacy_form':privacy_form})
+
