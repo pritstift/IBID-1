@@ -19,18 +19,13 @@ class UserForm(forms.ModelForm):
 		self.helper=FormHelper()
 		self.helper.layout=Layout(
 			Div(
-				'username',
-				'email',
-				'password',
-				css_class="tab-pane active",
-				css_id="user",
-				role="tabpanel" ,
-				),
-			Div(
 				'first_name',
 				'last_name',
-				css_class="tab-pane",
-				css_id="personal_data",
+				'email',
+				'username',				
+				'password',
+				css_class="tab-pane active",
+				css_id="user_data",
 				role="tabpanel" ,
 				),
 		)
@@ -50,8 +45,9 @@ class UserEditForm(forms.ModelForm):
 			Div(
 				'first_name',
 				'last_name',
+				'email',
 				css_class="tab-pane active",
-				css_id="personal_data",
+				css_id="user_data",
 				role="tabpanel" ,
 				),
 		)
@@ -60,7 +56,7 @@ class UserEditForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
 	class Meta:
 		model = UserProfile
-		exclude=['user','date_added','date_joined']
+		exclude=['user','date_joined']
 	def __init__(self, *args, **kwargs):
 		super(UserProfileForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
@@ -71,13 +67,6 @@ class UserProfileForm(forms.ModelForm):
 				'website',
 				css_class="tab-pane",
 				css_id="additional_data",
-				role="tabpanel" ,
-				),
-			Div(
-				'picture',
-				'files',
-				css_class="tab-pane",
-				css_id="files",
 				role="tabpanel" ,
 				),
 		)
@@ -92,24 +81,28 @@ class PrivacyForm(forms.ModelForm):
 		self.fields['company_ip'].label = "Company"
 		self.fields['occupation_ip'].label = "Occupation"
 		self.fields['website_ip'].label = "Website"
-		self.fields['picture_ip'].label = "Pictures"
-		self.fields['files_ip'].label = "Files"
 		self.helper=FormHelper()
 		self.helper.layout=Layout(
 			Div(
 				'company_ip',
 				'occupation_ip',
 				'website_ip',
-				'picture_ip',
-				'files_ip',
 				),
+		)
+		self.helper[0].wrap(Div,css_id="privacy",role="tabpanel" , css_class="tab-pane")
+		self.helper[1].wrap(Div,css_id="submit",role="tabpanel" , css_class="tab-pane")
+		self.helper.form_tag = False
+
+class SubmitForm(forms.Form):
+	def __init__(self, *args, **kwargs):
+		super(SubmitForm,self).__init__(*args, **kwargs)
+		self.helper=FormHelper()
+		self.helper.layout=Layout(
 			FormActions(
 				Submit('save', 'Save changes'),
 				Button('cancel', 'Cancel'),
 			),
 		)
-		self.helper[0].wrap(Div,css_id="privacy",role="tabpanel" , css_class="tab-pane")
-		self.helper[1].wrap(Div,css_id="submit",role="tabpanel" , css_class="tab-pane")
 		self.helper.form_tag = False
 
 class LoginForm(forms.Form):
@@ -154,8 +147,6 @@ class DisplayProfileForm(forms.ModelForm):
 			self.fields['company'].widget.attrs['disabled'] = True
 			self.fields['occupation'].widget.attrs['disabled'] = True
 			self.fields['website'].widget.attrs['disabled'] = True
-			self.fields['picture'].widget.attrs['disabled'] = True
-			self.fields['files'].widget.attrs['disabled'] = True
 		self.helper = FormHelper()
 		self.helper.form_tag = False
 		self.helper.layout = Layout(
@@ -163,8 +154,6 @@ class DisplayProfileForm(forms.ModelForm):
 				'company',
 				'occupation',
 				'website',
-				'picture',
-				'files',
 				css_class="tab-pane",
 				css_id="profile",
 				role="tabpanel" ,

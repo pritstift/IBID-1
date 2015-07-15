@@ -5,7 +5,7 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth  import authenticate, login
-from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm, DisplayProfileForm, UserEditForm
+from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm, DisplayProfileForm, UserEditForm, SubmitForm
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from ManageIdea.models import Idea
@@ -41,7 +41,7 @@ def register(request):
 		#grab information form from the POST data
 		user_form = UserForm(data=request.POST)
 		profile_form = UserProfileForm(data=request.POST)
-		privacy_form = PrivacyForm(data=request.POST)
+		privacy_form = PrivacyForm(data=request.POST)		
 		#if the form is valid
 		if user_form.is_valid() and profile_form.is_valid() and privacy_form.is_valid():
 			user = user_form.save()
@@ -61,10 +61,6 @@ def register(request):
 			privacy.save()
 			assign_permissions(user=profile.user,instance=profile)
 
-			# Did the user provide a profile picture?
-			# If so, we need to get it from the input form and put it in the UserProfile model.
-			if 'picture' in request.FILES:
-				profile.picture = request.FILES['picture']
 
 			#save profile
 			profile.save()
@@ -87,9 +83,10 @@ def register(request):
 		user_form = UserForm()
 		profile_form = UserProfileForm()
 		privacy_form = PrivacyForm()
+		submit_form=SubmitForm()
 
 	#render template
-	return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form,'privacy_form':privacy_form, 'registered': registered})
+	return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form,'privacy_form':privacy_form, 'submit_form':submit_form, 'registered': registered})
 
 def user_login(request):
 	if request.method == 'POST':
@@ -161,7 +158,7 @@ def edit(request, User_id):
 			user_form=UserEditForm(instance=user)
 			profile_form = UserProfileForm(instance=profile)
 			privacy_form = PrivacyForm(instance=privacy)
-			
+			submit_form=SubmitForm()
 			#render template
-			return render(request, 'ManageUsers/edit.html', {'user_form':user_form, 'profile_form': profile_form,'privacy_form':privacy_form})
+			return render(request, 'ManageUsers/edit.html', {'user_form':user_form, 'profile_form': profile_form,'privacy_form':privacy_form, 'submit_form':submit_form})
 
