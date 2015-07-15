@@ -17,14 +17,19 @@ def detail(request, Idea_id):
 	idea = get_object_or_404(Idea, pk=Idea_id)
 	ideaprivacy = get_object_or_404(IdeaPrivacy, instance=idea)
 	detail_form = DisplayIdeaForm(instance=idea)
+	perms = get_perms(request.user, idea)
+	if 'edit' in perms:
+		edit_idea = idea.id
+	else:
+		edit_idea=False
 	if ('view' or idea.title) in get_perms(request.user, idea):
 		#has 'view_idea' permission
 		print("user has permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':idea, 'detail_form':detail_form})
+		return render(request, 'ManageIdea/detail.html', {'Idea':idea, 'detail_form':detail_form, 'edit_idea':edit_idea})
 	else:
 		#only print public fields
 		print("user has no permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy),'detail_form':detail_form})
+		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy),'detail_form':detail_form, 'edit_idea':edit_idea})
 
 
 
@@ -37,8 +42,40 @@ def index(request):
 	return HttpResponse(template.render(context))
 
 def edit(request, Idea_id):
-	idea = get_object_or_404(Idea, pk=Idea_id)
-	return render(request, 'ManageIdea/detail.html', {'Idea':idea})
+	idea=get_object_or_404(Idea, pk=Idea_id)
+	privacy=get_object_or_404(IdeaPrivacy, instance=idea)
+	statusRelationships=StatusRelationship.objects.all().filter(idea=idea)
+	if request.method == 'GET':
+		post_form = PostForm(instance=idea)
+		status_form = StatusForm(instance=status)
+		privacy_form = PrivacyForm(instance=privacy)
+		return render(request, 'ManageIdea/upload.html', {'post_form':post_form,'status_form':status_form, 'privacy_form':privacy_form})
+	elif request.method == 'POST':
+		#get PostForm data
+		post_form=PostForm(data=request.POST)
+		status_form = StatusForm(data=request.POST)
+		privacy_form = PrivacyForm(data=request.POST)
+		#print(request.POST)
+		#validate
+		if post_form.is_valid() and status_form.is_valid() and privacy_form.is_valid():
+			idea=post_form.save()
+			# add user and save to database
+			idea.save()
+			privacy.save()
+			for state in status_form.status:
+				statusRelationship = StatusRelationship.objects.create(idea = idea,status = state, species=request.POST.getlist('species')[state.id - 1])
+			Idea_id=idea.id
+			post_form.save_m2m()
+			ideagroup = Group.objects.create(name=idea.title)
+			ideagroup.user_set.add(idea.owner)
+			assign_permissions(user=idea.owner,instance=idea)
+			assign_perm('view', ideagroup,idea)
+			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
+		#if form data is invalid
+		else:
+			print(post_form.errors)
+			return render(request, 'ManageIdea/upload.html', {'post_form':post_form,'status_form':status_form, 'privacy_form':privacy_form})
+
 
 @login_required
 def post(request):
