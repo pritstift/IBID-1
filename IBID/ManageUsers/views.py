@@ -24,10 +24,15 @@ def userprofile(request,User_id):
 	view_user_form = DisplayUserForm(instance = user)
 	view_profile_form = DisplayProfileForm(instance = user)
 	ideas=Idea.objects.filter(owner=user)
-	if 'view' in get_perms(request.user,userprofile):
-		return render(request, 'ManageUsers/profile.html', {'view_user_form':view_user_form,'view_profile_form':view_profile_form, 'ideas':ideas})
+	perms = get_perms(request.user,userprofile)
+	if 'edit' in perms:
+		edit_profile = user.id
 	else:
-		return render(request, 'ManageUsers/profile.html', {'profile_form':get_ip_instance(userprofile),'user_form':user_form, 'ideas':ideas})
+		edit_profile=False
+	if 'view' in perms:
+		return render(request, 'ManageUsers/profile.html', {'view_user_form':view_user_form,'view_profile_form':view_profile_form, 'ideas':ideas,'edit_profile':edit_profile})
+	else:
+		return render(request, 'ManageUsers/profile.html', {'profile_form':get_ip_instance(userprofile),'user_form':user_form, 'ideas':ideas, 'edit_profile':edit_profile})
 
 
 def logout_user(request):
