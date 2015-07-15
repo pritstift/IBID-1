@@ -6,10 +6,6 @@
 
 <div class="col-md-2"><!--Column left--></div>
 <div class="col-md-8"><!--Column middle-->
- {% if registered %}
-  <strong>Thank you for registering!</strong>
-  <a href="{% url 'ManageIdea:index' %}">Return to the homepage.</a><br />
-  {% else %}
     <form action="" method="POST">
     {% csrf_token %}
 
@@ -28,5 +24,4 @@
   </div>
 
    </form>
-{% endif %}
 {% endblock %}

@@ -1,22 +1,17 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block body_middle_block-1 %}
-
-<div class="col-md-2"><!--Column left--></div>
-<div class="col-md-8"><!--Column middle-->
-    {% csrf_token %}
+{% block body_middle_block-3 %}
 
       <!-- Nav tabs -->
       <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#user" aria-controls="user" role="tab" data-toggle="tab">User</a></li>
-        <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
-        </ul>
+       <li role="presentation" class="active"><a href="#user" aria-controls="user" role="tab" data-toggle="tab">User</a></li>
+       <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
+      </ul>
 
   <div class="tab-content" >
     {% crispy view_user_form %}
       {% crispy view_profile_form %}
   </div>
-
-   </form>
 {% endblock %}
+
