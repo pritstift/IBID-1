@@ -9,7 +9,7 @@ from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserF
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from ManageIdea.models import Idea
-from ManageIdea.views import get_ip_instance, Object
+from IBID.functions import get_ip_instance, Object
 from ManageUsers.models import UserProfile, UserProfilePrivacy
 from guardian.shortcuts import assign_perm, get_perms
 from ManageIdea.views import assign_permissions
@@ -21,8 +21,9 @@ import re
 def userprofile(request,User_id):
 	user = get_object_or_404(User,pk = User_id)
 	userprofile = get_object_or_404(UserProfile,user=user)
+	privacy = get_object_or_404(UserProfilePrivacy,instance=userprofile)
 	view_user_form = DisplayUserForm(instance = user)
-	view_profile_form = DisplayProfileForm(instance = user)
+	view_profile_form = DisplayProfileForm(instance = userprofile)
 	ideas=Idea.objects.filter(owner=user)
 	perms = get_perms(request.user,userprofile)
 	if 'edit' in perms:
@@ -32,7 +33,8 @@ def userprofile(request,User_id):
 	if 'view' in perms:
 		return render(request, 'ManageUsers/profile.html', {'view_user_form':view_user_form,'view_profile_form':view_profile_form, 'ideas':ideas,'edit_profile':edit_profile})
 	else:
-		return render(request, 'ManageUsers/profile.html', {'profile_form':get_ip_instance(userprofile),'user_form':user_form, 'ideas':ideas, 'edit_profile':edit_profile})
+		view_profile_form=DisplayProfileForm(instance=get_ip_instance(privacy,UserProfile))
+		return render(request, 'ManageUsers/profile.html', {'view_profile_form':view_profile_form,'view_user_form':view_user_form, 'ideas':ideas, 'edit_profile':edit_profile})
 
 
 def logout_user(request):
@@ -46,7 +48,8 @@ def register(request):
 		#grab information form from the POST data
 		user_form = UserForm(data=request.POST)
 		profile_form = UserProfileForm(data=request.POST)
-		privacy_form = PrivacyForm(data=request.POST)		
+		privacy_form = PrivacyForm(data=request.POST)
+		submit_form=SubmitForm()		
 		#if the form is valid
 		if user_form.is_valid() and profile_form.is_valid() and privacy_form.is_valid():
 			user = user_form.save()
@@ -76,13 +79,11 @@ def register(request):
 			username = request.POST['username']
 			password = request.POST['password']
 			user = authenticate(username=username, password=password)
-			login(request, user)
-		# Invalid form or forms - mistakes or something else?
-		# Print problems to the terminal.
-		# They'll also be shown to the user.
+			login(request, user)			
+			return HttpResponseRedirect(reverse('ManageUsers:userprofile',args=[user.id,]))
 		else:
 			print( user_form.errors, profile_form.errors)
-
+			return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form,'privacy_form':privacy_form, 'submit_form':submit_form, 'registered': registered})
 	# GET
 	else:
 		user_form = UserForm()
@@ -90,8 +91,8 @@ def register(request):
 		privacy_form = PrivacyForm()
 		submit_form=SubmitForm()
 
-	#render template
-	return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form,'privacy_form':privacy_form, 'submit_form':submit_form, 'registered': registered})
+		#render template
+		return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form,'privacy_form':privacy_form, 'submit_form':submit_form, 'registered': registered})
 
 def user_login(request):
 	if request.method == 'POST':

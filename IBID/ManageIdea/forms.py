@@ -1,5 +1,5 @@
 from django import forms
-from ManageIdea.models import Idea, StatusRelationship, Status, IdeaPrivacy
+from ManageIdea.models import Idea, IdeaPrivacy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Button, Div, HTML, MultiField, Field
 from crispy_forms.bootstrap import FormActions, InlineRadios
@@ -19,6 +19,7 @@ class PostForm(forms.ModelForm):
 				'title',
 				'description_short',
 				'description_long',
+				'status'
 				'ressources',
 				'tags',
 				css_class="tab-pane active",
@@ -34,80 +35,6 @@ class PostForm(forms.ModelForm):
 				),
 		)
 		self.helper.form_tag = False
-
-class StatusForm(forms.ModelForm):
-	species=forms.ChoiceField(StatusRelationship.CHOICES)
-	class Meta:
-		model = StatusRelationship
-		fields = ['species']
-	def __init__(self, *args, **kwargs):
-		super(StatusForm,self).__init__(*args, **kwargs)
-		self.status=Status.objects.all()
-		self.helper=FormHelper()
-		divlist=[]
-		for status in self.status:
-			divlist.append(
-				Div(
-					HTML(status),
-					Field('species'),
-					)
-				)
-		self.helper.layout=Layout(
-				Div(
-					*divlist
-					),
-			)
-		self.helper[0].wrap(Div,css_id="status",role="tabpanel" , css_class="tab-pane")
-		self.helper.form_tag = False
-		self.helper.form_show_labels = False
-
-class StatusEditForm(forms.ModelForm):	
-	
-	class Meta:
-		model = StatusRelationship
-		fields = []
-	def __init__(self, *args, **kwargs):
-		self.species=forms.ChoiceField(StatusRelationship.CHOICES)
-		if 'statusRelationships' in kwargs:
-			statusRelationships=kwargs.pop('statusRelationships')
-
-		super(StatusEditForm,self).__init__(*args, **kwargs)
-		self.status=Status.objects.all()
-		self.helper=FormHelper()
-		divlist=[]
-		for relationship in statusRelationships:
-			button='<select class="select form-control" id="id_species" name="species">'
-			for choice in self.species.choices:
-				button=button + '<option value="' + choice[0] + '"' + ('selected="selected"' if relationship.species == choice[0] else '') + '>' + choice[1] + '</option>'
-			button=button + '</select>'
-			divlist.append(
-				Div(
-					HTML(relationship.status),
-					HTML(button),
-					)
-				)
-		self.helper.layout=Layout(
-				Div(
-					*divlist
-					),
-			)
-		self.helper[0].wrap(Div,css_id="status",role="tabpanel" , css_class="tab-pane")
-		self.helper.form_tag = False
-		self.helper.form_show_labels = False
-	
-
-class StatusEditFormHelper(FormHelper):
-	def __init__(self, *args, **kwargs):
-		super(StatusEditFormHelper,self).__init__(*args, **kwargs)
-		self.layout=Layout(
-				Div(
-					HTML('status'),
-					Field('species'),
-					)
-			)
-		self[0].wrap(Div,css_id="status",role="tabpanel" , css_class="tab-pane")
-		self.form_tag = False
-		self.form_show_labels = False
 
 class PrivacyForm(forms.ModelForm):
 	class Meta:
@@ -151,6 +78,7 @@ class DisplayIdeaForm(forms.ModelForm):
 			self.fields['title'].widget.attrs['readonly'] = True
 			self.fields['description_short'].widget.attrs['readonly'] = True
 			self.fields['description_long'].widget.attrs['readonly'] = True
+			self.fields['status_ip'].widget.attrs['readonly'] = True
 			self.fields['ressources'].widget.attrs['readonly'] = True
 			self.fields['tags'].widget.attrs['readonly'] = True
 		self.helper = FormHelper()
@@ -160,6 +88,7 @@ class DisplayIdeaForm(forms.ModelForm):
 				'title',
 				'description_short',
 				'description_long',
+				'status',
 				'ressources',
 				'tags',
 				css_class="tab-pane active",
