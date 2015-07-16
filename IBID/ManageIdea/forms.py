@@ -1,9 +1,8 @@
 from django import forms
-from ManageIdea.models import Idea, StatusRelationship, Status
-from IBID.functions import get_ip_fields
+from ManageIdea.models import Idea, IdeaPrivacy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Button, Div, HTML, MultiField, Field
-from crispy_forms.bootstrap import FormActions
+from crispy_forms.bootstrap import FormActions, InlineRadios
 
 
 
@@ -11,67 +10,89 @@ class PostForm(forms.ModelForm):
 	description_long = forms.CharField(widget=forms.Textarea)
 	class Meta:
 		model = Idea
-		exclude = ['owner','date_added']
+		exclude = ['owner','date_added', 'stati']
 	def __init__(self, *args, **kwargs):
 		super(PostForm, self).__init__(*args, **kwargs)
-		ip_fields=get_ip_fields(self.Meta.model)
 		self.helper=FormHelper()
-		self.helper.layout = Layout(
+		self.helper.layout=Layout(
 			Div(
-				'title',						
+				'title',
 				'description_short',
 				'description_long',
+				'status'
 				'ressources',
 				'tags',
 				css_class="tab-pane active",
 				css_id="description",
 				role="tabpanel" ,
 				),
-			Div(					
-				'pictures',						
+			Div(
+				'pictures',
 				'files',
 				css_class="tab-pane",
 				css_id="files",
 				role="tabpanel" ,
 				),
-			Div(
-				Div(
-					*ip_fields
-					),
-				css_class="tab-pane",
-				css_id="privacy",
-				role="tabpanel",
-				),
 		)
 		self.helper.form_tag = False
 
-class StatusForm(forms.ModelForm):
-	species=forms.ChoiceField(StatusRelationship.CHOICES)
+class PrivacyForm(forms.ModelForm):
 	class Meta:
-		model = StatusRelationship
-		fields = ['species']
+		model = IdeaPrivacy
+		exclude = ['instance']
 	def __init__(self, *args, **kwargs):
-		super(StatusForm,self).__init__(*args, **kwargs)
-		self.status=Status.objects.all()
+		super(PrivacyForm,self).__init__(*args, **kwargs)
+		self.fields['description_long_ip'].label = "Description long"
+		self.fields['tags_ip'].label = "Tags"
+		self.fields['status_ip'].label = "Status"
+		self.fields['ressources_ip'].label = "Ressources"
+		self.fields['pictures_ip'].label = "Pictures"
+		self.fields['files_ip'].label = "Files"
 		self.helper=FormHelper()
-		divlist=[]
-		for status in self.status:
-			divlist.append(
-				Div(
-					HTML(status),
-					Field('species'),
-					)
-				)
 		self.helper.layout=Layout(
-				Div(
-					*divlist
-					),				
-				FormActions(
-					Submit('save', 'Save changes'),
-					Button('cancel', 'Cancel'),
-				),	
-			)
-		self.helper[0].wrap(Div,css_id="status",role="tabpanel" , css_class="tab-pane")
+			Div(
+				'description_long_ip',
+				'tags_ip',
+			    'status_ip',
+			    'ressources_ip',
+			    'pictures_ip',
+			    'files_ip',
+				),
+			FormActions(
+				Submit('save', 'Save changes'),
+				Button('cancel', 'Cancel'),
+			),
+		)
+		self.helper[0].wrap(Div,css_id="privacy",role="tabpanel" , css_class="tab-pane")
 		self.helper[1].wrap(Div,css_id="submit",role="tabpanel" , css_class="tab-pane")
 		self.helper.form_tag = False
-		self.helper.form_show_labels = False
+
+class DisplayIdeaForm(forms.ModelForm):
+	class Meta:
+		model = Idea
+		exclude = ['owner', 'date_added']
+	def __init__(self, *args, **kwargs):
+		super(DisplayIdeaForm, self).__init__(*args, **kwargs)
+		instance = getattr(self, 'instance', None)
+		if instance and instance.pk:
+			self.fields['title'].widget.attrs['readonly'] = True
+			self.fields['description_short'].widget.attrs['readonly'] = True
+			self.fields['description_long'].widget.attrs['readonly'] = True
+			self.fields['status_ip'].widget.attrs['readonly'] = True
+			self.fields['ressources'].widget.attrs['readonly'] = True
+			self.fields['tags'].widget.attrs['readonly'] = True
+		self.helper = FormHelper()
+		self.helper.form_tag = False
+		self.helper.layout = Layout(
+			Div(
+				'title',
+				'description_short',
+				'description_long',
+				'status',
+				'ressources',
+				'tags',
+				css_class="tab-pane active",
+				css_id="description",
+				role="tabpanel" ,
+				),
+		)

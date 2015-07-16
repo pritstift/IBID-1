@@ -1,70 +1,32 @@
-{% extends 'base.html' %}
-{% load widget_tweaks %}
 
-{% block body_block %}
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body_middle_block-1 %}
+
 <div class="col-md-2"><!--Column left--></div>
 <div class="col-md-8"><!--Column middle-->
  {% if registered %}
   <strong>Thank you for registering!</strong>
   <a href="{% url 'ManageIdea:index' %}">Return to the homepage.</a><br />
   {% else %}
-  <strong>Register here!</strong><br />
-  <form class="form-horizontal" role="form" action="." method="post">
-  {% csrf_token %}
-  {% for field in user_form %}
-    {% if field.errors %}
-      <div class="form-group has-error">
-          <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
-          <div class="col-md-10">
-              {{ field|attr:"class:form-control" }}
-              <span class="help-block">
-                  {% for error in  field.errors %}{{ error }}{% endfor %}
-              </span>
-          </div>
-      </div>
-    {% else %}
-      <div class="form-group">
-          <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
-          <div class="col-md-10">
-              {{ field|attr:"class:form-control" }}
-              {% if field.help_text %}
-                  <p class="help-block"><small>{{ field.help_text }}</small></p>
-              {% endif %}
-          </div>
-      </div>
-  {% endif %}
-{% endfor %}
+    <form action="" method="POST">
+    {% csrf_token %}
 
-      {% for field in profile_form %}
-          {% if field.errors %}
-              <div class="form-group has-error">
-                  <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
-                  <div class="col-md-10">
-                      {{ field|attr:"class:form-control" }}
-                      <span class="help-block">
-                          {% for error in  field.errors %}{{ error }}{% endfor %}
-                      </span>
-                  </div>
-              </div>
-          {% else %}
-              <div class="form-group">
-                  <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
-                  <div class="col-md-10">
-                      {{ field|attr:"class:form-control" }}
-                      {% if field.help_text %}
-                          <p class="help-block"><small>{{ field.help_text }}</small></p>
-                      {% endif %}
-                  </div>
-              </div>
-          {% endif %}
-      {% endfor %}
-      <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-10">
-              <button type="submit" class="btn btn-default" name="submit" value="Register">"Submit"</button>
-          </div>
-      </div>
-  </form>
-  {% endif %}
-</div>
-<div class="col-md-2"><!--Column right--></div>
-{% endblock body_block %}
+      <!-- Nav tabs -->
+      <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#user_data" aria-controls="user_data" role="tab" data-toggle="tab">User</a></li>
+        <li role="presentation"><a href="#additional_data" aria-controls="additional_data" role="tab" data-toggle="tab">Additional Data</a></li>
+        <li role="presentation"><a href="#privacy" aria-controls="privacy" role="tab" data-toggle="tab">Privacy</a></li>
+      </ul>
+
+  <div class="tab-content" >
+      {% crispy user_form %}
+      {% crispy profile_form %}
+      {% crispy privacy_form %}
+      {% crispy submit_form %}
+  </div>
+
+   </form>
+{% endif %}
+{% endblock %}

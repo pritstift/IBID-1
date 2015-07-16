@@ -10,26 +10,20 @@ from django.contrib import admin
 
 from taggit.managers import TaggableManager
 
+
 class Idea(models.Model):
     title=models.CharField(max_length = 400, unique=True)
     owner = models.ForeignKey(User)
     date_added=models.DateField(default=timezone.now())
-    description_short=models.CharField(max_length=2048,default="this Idea has no short description yet")
-    description_long=models.CharField(max_length=2048,default="this Idea has no long description yet")
-    description_long_ip=models.BooleanField(default=False)
+    description_short=models.CharField(max_length=2048, blank=True)
+    description_long=models.CharField(max_length=2048, blank=True)
+    status = models.CharField(max_length=2048, blank=True)
     tags = TaggableManager(help_text="A comma-separated list of tags.")
-    tags_ip = models.BooleanField(default=False)
-    status_ip = models.BooleanField(default=False)
-    ressources = models.CharField(max_length=2048,default="Any ressources in need?")
-    ressources_ip = models.BooleanField(default=False)
+    ressources = models.CharField(max_length=2048, blank=True)
     pictures = models.ImageField(upload_to='idea_images', blank=True)
-    pictures_ip = models.BooleanField(default=False)
     files = models.FileField(upload_to='idea_files', blank=True)
-    files_ip = models.BooleanField(default=False)
     #score = models.IntegerField(default=2)
-    score_ip = models.BooleanField(default=False)
     #maintenanceStatus = models.ForeignKey(MaintenanceStatus)
-    maintenanceStatus_ip = models.BooleanField(default=False)
     class Meta:
         permissions = (
             ('view', 'View Idea'),
@@ -40,46 +34,15 @@ class Idea(models.Model):
         return self.title
 
 class IdeaPrivacy(models.Model):
-    idea = models.ForeignKey(Idea)
-    description_long=models.BooleanField(default=False)
-    tags = models.BooleanField(default=False)
-    status = models.BooleanField(default=False)
-    ressources = models.BooleanField(default=False)
-    pictures = models.BooleanField(default=False)
-    files = models.BooleanField(default=False)
-
-class Status(models.Model):
-    title = models.CharField(max_length = 400, unique=True)
-    ideas = models.ManyToManyField(Idea, through='StatusRelationship')
-    date_added=models.DateField(default=timezone.now())
+    instance = models.ForeignKey(Idea)
+    description_long_ip = models.BooleanField(default=False)
+    tags_ip = models.BooleanField(default=False)
+    status_ip = models.BooleanField(default=False)
+    ressources_ip = models.BooleanField(default=False)
+    pictures_ip = models.BooleanField(default=False)
+    files_ip = models.BooleanField(default=False)
     def __str__(self):
-        return self.title
-
-class StatusRelationship(models.Model):
-    CHOICES = (
-    ('EMPTY', ''),
-    ('FINISHED', 'Abgeschlossen'),
-    ('CURRENT', 'Aktiv'),
-    )
-    idea = models.ForeignKey(Idea)
-    status = models.ForeignKey(Status)
-    date_added = models.DateField(default=timezone.now())
-    species = models.CharField(max_length=10,choices=CHOICES,default='EMPTY')
-    def __str__(self):
-        return self.species
-
-class StatusRelationshipInline(admin.TabularInline):
-    model = StatusRelationship
-    extra = 2 # how many rows to show
-
-class StatusAdmin(admin.ModelAdmin):
-    inlines = (StatusRelationshipInline,)
-
-class MaintenanceStatus(models.Model):
-    supervisor = models.ManyToManyField(User)              # User mit staffpermission
-    idea = models.ForeignKey(Idea)
-    title = models.CharField(max_length = 400, unique=True)
-    date_added = models.DateTimeField(default=timezone.now())
+        return self.instance.title
 
 class Comment(models.Model):
     supervisor = models.ForeignKey(User)                   # User mit staffpermission

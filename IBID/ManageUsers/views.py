@@ -5,12 +5,12 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth  import authenticate, login
-from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm
+from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm, DisplayProfileForm, UserEditForm, SubmitForm
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from ManageIdea.models import Idea
-from ManageIdea.views import get_ip_instance, Object
-from ManageUsers.models import UserProfile
+from IBID.functions import get_ip_instance, Object
+from ManageUsers.models import UserProfile, UserProfilePrivacy
 from guardian.shortcuts import assign_perm, get_perms
 from ManageIdea.views import assign_permissions
 import Home
@@ -21,12 +21,20 @@ import re
 def userprofile(request,User_id):
 	user = get_object_or_404(User,pk = User_id)
 	userprofile = get_object_or_404(UserProfile,user=user)
-	user_form = DisplayUserForm(instance = user)
+	privacy = get_object_or_404(UserProfilePrivacy,instance=userprofile)
+	view_user_form = DisplayUserForm(instance = user)
+	view_profile_form = DisplayProfileForm(instance = userprofile)
 	ideas=Idea.objects.filter(owner=user)
-	if 'view' in get_perms(request.user,userprofile):
-		return render(request, 'ManageUsers/profile.html', {'profile_form':userprofile,'user_form':user_form, 'ideas':ideas})
+	perms = get_perms(request.user,userprofile)
+	if 'edit' in perms:
+		edit_profile = user.id
 	else:
-		return render(request, 'ManageUsers/profile.html', {'profile_form':get_ip_instance(userprofile),'user_form':user_form, 'ideas':ideas})
+		edit_profile=False
+	if 'view' in perms:
+		return render(request, 'ManageUsers/profile.html', {'view_user_form':view_user_form,'view_profile_form':view_profile_form, 'ideas':ideas,'edit_profile':edit_profile})
+	else:
+		view_profile_form=DisplayProfileForm(instance=get_ip_instance(privacy,UserProfile))
+		return render(request, 'ManageUsers/profile.html', {'view_profile_form':view_profile_form,'view_user_form':view_user_form, 'ideas':ideas, 'edit_profile':edit_profile})
 
 
 def logout_user(request):
@@ -40,9 +48,10 @@ def register(request):
 		#grab information form from the POST data
 		user_form = UserForm(data=request.POST)
 		profile_form = UserProfileForm(data=request.POST)
-
+		privacy_form = PrivacyForm(data=request.POST)
+		submit_form=SubmitForm()		
 		#if the form is valid
-		if user_form.is_valid() and profile_form.is_valid():
+		if user_form.is_valid() and profile_form.is_valid() and privacy_form.is_valid():
 			user = user_form.save()
 
 			#hash password and save
@@ -55,12 +64,11 @@ def register(request):
 			profile = profile_form.save(commit=False)
 			profile.user=user
 			profile.save()
+			privacy = privacy_form.save(commit=False)
+			privacy.instance = profile
+			privacy.save()
 			assign_permissions(user=profile.user,instance=profile)
 
-			# Did the user provide a profile picture?
-			# If so, we need to get it from the input form and put it in the UserProfile model.
-			if 'picture' in request.FILES:
-				profile.picture = request.FILES['picture']
 
 			#save profile
 			profile.save()
@@ -71,20 +79,20 @@ def register(request):
 			username = request.POST['username']
 			password = request.POST['password']
 			user = authenticate(username=username, password=password)
-			login(request, user)
-		# Invalid form or forms - mistakes or something else?
-		# Print problems to the terminal.
-		# They'll also be shown to the user.
+			login(request, user)			
+			return HttpResponseRedirect(reverse('ManageUsers:userprofile',args=[user.id,]))
 		else:
 			print( user_form.errors, profile_form.errors)
-
+			return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form,'privacy_form':privacy_form, 'submit_form':submit_form, 'registered': registered})
 	# GET
 	else:
 		user_form = UserForm()
 		profile_form = UserProfileForm()
+		privacy_form = PrivacyForm()
+		submit_form=SubmitForm()
 
-	#render template
-	return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form, 'registered': registered})
+		#render template
+		return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form,'privacy_form':privacy_form, 'submit_form':submit_form, 'registered': registered})
 
 def user_login(request):
 	if request.method == 'POST':
@@ -131,4 +139,32 @@ def user_login(request):
 
 @login_required
 def edit(request, User_id):
-	pass
+	user = get_object_or_404(User,pk = User_id)
+	profile= get_object_or_404(UserProfile, user=user)
+	privacy=get_object_or_404(UserProfilePrivacy, instance=profile)
+	if not 'edit' in get_perms(request.user, profile):
+		return HttpResponse('You have no permissions to edit this profile')
+	else:
+		if request.method == 'POST':
+			#grab information form from the POST data
+			user_form=UserEditForm(data=request.POST, instance=user)
+			profile_form = UserProfileForm(data=request.POST, instance=profile)
+			privacy_form = PrivacyForm(data=request.POST, instance=privacy)
+			#if the form is valid
+			if  user_form.is_valid() and profile_form.is_valid() and privacy_form.is_valid():
+				user_form.save()
+				profile.save()
+				privacy.save()
+				return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[user.id,]))
+			else:
+				print( profile_form.errors, privacy_form.errors)
+
+		# GET
+		else:
+			user_form=UserEditForm(instance=user)
+			profile_form = UserProfileForm(instance=profile)
+			privacy_form = PrivacyForm(instance=privacy)
+			submit_form=SubmitForm()
+			#render template
+			return render(request, 'ManageUsers/edit.html', {'user_form':user_form, 'profile_form': profile_form,'privacy_form':privacy_form, 'submit_form':submit_form})
+
