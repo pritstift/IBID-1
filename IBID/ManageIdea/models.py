@@ -10,12 +10,20 @@ from django.contrib import admin
 
 from taggit.managers import TaggableManager
 
+
+class Status(models.Model):
+    title = models.CharField(max_length = 400, unique=True)
+    date_added=models.DateField(default=timezone.now())
+    def __str__(self):
+        return self.title
+
 class Idea(models.Model):
     title=models.CharField(max_length = 400, unique=True)
     owner = models.ForeignKey(User)
     date_added=models.DateField(default=timezone.now())
     description_short=models.CharField(max_length=2048,default="this Idea has no short description yet")
     description_long=models.CharField(max_length=2048,default="this Idea has no long description yet")
+    stati = models.ManyToManyField(Status, through='StatusRelationship')
     tags = TaggableManager(help_text="A comma-separated list of tags.")
     ressources = models.CharField(max_length=2048,default="Any ressources in need?")
     pictures = models.ImageField(upload_to='idea_images', blank=True)
@@ -41,13 +49,6 @@ class IdeaPrivacy(models.Model):
     files_ip = models.BooleanField(default=False)
     def __str__(self):
         return self.instance.title
-
-class Status(models.Model):
-    title = models.CharField(max_length = 400, unique=True)
-    ideas = models.ManyToManyField(Idea, through='StatusRelationship')
-    date_added=models.DateField(default=timezone.now())
-    def __str__(self):
-        return self.title
 
 class StatusRelationship(models.Model):
     CHOICES = (

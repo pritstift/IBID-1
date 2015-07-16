@@ -9,7 +9,7 @@ from taggit.managers import TaggableManager
 from guardian.shortcuts import assign_perm, get_perms
 import re
 from ManageIdea.models import Idea, StatusRelationship, Status, IdeaPrivacy
-from ManageIdea.forms import PostForm, StatusForm, PrivacyForm, DisplayIdeaForm
+from ManageIdea.forms import PostForm, StatusForm, PrivacyForm, DisplayIdeaForm, StatusEditForm
 
 @login_required
 def detail(request, Idea_id):
@@ -47,9 +47,9 @@ def edit(request, Idea_id):
 	statusRelationships=StatusRelationship.objects.all().filter(idea=idea)
 	if request.method == 'GET':
 		post_form = PostForm(instance=idea)
-		status_form = StatusForm(instance=status)
+		status_form = StatusEditForm(statusRelationships=statusRelationships)
 		privacy_form = PrivacyForm(instance=privacy)
-		return render(request, 'ManageIdea/upload.html', {'post_form':post_form,'status_form':status_form, 'privacy_form':privacy_form})
+		return render(request, 'ManageIdea/edit.html', {'post_form':post_form,'status_form':status_form, 'privacy_form':privacy_form})
 	elif request.method == 'POST':
 		#get PostForm data
 		post_form=PostForm(data=request.POST)

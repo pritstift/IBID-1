@@ -61,6 +61,33 @@ class StatusForm(forms.ModelForm):
 		self.helper.form_tag = False
 		self.helper.form_show_labels = False
 
+class StatusEditForm(forms.ModelForm):	
+	class Meta:
+		model = StatusRelationship
+		fields = ['species']
+	def __init__(self, *args, **kwargs):
+		if kwargs['statusRelationships']:
+			statusRelationships=kwargs.pop('statusRelationships') #selected="selected"
+		super(StatusEditForm,self).__init__(*args, **kwargs)
+		self.status=Status.objects.all()
+		self.helper=FormHelper()
+		divlist=[]
+		for status in self.status:
+			divlist.append(
+				Div(
+					HTML(status),
+					Field('species'),
+					)
+				)
+		self.helper.layout=Layout(
+				Div(
+					*divlist
+					),
+			)
+		self.helper[0].wrap(Div,css_id="status",role="tabpanel" , css_class="tab-pane")
+		self.helper.form_tag = False
+		self.helper.form_show_labels = False
+
 class PrivacyForm(forms.ModelForm):
 	class Meta:
 		model = IdeaPrivacy
