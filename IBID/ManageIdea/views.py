@@ -45,19 +45,18 @@ def index(request):
 def edit(request, Idea_id):
 	idea=get_object_or_404(Idea, pk=Idea_id)
 	privacy=get_object_or_404(IdeaPrivacy, instance=idea)
-	statusRelationships=StatusRelationship.objects.all().filter(idea=idea)
+	statusRelationships=StatusRelationship.objects.filter(idea=idea)
 	if request.method == 'GET':
+
 		post_form = PostForm(instance=idea)
-		StatusFormSet = modelform_factory(StatusRelationship, form=StatusEditForm)
-		status_edit_form = StatusFormSet(statusRelationships)
-		status_edit_form_helper = StatusEditFormHelper()
+		status_form=StatusEditForm(statusRelationships=statusRelationships)
 		privacy_form = PrivacyForm(instance=privacy)
-		return render(request, 'ManageIdea/edit.html', {'post_form':post_form,status_edit_form:status_edit_form,status_edit_form_helper:status_edit_form_helper, 'privacy_form':privacy_form})
+		return render(request, 'ManageIdea/edit.html', {'post_form':post_form,'status_form':status_form, 'privacy_form':privacy_form})
 	elif request.method == 'POST':
 		#get PostForm data
-		post_form=PostForm(data=request.POST)
+		post_form=PostForm(data=request.POST, instance=idea)
 		status_form = StatusForm(data=request.POST)
-		privacy_form = PrivacyForm(data=request.POST)
+		privacy_form = PrivacyForm(data=request.POST, instance=privacy)
 		#print(request.POST)
 		#validate
 		if post_form.is_valid() and status_form.is_valid() and privacy_form.is_valid():

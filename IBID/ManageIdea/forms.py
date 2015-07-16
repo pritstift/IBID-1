@@ -2,7 +2,7 @@ from django import forms
 from ManageIdea.models import Idea, StatusRelationship, Status, IdeaPrivacy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Button, Div, HTML, MultiField, Field
-from crispy_forms.bootstrap import FormActions
+from crispy_forms.bootstrap import FormActions, InlineRadios
 
 
 
@@ -62,9 +62,38 @@ class StatusForm(forms.ModelForm):
 		self.helper.form_show_labels = False
 
 class StatusEditForm(forms.ModelForm):	
+	
 	class Meta:
 		model = StatusRelationship
-		fields = ['status','species']
+		fields = []
+	def __init__(self, *args, **kwargs):
+		self.species=forms.ChoiceField(StatusRelationship.CHOICES)
+		if 'statusRelationships' in kwargs:
+			statusRelationships=kwargs.pop('statusRelationships')
+
+		super(StatusEditForm,self).__init__(*args, **kwargs)
+		self.status=Status.objects.all()
+		self.helper=FormHelper()
+		divlist=[]
+		for relationship in statusRelationships:
+			button='<select class="select form-control" id="id_species" name="species">'
+			for choice in self.species.choices:
+				button=button + '<option value="' + choice[0] + '"' + ('selected="selected"' if relationship.species == choice[0] else '') + '>' + choice[1] + '</option>'
+			button=button + '</select>'
+			divlist.append(
+				Div(
+					HTML(relationship.status),
+					HTML(button),
+					)
+				)
+		self.helper.layout=Layout(
+				Div(
+					*divlist
+					),
+			)
+		self.helper[0].wrap(Div,css_id="status",role="tabpanel" , css_class="tab-pane")
+		self.helper.form_tag = False
+		self.helper.form_show_labels = False
 	
 
 class StatusEditFormHelper(FormHelper):
