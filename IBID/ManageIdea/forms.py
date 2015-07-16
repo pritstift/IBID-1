@@ -10,7 +10,7 @@ class PostForm(forms.ModelForm):
 	description_long = forms.CharField(widget=forms.Textarea)
 	class Meta:
 		model = Idea
-		exclude = ['owner','date_added']
+		exclude = ['owner','date_added', 'stati']
 	def __init__(self, *args, **kwargs):
 		super(PostForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
@@ -64,29 +64,21 @@ class StatusForm(forms.ModelForm):
 class StatusEditForm(forms.ModelForm):	
 	class Meta:
 		model = StatusRelationship
-		fields = ['species']
+		fields = ['status','species']
+	
+
+class StatusEditFormHelper(FormHelper):
 	def __init__(self, *args, **kwargs):
-		if kwargs['statusRelationships']:
-			statusRelationships=kwargs.pop('statusRelationships') #selected="selected"
-		super(StatusEditForm,self).__init__(*args, **kwargs)
-		self.status=Status.objects.all()
-		self.helper=FormHelper()
-		divlist=[]
-		for status in self.status:
-			divlist.append(
+		super(StatusEditFormHelper,self).__init__(*args, **kwargs)
+		self.layout=Layout(
 				Div(
-					HTML(status),
+					HTML('status'),
 					Field('species'),
 					)
-				)
-		self.helper.layout=Layout(
-				Div(
-					*divlist
-					),
 			)
-		self.helper[0].wrap(Div,css_id="status",role="tabpanel" , css_class="tab-pane")
-		self.helper.form_tag = False
-		self.helper.form_show_labels = False
+		self[0].wrap(Div,css_id="status",role="tabpanel" , css_class="tab-pane")
+		self.form_tag = False
+		self.form_show_labels = False
 
 class PrivacyForm(forms.ModelForm):
 	class Meta:

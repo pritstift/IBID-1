@@ -7,9 +7,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
 from taggit.managers import TaggableManager
 from guardian.shortcuts import assign_perm, get_perms
+from django.forms.models import modelform_factory
 import re
 from ManageIdea.models import Idea, StatusRelationship, Status, IdeaPrivacy
-from ManageIdea.forms import PostForm, StatusForm, PrivacyForm, DisplayIdeaForm, StatusEditForm
+from ManageIdea.forms import PostForm, StatusForm, PrivacyForm, DisplayIdeaForm, StatusEditForm, StatusEditFormHelper
 
 @login_required
 def detail(request, Idea_id):
@@ -47,9 +48,11 @@ def edit(request, Idea_id):
 	statusRelationships=StatusRelationship.objects.all().filter(idea=idea)
 	if request.method == 'GET':
 		post_form = PostForm(instance=idea)
-		status_form = StatusEditForm(statusRelationships=statusRelationships)
+		StatusFormSet = modelform_factory(StatusRelationship, form=StatusEditForm)
+		status_edit_form = StatusFormSet(statusRelationships)
+		status_edit_form_helper = StatusEditFormHelper()
 		privacy_form = PrivacyForm(instance=privacy)
-		return render(request, 'ManageIdea/edit.html', {'post_form':post_form,'status_form':status_form, 'privacy_form':privacy_form})
+		return render(request, 'ManageIdea/edit.html', {'post_form':post_form,status_edit_form:status_edit_form,status_edit_form_helper:status_edit_form_helper, 'privacy_form':privacy_form})
 	elif request.method == 'POST':
 		#get PostForm data
 		post_form=PostForm(data=request.POST)
@@ -96,13 +99,14 @@ def post(request):
 			# add user and save to database
 			idea.owner=request.user
 			idea.save()
+			for state in status_form.status:
+				statusRelationship = StatusRelationship(idea = idea,status = state, species=request.POST.getlist('species')[state.id - 1])
+				statusRelationship.save()
+			Idea_id=idea.id
+			post_form.save_m2m()
 			privacy=privacy_form.save(commit=False)
 			privacy.instance = idea
 			privacy.save()
-			for state in status_form.status:
-				statusRelationship = StatusRelationship.objects.create(idea = idea,status = state, species=request.POST.getlist('species')[state.id - 1])
-			Idea_id=idea.id
-			post_form.save_m2m()
 			ideagroup = Group.objects.create(name=idea.title)
 			ideagroup.user_set.add(idea.owner)
 			assign_permissions(user=idea.owner,instance=idea)
