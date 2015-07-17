@@ -31,10 +31,10 @@ def userprofile(request,User_id):
 	else:
 		edit_profile=False
 	if 'view' in perms:
-		return render(request, 'ManageUsers/profile.html', {'view_user_form':view_user_form,'view_profile_form':view_profile_form, 'ideas':ideas,'edit_profile':edit_profile})
+		return render(request, 'ManageUsers/profile.html', {'view_user_form':view_user_form,'view_profile_form':view_profile_form, 'ideas':ideas,'edit_profile':edit_profile, 'userprofile':userprofile})
 	else:
 		view_profile_form=DisplayProfileForm(instance=get_ip_instance(privacy,UserProfile))
-		return render(request, 'ManageUsers/profile.html', {'view_profile_form':view_profile_form,'view_user_form':view_user_form, 'ideas':ideas, 'edit_profile':edit_profile})
+		return render(request, 'ManageUsers/profile.html', {'view_profile_form':view_profile_form,'view_user_form':view_user_form, 'ideas':ideas, 'edit_profile':edit_profile,  'userprofile':get_ip_instance(privacy, UserProfile)})
 
 
 def logout_user(request):

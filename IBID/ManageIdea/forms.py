@@ -78,7 +78,7 @@ class DisplayIdeaForm(forms.ModelForm):
 			self.fields['title'].widget.attrs['readonly'] = True
 			self.fields['description_short'].widget.attrs['readonly'] = True
 			self.fields['description_long'].widget.attrs['readonly'] = True
-			self.fields['status_ip'].widget.attrs['readonly'] = True
+			self.fields['status'].widget.attrs['readonly'] = True
 			self.fields['ressources'].widget.attrs['readonly'] = True
 			self.fields['tags'].widget.attrs['readonly'] = True
 		self.helper = FormHelper()

@@ -22,8 +22,6 @@ class Idea(models.Model):
     ressources = models.CharField(max_length=2048, blank=True)
     pictures = models.ImageField(upload_to='idea_images', blank=True)
     files = models.FileField(upload_to='idea_files', blank=True)
-    #score = models.IntegerField(default=2)
-    #maintenanceStatus = models.ForeignKey(MaintenanceStatus)
     class Meta:
         permissions = (
             ('view', 'View Idea'),
