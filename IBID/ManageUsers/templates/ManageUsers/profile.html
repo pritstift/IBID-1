@@ -29,11 +29,13 @@
 {% block body_left_block-4 %}
  <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>{{userprofile.user.username}}</h3>
+      <h3 class="panel-title"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>   {{ userprofile.user.username}}</h3>
     </div>
     <div class="panel-body">
      <p><big><b>{{userprofile.user.first_name }} {{userprofile.user.last_name }}</b></big></p>
-     <p>{{userprofile.user.email}}</p><hr>
+     <p><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <a href="mailto:{{ userprofile.user.email }}">{{ userprofile.user.email }}</a></p>
+     <p><span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> 01786883375</p>
+     <p><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> <a href="{{ userprofile.website }}">{{ userprofile.website }}</a> </p><hr>
     </div>
   </div>
 {% endblock %}
