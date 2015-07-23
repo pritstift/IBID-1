@@ -15,12 +15,12 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.AddField(
-            model_name='announceidea',
+            model_name='announcement',
             name='idea',
-            field=models.ForeignKey(to='ManageIdea.Idea'),
+            field=models.ForeignKey(blank=True, to='ManageIdea.Idea', null=True),
         ),
         migrations.AddField(
-            model_name='announceidea',
+            model_name='announcement',
             name='owner',
             field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
         ),

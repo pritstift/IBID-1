@@ -2,10 +2,10 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import taggit.managers
+from django.conf import settings
 import datetime
 from django.utils.timezone import utc
-from django.conf import settings
-import taggit.managers
 
 
 class Migration(migrations.Migration):
@@ -19,69 +19,42 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Comment',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
                 ('message', models.TextField()),
-                ('date_added', models.DateTimeField(default=datetime.datetime(2015, 7, 2, 23, 45, 14, 69394, tzinfo=utc))),
+                ('date_added', models.DateTimeField(default=datetime.datetime(2015, 7, 23, 20, 58, 41, 656633, tzinfo=utc))),
             ],
         ),
         migrations.CreateModel(
             name='Idea',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
                 ('title', models.CharField(max_length=400, unique=True)),
-                ('date_added', models.DateField(default=datetime.datetime(2015, 7, 2, 23, 45, 14, 64061, tzinfo=utc))),
-                ('description_short', models.CharField(max_length=2048, default='this Idea has no short description yet')),
-                ('description_long', models.CharField(max_length=2048, default='this Idea has no long description yet')),
-                ('description_long_ip', models.BooleanField(default=False)),
-                ('tags_ip', models.BooleanField(default=False)),
-                ('status_ip', models.BooleanField(default=False)),
-                ('ressources', models.CharField(max_length=2048, default='Any ressources in need?')),
-                ('ressources_ip', models.BooleanField(default=False)),
+                ('date_added', models.DateField(default=datetime.datetime(2015, 7, 23, 20, 58, 41, 652756, tzinfo=utc))),
+                ('description_short', models.CharField(blank=True, max_length=2048)),
+                ('description_long', models.CharField(blank=True, max_length=2048)),
+                ('status', models.CharField(blank=True, max_length=2048)),
+                ('ressources', models.CharField(blank=True, max_length=2048)),
                 ('pictures', models.ImageField(blank=True, upload_to='idea_images')),
-                ('pictures_ip', models.BooleanField(default=False)),
                 ('files', models.FileField(blank=True, upload_to='idea_files')),
-                ('files_ip', models.BooleanField(default=False)),
-                ('score_ip', models.BooleanField(default=False)),
-                ('maintenanceStatus_ip', models.BooleanField(default=False)),
                 ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-                ('tags', taggit.managers.TaggableManager(through='taggit.TaggedItem', verbose_name='Tags', to='taggit.Tag', help_text='A comma-separated list of tags.')),
+                ('tags', taggit.managers.TaggableManager(help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag', verbose_name='Tags')),
             ],
             options={
-                'permissions': (('view', 'View Idea'),),
+                'permissions': (('view', 'View Idea'), ('edit', 'Edit Idea')),
             },
         ),
         migrations.CreateModel(
-            name='MaintenanceStatus',
+            name='IdeaPrivacy',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
-                ('title', models.CharField(max_length=400, unique=True)),
-                ('date_added', models.DateTimeField(default=datetime.datetime(2015, 7, 2, 23, 45, 14, 67601, tzinfo=utc))),
-                ('idea', models.ForeignKey(to='ManageIdea.Idea')),
-                ('supervisor', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, serialize=False, auto_created=True)),
+                ('description_long_ip', models.BooleanField(default=False)),
+                ('tags_ip', models.BooleanField(default=False)),
+                ('status_ip', models.BooleanField(default=False)),
+                ('ressources_ip', models.BooleanField(default=False)),
+                ('pictures_ip', models.BooleanField(default=False)),
+                ('files_ip', models.BooleanField(default=False)),
+                ('instance', models.ForeignKey(to='ManageIdea.Idea')),
             ],
-        ),
-        migrations.CreateModel(
-            name='Status',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
-                ('title', models.CharField(max_length=400, unique=True)),
-                ('date_added', models.DateField(default=datetime.datetime(2015, 7, 2, 23, 45, 14, 65991, tzinfo=utc))),
-            ],
-        ),
-        migrations.CreateModel(
-            name='StatusRelationship',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
-                ('date_added', models.DateField(default=datetime.datetime(2015, 7, 2, 23, 45, 14, 66744, tzinfo=utc))),
-                ('species', models.CharField(max_length=10, default='EMPTY', choices=[('EMPTY', ''), ('FINISHED', 'Abgeschlossen'), ('CURRENT', 'Aktiv')])),
-                ('idea', models.ForeignKey(to='ManageIdea.Idea')),
-                ('status', models.ForeignKey(to='ManageIdea.Status')),
-            ],
-        ),
-        migrations.AddField(
-            model_name='status',
-            name='ideas',
-            field=models.ManyToManyField(through='ManageIdea.StatusRelationship', to='ManageIdea.Idea'),
         ),
         migrations.AddField(
             model_name='comment',

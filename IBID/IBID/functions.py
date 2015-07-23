@@ -17,22 +17,23 @@ def get_ip_fields(Model):
 
 def get_ip_instance(PrivacyInstance,InstanceModel):
 	ipList = []
+	print ('in function:')
 	modInstance = Object()
 	fields=PrivacyInstance._meta.get_fields()
 	modInstance.instance = InstanceModel()
 	ip_pattern=re.compile(r'.*_ip$')
 	for i in fields:
 		if i.concrete:
+			print(i.name)
 			m=ip_pattern.match(i.name)
-			if getattr(PrivacyInstance,i.name)==True:
+			if getattr(PrivacyInstance,i.name)==False:
 				name=re.sub(r'_ip$','',m.group(0))
 				ipList.append(name)
 	print(ipList)
 	for i in PrivacyInstance.instance._meta.get_fields():
 		if i.concrete:
-			if i.name in ipList:
+			if i.name not in ipList:
 				setattr(modInstance.instance,i.name,getattr(PrivacyInstance.instance, i.name))
-				print(i.name)
 	return modInstance.instance
 
 
