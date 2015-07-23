@@ -1,50 +1,55 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-{% block body_middle_left_block-4 %}
 
-      <!-- Nav tabs -->
-      <ul class="nav nav-tabs" role="tablist">
-       <li role="presentation" class="active"><a href="#user" aria-controls="user" role="tab" data-toggle="tab">User</a></li>
-       <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
-       <div class="column three-fourths">
-        <li role="presentation"> 
-         {% if edit_profile %}
-          <a href="{% url 'ManageUsers:edit' edit_profile %}"> 
-            <button type="button" class="btn btn-default btn-sm">
-              <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit Profile
-            </button>
-          </a>
-         {% endif %}
-        </li>
-       </div> 
-      </ul>
 
-  <div class="tab-content" >
-    {% crispy view_user_form %}
-      {% crispy view_profile_form %}
-  </div>
-{% endblock %}
 
 {% block body_left_block-4 %}
  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>   {{ userprofile.user.username}}</h3>
+    <div class="panel-heading clearfix" >
+      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>   {{ userprofile.user.username}}</h3>
+      <div class="btn-group pull-right">
+        {% if edit_profile %}
+          <a href="{% url 'ManageUsers:edit' user.id%}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+          </a>
+        {% endif %}
+      </div>
     </div>
     <div class="panel-body">
      <p><big><b>{{userprofile.user.first_name }} {{userprofile.user.last_name }}</b></big></p>
-     <p><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <a href="mailto:{{ userprofile.user.email }}">{{ userprofile.user.email }}</a></p>
-     <p><span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> 01786883375</p>
-     <p><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> <a href="{{ userprofile.website }}">{{ userprofile.website }}</a> </p><hr>
+     {% if userprofile.email_adress %}
+      <p><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> <a href="mailto:{{ userprofile.email_adress }}">
+      {{ userprofile.email_adress }}</a></p>
+     {% endif %}
+     {% if userprofile.phone_number %}
+      <p><span class="glyphicon glyphicon-earphone" aria-hidden="true"></span> {{userprofile.phone_number}}</p>
+     {% endif %}
+     {% if userprofile.website %}
+     <p><span class="glyphicon glyphicon-globe" aria-hidden="true"></span> <a href="{{ userprofile.website }}">{{ userprofile.website }}</a> </p>
+     {% endif %}
+     <hr>
+     {% if userprofile.company %}
+        <p><span class="glyphicon glyphicon-briefcase" aria-hidden="true"></span> {{userprofile.company}}</p>
+     {% endif %}
+     {% if userprofile.occupation %}
+      <p> {{userprofile.occupation}}</p>
+     {% endif %}
     </div>
   </div>
 {% endblock %}
 
-{% block body_middle_right_block-4 %}
-
+{% block body_middle_left_block-4 %}
   <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title"><span class="glyphicon glyphicon-grain" aria-hidden="true"></span>Ideas</h3>
+    <div class="panel-heading clearfix">
+      <h3 class="panel-title pull-left" style="padding-top: 5px;">
+        <span class="glyphicon glyphicon-grain" aria-hidden="true"></span>Ideas
+      </h3>
+      <div class="btn-group pull-right">
+        {% if edit_profile %}
+          <a href="{% url 'ManageIdea:post'%}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </a>
+        {% endif %}
+      </div>
     </div>
     <div class="panel-body">
       {% for idea in ideas %}
@@ -59,14 +64,34 @@
   </div>
 {% endblock %}
 
+{% block body_middle_right_block-4 %}
+  <div class="panel panel-default">
+    <div class="panel-heading clearfix">
+      <h3 class="panel-title pull-left" style="padding-top: 5px;">
+        <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>Announcements
+      </h3>
+      <div class="btn-group pull-right">
+        {% if edit_profile %}
+          <a href="{% url 'ManageUsers:post_announcement' userprofile.user.id%}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="panel-body">
+      {% for announcement in announcements %}
+        <div class="list-group">
+          <a href="{% url 'ManageConnections:detail_announcement' announcement.id %}" class="list-group-item ">
+            <h4 class="list-group-item-heading">{{ announcement }}</h4>
+            <p class="list-group-item-text">{{ announcement.description_short }}</p>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}
+
+
+
 {% block body_right_block-4 %}
-{% if edit_profile %}
-  <a href="{% url 'ManageUsers:edit' edit_profile %}"> 
-    <button type="button" class="btn btn-default">
-      <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit Profile
-    </button>
-  </a>
-{% endif %}
 
 {% endblock %}
 

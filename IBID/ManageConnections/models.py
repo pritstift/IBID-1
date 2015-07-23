@@ -19,3 +19,6 @@ class Announcement(models.Model):
             ('view', 'View Announcement'),
             ('edit', 'Edit Announcement'),
         )
+
+    def __str__(self):
+        return self.title

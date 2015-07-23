@@ -5,15 +5,16 @@ from datetime import datetime
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth  import authenticate, login
-from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm, DisplayProfileForm, UserEditForm, SubmitForm
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
-from ManageIdea.models import Idea
-from IBID.functions import get_ip_instance, Object
-from ManageUsers.models import UserProfile, UserProfilePrivacy
 from guardian.shortcuts import assign_perm, get_perms
+from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm, DisplayProfileForm, UserEditForm, SubmitForm
+from ManageUsers.models import UserProfile, UserProfilePrivacy
+from ManageIdea.models import Idea
 from ManageIdea.views import assign_permissions
+from ManageConnections.models import Announcement
 import Home
+from IBID.functions import get_ip_instance, Object
 import re
 
 
@@ -21,6 +22,7 @@ import re
 def userprofile(request,User_id):
 	user = get_object_or_404(User,pk = User_id)
 	userprofile = get_object_or_404(UserProfile,user=user)
+	announcements = Announcement.objects.filter(owner=user)
 	privacy = get_object_or_404(UserProfilePrivacy,instance=userprofile)
 	view_user_form = DisplayUserForm(instance = user)
 	view_profile_form = DisplayProfileForm(instance = userprofile)
@@ -31,10 +33,9 @@ def userprofile(request,User_id):
 	else:
 		edit_profile=False
 	if 'view' in perms:
-		return render(request, 'ManageUsers/profile.html', {'view_user_form':view_user_form,'view_profile_form':view_profile_form, 'ideas':ideas,'edit_profile':edit_profile, 'userprofile':userprofile})
+		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'announcements':announcements,'edit_profile':edit_profile, 'userprofile':userprofile})
 	else:
-		view_profile_form=DisplayProfileForm(instance=get_ip_instance(privacy,UserProfile))
-		return render(request, 'ManageUsers/profile.html', {'view_profile_form':view_profile_form,'view_user_form':view_user_form, 'ideas':ideas, 'edit_profile':edit_profile,  'userprofile':get_ip_instance(privacy, UserProfile)})
+		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'announcements':announcements, 'edit_profile':edit_profile,  'userprofile':get_ip_instance(privacy, UserProfile)})
 
 
 def logout_user(request):
