@@ -20,7 +20,7 @@ class Idea(models.Model):
     status = models.CharField(max_length=2048, blank=True)
     tags = TaggableManager(help_text="A comma-separated list of tags.")
     ressources = models.CharField(max_length=2048, blank=True)
-    pictures = models.ImageField(upload_to='idea_images', blank=True)
+    pictures = models.ImageField(upload_to='pictures', blank=True)
     files = models.FileField(upload_to='idea_files', blank=True)
     class Meta:
         permissions = (

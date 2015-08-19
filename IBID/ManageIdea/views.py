@@ -10,6 +10,7 @@ from django.forms.models import modelform_factory
 import re
 from ManageIdea.models import Idea, IdeaPrivacy
 from ManageIdea.forms import PostForm, PrivacyForm, DisplayIdeaForm
+from ManageConnections.models import Announcement
 
 from IBID.functions import get_ip_instance, assign_permissions
 
@@ -19,19 +20,20 @@ def detail(request, Idea_id):
 	idea = get_object_or_404(Idea, pk=Idea_id)
 	ideaprivacy = get_object_or_404(IdeaPrivacy, instance=idea)
 	detail_form = DisplayIdeaForm(instance=idea)
+	announcements = Announcement.objects.filter(idea=idea)
 	perms = get_perms(request.user, idea)
 	if 'edit' in perms:
-		edit_idea = idea.id
+		edit_idea = True
 	else:
 		edit_idea=False
 	if ('view' or idea.title) in get_perms(request.user, idea):
 		#has 'view_idea' permission
 		print("user has permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':idea, 'detail_form':detail_form, 'edit_idea':edit_idea})
+		return render(request, 'ManageIdea/detail.html', {'Idea':idea, 'detail_form':detail_form, 'announcements':announcements, 'edit_idea':edit_idea})
 	else:
 		#only print public fields
 		print("user has no permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy),'detail_form':detail_form, 'edit_idea':edit_idea})
+		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy),'detail_form':detail_form, 'announcements':announcements, 'edit_idea':edit_idea})
 
 
 
@@ -52,13 +54,17 @@ def edit(request, Idea_id):
 		return render(request, 'ManageIdea/edit.html', {'post_form':post_form, 'privacy_form':privacy_form})
 	elif request.method == 'POST':
 		#get PostForm data
-		post_form=PostForm(data=request.POST, instance=idea)
+		post_form=PostForm(request.POST,request.FILES, instance=idea)
 		privacy_form = PrivacyForm(data=request.POST, instance=privacy)
 		#print(request.POST)
 		#validate
-		if post_form.is_valid()  and privacy_form.is_valid():
-			post_form.save()
+		if post_form.is_valid()  and privacy_form.is_valid():			
+			print(request.FILES)
+			if 'pictures' in request.FILES:
+				print('pictures')
+				idea.pictures=request.FILES['pictures']
 			# add user and save to database
+			post_form.save()
 			idea.save()
 			privacy.save()
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))

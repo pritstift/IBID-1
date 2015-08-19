@@ -3,8 +3,137 @@
 
 {% load crispy_forms_tags %}
 
-{% block body_middle_block-3 %}
 
+{% block body_middle_block-6 %}
+  <div class="panel panel-default">
+    <div class="panel-heading clearfix" >
+      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-grain" aria-hidden="true"></span> {{ Idea.title}}</h3>
+      <div class="btn-group pull-right">
+        {% if edit_idea %}
+          <a href="{% url 'ManageIdea:edit' Idea.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="panel-body">
+	    <div class="list-group">
+	        <p class="list-group-item-text"><center><b>{{ Idea.description_short }}</b></center></p>
+	    </div>
+		<div class="list-group">
+	    	<div class="row">
+      			<div class="col-md-1">
+      				<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
+      			</div>
+      			<div class="col-md-11">
+      				<b class="list-group-item-heading">Description</b>
+	        		<p class="list-group-item-text">{{ Idea.description_long }}</p>
+      			</div>
+    		</div>
+	    </div>
+	    {% if Idea.ressources %}
+		    <div class="list-group">
+		    	<div class="row">
+	      			<div class="col-md-1">
+	      				<span class="glyphicon glyphicon-wrench" aria-hidden="true"></span>
+	      			</div>
+	      			<div class="col-md-11">
+	      				<b class="list-group-item-heading">Ressources</b>
+			        <p class="list-group-item-text">{{ Idea.ressources }}</p>
+	      			</div>
+    			</div>
+		    </div>
+	    {% endif %}
+	    {% if Idea.pictures %}
+		    <div class="list-group">
+		    	<div class="row">
+	      			<div class="col-md-1">
+	      				<span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+	      			</div>
+	      			<div class="col-md-11">
+	      				<b class="list-group-item-heading">Pictures</b>
+			        	<p class="list-group-item-text">{{ Idea.pictures }}</p>
+	      			</div>
+    			</div>
+		    </div>
+	    {% endif %}
+	    {% if Idea.files %}
+	    	<div class="list-group">
+		    	<div class="row">
+	      			<div class="col-md-1">
+	      				<span class="glyphicon glyphicon-paperclip" aria-hidden="true"></span>
+	      			</div>
+	      			<div class="col-md-11">
+	      				<b class="list-group-item-heading">Files</b>
+			        	<p class="list-group-item-text">{{ Idea.files }}</p>
+	      			</div>
+    			</div>
+		    </div>
+	    {% endif %}
+	    <div class="list-group">
+	    	<div class="row">
+      			<div class="col-md-1">
+      				<span class="glyphicon glyphicon-king" aria-hidden="true"></span>
+      			</div>
+      			<div class="col-md-11">
+		        	<p class="list-group-item-text"><a href="{% url 'ManageUsers:userprofile' Idea.owner.id %}">{{ Idea.owner }}</a></p>
+      			</div>
+			</div>
+	    </div>
+	    <hr>
+	    <div class="list-group">
+	    	<div class="row">
+	    		<div class="col-md-1 col-sm-1">
+      			</div>
+      			<div class="col-md-10 col-sm-10">
+      				<b><center>Announcements</center></b>
+      			</div>
+      			<div class="col-md-1 col-sm-1">
+      				<div class="btn-group pull-right">
+      					{% if edit_idea %}
+				          <a href="{% url 'ManageIdea:post_announcement' Idea.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				          </a>
+				        {% endif %}
+			        </div>
+      			</div>
+	    	</div>
+	    </div>
+
+		<div class="list-group">
+			{% for announcement in announcements %}
+			<div class="row">
+				<div class="col-md-1 col-sm-1">
+      				<span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
+      			</div>
+   
+      			<div class="col-md-10 col-sm-10">
+			            <p class="list-group-item-text">
+			            	<a href="{% url 'ManageConnections:detail_announcement' announcement.id %}"><b>{{ announcement.title }}</b></a></p>
+			            <p class="list-group-item-text">{{ announcement.description_short }}</p>
+				      	<p></p>
+      			</div>
+      			<div class="col-md-1 col-sm-1">
+      			</div>
+			</div>
+			{% endfor %}
+	    </div>
+		    
+    </div>
+  </div>
+{% endblock %}
+
+{% block body_right_block-6 %}
+ 
+{% endblock %}
+
+
+
+
+
+
+
+
+{% block body_middle_block-3 %}
+<!-- 
 <ul class="nav nav-tabs" role="tablist">
   <li role="presentation" class="active"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a></li>
   </ul>
@@ -18,11 +147,11 @@
 
 {% block body_right_block-3 %}
 {% if edit_idea %}
-  <a href="{% url 'ManageIdea:edit' edit_idea %}"> 
+  <a href="{% url 'ManageIdea:edit' Idea.id %}"> 
     <button type="button" class="btn btn-default">
       <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> Edit Idea
     </button>
   </a>
-{% endif %}
+{% endif %} -->
 
 {% endblock %}

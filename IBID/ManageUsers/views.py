@@ -22,7 +22,7 @@ import re
 def userprofile(request,User_id):
 	user = get_object_or_404(User,pk = User_id)
 	userprofile = get_object_or_404(UserProfile,user=user)
-	announcements = Announcement.objects.filter(owner=user)
+	announcements = Announcement.objects.filter(owner=user, idea=None)
 	privacy = get_object_or_404(UserProfilePrivacy,instance=userprofile)
 	view_user_form = DisplayUserForm(instance = user)
 	view_profile_form = DisplayProfileForm(instance = userprofile)
@@ -48,7 +48,7 @@ def register(request):
 	if request.method == 'POST':
 		#grab information form from the POST data
 		user_form = UserForm(data=request.POST)
-		profile_form = UserProfileForm(data=request.POST)
+		profile_form = UserProfileForm(request.POST,request.FILES)
 		privacy_form = PrivacyForm(data=request.POST)
 		submit_form=SubmitForm()		
 		#if the form is valid
