@@ -14,7 +14,7 @@ from taggit.managers import TaggableManager
 class Idea(models.Model):
     title=models.CharField(max_length = 400, unique=True)
     owner = models.ForeignKey(User)
-    date_added=models.DateField(default=timezone.now())
+    date_added=models.DateField(default=timezone.now)
     description_short=models.CharField(max_length=2048, blank=True)
     description_long=models.CharField(max_length=2048, blank=True)
     status = models.CharField(max_length=2048, blank=True)
@@ -45,5 +45,12 @@ class IdeaPrivacy(models.Model):
 class Comment(models.Model):
     supervisor = models.ForeignKey(User)                   # User mit staffpermission
     idea = models.ForeignKey(Idea)
+    title=models.TextField(max_length=2048,blank=False, default='')
+    visible=models.BooleanField(default=False)
     message = models.TextField(blank=False)
-    date_added = models.DateTimeField(default=timezone.now())
+    date_added = models.DateTimeField(default=timezone.now)
+    class Meta:
+        permissions = (
+            ('view', 'View Idea'),
+            ('edit', 'Edit Idea'),
+        )

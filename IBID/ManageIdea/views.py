@@ -8,7 +8,7 @@ from django.contrib.auth.models import User, Group
 from guardian.shortcuts import assign_perm, get_perms
 from django.forms.models import modelform_factory
 import re
-from ManageIdea.models import Idea, IdeaPrivacy
+from ManageIdea.models import Idea, IdeaPrivacy, Comment
 from ManageIdea.forms import PostForm, PrivacyForm, DisplayIdeaForm
 from ManageConnections.models import Announcement
 
@@ -19,6 +19,7 @@ def detail(request, Idea_id):
 	#check for 'view_idea' permission of authenticated user on certain idea
 	idea = get_object_or_404(Idea, pk=Idea_id)
 	ideaprivacy = get_object_or_404(IdeaPrivacy, instance=idea)
+	comments=Comment.objects.filter(idea=idea)
 	detail_form = DisplayIdeaForm(instance=idea)
 	announcements = Announcement.objects.filter(idea=idea)
 	perms = get_perms(request.user, idea)
@@ -29,7 +30,7 @@ def detail(request, Idea_id):
 	if ('view' or idea.title) in get_perms(request.user, idea):
 		#has 'view_idea' permission
 		print("user has permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':idea, 'detail_form':detail_form, 'announcements':announcements, 'edit_idea':edit_idea})
+		return render(request, 'ManageIdea/detail.html', {'Idea':idea, 'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'edit_idea':edit_idea})
 	else:
 		#only print public fields
 		print("user has no permission")

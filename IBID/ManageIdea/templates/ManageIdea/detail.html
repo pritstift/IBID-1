@@ -2,7 +2,7 @@
 {% extends 'base.html'%}
 
 {% load crispy_forms_tags %}
-
+{% load idea_extras %}
 
 {% block body_middle_block-6 %}
   <div class="panel panel-default">
@@ -116,7 +116,44 @@
 			</div>
 			{% endfor %}
 	    </div>
-		    
+		<hr>
+	    <div class="list-group">
+	    	<div class="row">
+	    		<div class="col-md-1 col-sm-1">
+      			</div>
+      			<div class="col-md-10 col-sm-10">
+      				<b><center>Comments by staff users</center></b>
+      			</div>
+      			<div class="col-md-1 col-sm-1">
+      				<div class="btn-group pull-right">
+      					{% if request.user|has_group:"staff" %}
+				          Add Comment
+				        {% endif %}
+			        </div>
+      			</div>
+	    	</div>
+	    </div>
+
+		<div class="list-group">
+			{% for comment in comments %}
+			{% if user|can_view:comment %}
+			<div class="row">
+				<div class="col-md-1 col-sm-1">
+      				<span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
+      			</div>
+   
+      			<div class="col-md-10 col-sm-10">
+			            <p class="list-group-item-text">
+			            	<a href="{% url 'ManageConnections:detail_announcement' announcement.id %}"><b>{{ announcement.title }}</b></a></p>
+			            <p class="list-group-item-text">{{ announcement.description_short }}</p>
+				      	<p></p>
+      			</div>
+      			<div class="col-md-1 col-sm-1">
+      			</div>
+			</div>
+			{% endif %}
+			{% endfor %}
+	    </div>    
     </div>
   </div>
 {% endblock %}

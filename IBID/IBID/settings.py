@@ -30,33 +30,33 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'ManageIdea',
-    'ManageUsers',
-    'ManageConnections',
-    'Home',
-    'taggit',
-    'taggit_selectize',
-    'guardian',
-    'bootstrap3',
-    'widget_tweaks',
-    'bootstrapform',
-    'crispy_forms',
+	'django.contrib.admin',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+	'ManageIdea',
+	'ManageUsers',
+	'ManageConnections',
+	'Home',
+	'taggit',
+	'taggit_selectize',
+	'guardian',
+	'bootstrap3',
+	'widget_tweaks',
+	'bootstrapform',
+	'crispy_forms',
 )
 
 MIDDLEWARE_CLASSES = (
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 ROOT_URLCONF = 'IBID.urls'
@@ -68,10 +68,10 @@ WSGI_APPLICATION = 'IBID.wsgi.application'
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+	'default': {
+		'ENGINE': 'django.db.backends.sqlite3',
+		'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+	}
 }
 
 # Internationalization
@@ -96,14 +96,18 @@ STATIC_URL = '/static/'
 TEMPLATE_DIRS = [os.path.join(BASE_DIR,'templates')]
 
 TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
+	'django.template.loaders.filesystem.Loader',
+	'django.template.loaders.app_directories.Loader',
 #     'django.template.loaders.eggs.load_template_source',
+)
+TEMPLATE_CONTEXT_PROCESSORS =(
+	'django.core.context_processors.request',
+	'django.contrib.auth.context_processors.auth',
 )
 
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend', # this is default
-    'guardian.backends.ObjectPermissionBackend',
+	'django.contrib.auth.backends.ModelBackend', # this is default
+	'guardian.backends.ObjectPermissionBackend',
 )
 
 LOGIN_URL = '/users/login'
