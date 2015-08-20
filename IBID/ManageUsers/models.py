@@ -12,7 +12,7 @@ class UserProfile(models.Model):
 	website = models.URLField(blank=True)
 	phone_number = models.CharField(max_length=15,validators=[RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."),], blank=True) # validators should be a list
 	email_adress = models.EmailField(max_length=254)
-	date_joined = models.DateField(default=timezone.now())
+	date_joined = models.DateField(default=timezone.now)
 	# Override the __unicode__() method to return out something meaningful!
 	class Meta:
 		permissions = (

@@ -19,7 +19,7 @@ class PostForm(forms.ModelForm):
 				'title',
 				'description_short',
 				'description_long',
-				'status'
+				'status',
 				'ressources',
 				'tags',
 				css_class="tab-pane active",
