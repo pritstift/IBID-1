@@ -9,7 +9,7 @@ from guardian.shortcuts import assign_perm, get_perms
 from django.forms.models import modelform_factory
 import re
 from ManageIdea.models import Idea, IdeaPrivacy, Comment
-from ManageIdea.forms import PostForm, PrivacyForm, DisplayIdeaForm
+from ManageIdea.forms import PostForm, PrivacyForm, DisplayIdeaForm, CommentForm
 from ManageConnections.models import Announcement
 
 from IBID.functions import get_ip_instance, assign_permissions
@@ -20,6 +20,7 @@ def detail(request, Idea_id):
 	idea = get_object_or_404(Idea, pk=Idea_id)
 	ideaprivacy = get_object_or_404(IdeaPrivacy, instance=idea)
 	comments=Comment.objects.filter(idea=idea)
+	commentform=CommentForm()
 	detail_form = DisplayIdeaForm(instance=idea)
 	announcements = Announcement.objects.filter(idea=idea)
 	perms = get_perms(request.user, idea)
@@ -30,13 +31,29 @@ def detail(request, Idea_id):
 	if ('view' or idea.title) in get_perms(request.user, idea):
 		#has 'view_idea' permission
 		print("user has permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':idea, 'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'edit_idea':edit_idea})
+		return render(request, 'ManageIdea/detail.html', {'Idea':idea, 'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'commentform':commentform,'edit_idea':edit_idea})
 	else:
 		#only print public fields
 		print("user has no permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy),'detail_form':detail_form, 'announcements':announcements, 'edit_idea':edit_idea})
+		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy),'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'commentform':commentform, 'edit_idea':edit_idea})
 
-
+def createcomment(request, Idea_id):
+	if request.method =='POST':
+		comment_form=CommentForm(data=request.POST)
+		if comment_form.is_valid():
+			comment=comment_form.save(commit=False)
+			comment.idea=Idea.objects.get(pk=Idea_id)
+			comment.supervisor=request.user
+			comment.save()
+			if comment_form.cleaned_data['visible'] == True:
+				assign_perm('view', comment.idea.owner,comment)
+			staff = Group.objects.get(name='staff')
+			assign_perm('view', staff,comment)
+			assign_perm('edit', staff,comment)
+		else:
+			print("form not valid")
+			print(comment_form.errors)
+		return HttpResponseRedirect(reverse('ManageIdea:detail', args=[Idea_id,]))
 
 def index(request):
 	all_ideas = Idea.objects.all()

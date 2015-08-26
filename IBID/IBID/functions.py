@@ -48,3 +48,4 @@ def assign_permissions(**kwargs):
 	assign_perm('view', staff,kwargs["instance"])
 	assign_perm('edit', staff,kwargs["instance"])
 	assign_perm('edit', kwargs["user"],kwargs["instance"])
+
