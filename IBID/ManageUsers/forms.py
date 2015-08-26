@@ -29,6 +29,59 @@ class UserForm(forms.ModelForm):
 		)
 		self.helper.form_tag = False
 
+
+class RegisterForm(forms.ModelForm):
+	password1 = forms.CharField(widget=forms.PasswordInput())
+	password2 = forms.CharField(widget=forms.PasswordInput(),help_text="Enter the same password as above, for verification.")
+	first_name=forms.CharField(required=True)
+	last_name=forms.CharField(required=True)
+	email = forms.EmailField(required=True)
+	error_messages = {
+		'password_mismatch': "The two password fields didn't match.",
+	}
+	class Meta:
+		model = User
+		fields = ('username','first_name','last_name',)
+	def __init__(self, *args, **kwargs):
+		super(RegisterForm, self).__init__(*args, **kwargs)
+		self.helper=FormHelper()
+		self.fields['first_name'].label = "First name"
+		self.fields['last_name'].label = "Last name"
+		self.fields['username'].label = "Username"
+		self.fields['email'].label = "Email"
+		self.fields['password1'].label = "Password"
+		self.fields['password2'].label = "Repeat Password"
+		self.helper.layout=Layout(
+			Div(
+				'first_name',
+				'last_name',
+				'username',				
+				'email',
+				'password1',
+				'password2',
+				),
+			FormActions(
+				Submit('save', 'Submit'),
+			),
+		)
+		
+	def clean_password2(self):
+		password1 = self.cleaned_data.get("password1")
+		password2 = self.cleaned_data.get("password2")
+		if password1 and password2 and password1 != password2:
+			raise forms.ValidationError(
+				self.error_messages['password_mismatch'],
+				code='password_mismatch',
+			)
+		return password2
+
+	def save(self, commit=True):
+		user = super(RegisterForm, self).save(commit=False)
+		user.set_password(self.cleaned_data["password1"])
+		if commit:
+			user.save()
+		return user
+
 class UserEditForm(forms.ModelForm):
 	first_name=forms.CharField(required=True)
 	last_name=forms.CharField(required=True)

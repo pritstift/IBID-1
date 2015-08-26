@@ -8,7 +8,7 @@ from django.contrib.auth  import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from guardian.shortcuts import assign_perm, get_perms
-from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm, DisplayProfileForm, UserEditForm, SubmitForm
+from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm, DisplayProfileForm, UserEditForm, SubmitForm, RegisterForm
 from ManageUsers.models import UserProfile, UserProfilePrivacy
 from ManageIdea.models import Idea
 from ManageIdea.views import assign_permissions
@@ -16,6 +16,8 @@ from ManageConnections.models import Announcement
 import Home
 from IBID.functions import get_ip_instance, Object
 import re
+import random
+import string
 
 
 @login_required
@@ -47,53 +49,42 @@ def register(request):
 
 	if request.method == 'POST':
 		#grab information form from the POST data
-		user_form = UserForm(data=request.POST)
-		profile_form = UserProfileForm(request.POST,request.FILES)
-		privacy_form = PrivacyForm(data=request.POST)
-		submit_form=SubmitForm()		
+		register_form = RegisterForm(data=request.POST)		
 		#if the form is valid
-		if user_form.is_valid() and profile_form.is_valid() and privacy_form.is_valid():
-			user = user_form.save()
+		if register_form.is_valid():
 
 			#hash password and save
-			user.set_password(user.password)
+			user=register_form.save(commit=False)
 			user.save()
 
 			# Now sort out the UserProfile instance.
 			# Since we need to set the user attribute ourselves, we set commit=False.
 			# This delays saving the model until we're ready to avoid integrity problems.
-			profile = profile_form.save(commit=False)
+			profile = UserProfile()
 			profile.user=user
+			profile.email_adress=register_form.cleaned_data['email']
 			profile.save()
-			privacy = privacy_form.save(commit=False)
+			privacy = UserProfilePrivacy()
 			privacy.instance = profile
 			privacy.save()
 			assign_permissions(user=profile.user,instance=profile)
-
-
-			#save profile
-			profile.save()
 
 			#template registration was successful
 			registered=True
 
 			username = request.POST['username']
-			password = request.POST['password']
+			password = request.POST['password2']
 			user = authenticate(username=username, password=password)
 			login(request, user)			
 			return HttpResponseRedirect(reverse('ManageUsers:userprofile',args=[user.id,]))
 		else:
-			print( user_form.errors, profile_form.errors)
-			return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form,'privacy_form':privacy_form, 'submit_form':submit_form, 'registered': registered})
+			print( register_form.errors)
+			return render(request, 'ManageUsers/register.html', {'register_form': register_form, 'registered': registered})
 	# GET
 	else:
-		user_form = UserForm()
-		profile_form = UserProfileForm()
-		privacy_form = PrivacyForm()
-		submit_form=SubmitForm()
-
+		register_form = RegisterForm()
 		#render template
-		return render(request, 'ManageUsers/register.html', {'user_form': user_form, 'profile_form': profile_form,'privacy_form':privacy_form, 'submit_form':submit_form, 'registered': registered})
+		return render(request, 'ManageUsers/register.html', {'register_form': register_form })
 
 def user_login(request):
 	if request.method == 'POST':
