@@ -46,7 +46,6 @@ class Comment(models.Model):
     supervisor = models.ForeignKey(User)                   # User mit staffpermission
     idea = models.ForeignKey(Idea)
     title=models.TextField(max_length=2048,blank=False, default='')
-    visible=models.BooleanField(default=False)
     message = models.TextField(blank=False)
     date_added = models.DateTimeField(default=timezone.now)
     class Meta:

@@ -127,7 +127,29 @@
       			<div class="col-md-1 col-sm-1">
       				<div class="btn-group pull-right">
       					{% if request.user|has_group:"staff" %}
-				          Add Comment
+				          <a class="btn btn-default btn-sm" data-toggle="modal" data-target="#createCommentModal">
+							  <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+							</a>
+
+							<!-- Modal -->
+							<div class="modal fade" id="createCommentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+							  <div class="modal-dialog" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							        <h4 class="modal-title" id="myModalLabel">Leave Comment</h4>
+							      </div>
+							      <div class="modal-body">
+									<form action="{% url 'ManageIdea:createcomment' Idea.id %}" method="POST">
+									  {% csrf_token %}
+									  {% crispy commentform %}
+									  <input type="submit" class="btn btn-submit col-md-offset-2">
+									</form>
+							      </div>
+
+							    </div>
+							  </div>
+							</div>
 				        {% endif %}
 			        </div>
       			</div>
@@ -136,16 +158,15 @@
 
 		<div class="list-group">
 			{% for comment in comments %}
-			{% if user|can_view:comment %}
+			{% if user|can_view:comment or request.user|has_group:"staff" %}
 			<div class="row">
 				<div class="col-md-1 col-sm-1">
-      				<span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
+      				<span class="glyphicon glyphicon-comment" aria-hidden="true"></span>
       			</div>
-   
       			<div class="col-md-10 col-sm-10">
 			            <p class="list-group-item-text">
-			            	<a href="{% url 'ManageConnections:detail_announcement' announcement.id %}"><b>{{ announcement.title }}</b></a></p>
-			            <p class="list-group-item-text">{{ announcement.description_short }}</p>
+			            	 <b >{{ comment.title }} </b> by <a href="{% url 'ManageUsers:userprofile' comment.supervisor.id %}"> {{ comment.supervisor }} </a>
+			            <p class="list-group-item-text">{{ comment.message }}</p>
 				      	<p></p>
       			</div>
       			<div class="col-md-1 col-sm-1">

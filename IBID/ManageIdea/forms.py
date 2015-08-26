@@ -1,5 +1,5 @@
 from django import forms
-from ManageIdea.models import Idea, IdeaPrivacy
+from ManageIdea.models import Idea, IdeaPrivacy, Comment
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Button, Div, HTML, MultiField, Field
 from crispy_forms.bootstrap import FormActions, InlineRadios
@@ -94,5 +94,26 @@ class DisplayIdeaForm(forms.ModelForm):
 				css_class="tab-pane active",
 				css_id="description",
 				role="tabpanel" ,
+				),
+		)
+
+class CommentForm(forms.ModelForm):
+	message = forms.CharField(widget=forms.Textarea)
+	visible = forms.BooleanField( required=False, initial=False)
+	class Meta:
+		model = Comment
+		exclude = ['supervisor', 'date_added','idea']
+	def __init__(self, *args, **kwargs):
+		super(CommentForm, self).__init__(*args, **kwargs)
+		self.helper = FormHelper()
+		self.helper.form_tag = False
+		self.fields['title'].label = "Title"
+		self.fields['message'].label = "Message"
+		self.fields['visible'].label = "Visble to idea owner?"
+		self.helper.layout = Layout(
+			Div(
+				'title',
+				'message',
+				'visible',
 				),
 		)

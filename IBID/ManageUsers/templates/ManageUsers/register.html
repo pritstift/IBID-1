@@ -10,23 +10,7 @@
   <strong>Thank you for registering!</strong>
   <a href="{% url 'ManageIdea:index' %}">Return to the homepage.</a><br />
   {% else %}
-    <form action="" method="POST">
-    {% csrf_token %}
+      {% crispy register_form %}
 
-      <!-- Nav tabs -->
-      <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#user_data" aria-controls="user_data" role="tab" data-toggle="tab">User</a></li>
-        <li role="presentation"><a href="#additional_data" aria-controls="additional_data" role="tab" data-toggle="tab">Additional Data</a></li>
-        <li role="presentation"><a href="#privacy" aria-controls="privacy" role="tab" data-toggle="tab">Privacy</a></li>
-      </ul>
-
-  <div class="tab-content" >
-      {% crispy user_form %}
-      {% crispy profile_form %}
-      {% crispy privacy_form %}
-      {% crispy submit_form %}
-  </div>
-
-   </form>
 {% endif %}
 {% endblock %}

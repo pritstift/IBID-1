@@ -29,3 +29,14 @@ class UserProfilePrivacy(models.Model):
 	occupation_ip = models.BooleanField(default=False)
 	website_ip = models.BooleanField(default=False)
 	email_adress_ip = models.BooleanField(default=False)
+
+class UserActivation(models.Model):
+	user = models.OneToOneField(User)
+	code = models.CharField(max_length=20, blank=False)
+	completed = models.BooleanField( default=False)	
+	class Meta:
+		verbose_name = "UserActivation"
+		verbose_name_plural = "UserActivations"
+
+	def __str__(self):
+		pass
