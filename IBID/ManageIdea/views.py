@@ -35,7 +35,7 @@ def detail(request, Idea_id):
 	else:
 		#only print public fields
 		print("user has no permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy),'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'commentform':commentform, 'edit_idea':edit_idea})
+		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy,Idea),'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'commentform':commentform, 'edit_idea':edit_idea})
 
 def createcomment(request, Idea_id):
 	if request.method =='POST':
