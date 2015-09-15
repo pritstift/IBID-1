@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django import forms
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Button, Div, HTML, MultiField, Field
-from crispy_forms.bootstrap import FormActions
+from crispy_forms.bootstrap import FormActions, InlineField, PrependedText
 
 
 class UserForm(forms.ModelForm):
@@ -91,14 +91,13 @@ class UserEditForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(UserEditForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
+		self.fields['first_name'].label = "First name"
+		self.fields['last_name'].label = "Last name"
 		self.helper.layout=Layout(
-			Div(
-				'first_name',
-				'last_name',
-				css_class="tab-pane active",
-				css_id="user_data",
-				role="tabpanel" ,
-				),
+				Div(
+					'first_name',
+					'last_name',
+					),
 		)
 		self.helper.form_tag = False
 
@@ -109,16 +108,26 @@ class UserProfileForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(UserProfileForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
+		self.fields['email_adress'].label = "Email"
+		self.fields['website'].label = "Web"
+		self.fields['phone_number'].label = "Phone"
+		self.fields['street'].label = "Street name"
+		self.fields['house_number'].label = "House number"
+		self.fields['zip_code'].label = "ZIP"
+		self.fields['city'].label = "City"
+		self.fields['company'].label = "Company"
+		self.fields['user_type'].label = "User type"
 		self.helper.layout=Layout(
 			Div(
-				'phone_number',
-				'company',
-				'occupation',
-				'website',
 				'email_adress',
-				css_class="tab-pane",
-				css_id="additional_data",
-				role="tabpanel" ,
+				'user_type',
+				PrependedText('website','http://', placeholder='www.foo.org',active=True), 
+				'phone_number',
+				'street',
+				'house_number',
+				'zip_code',
+				'city',
+				'company',
 				),
 		)
 		self.helper.form_tag = False
@@ -131,21 +140,29 @@ class PrivacyForm(forms.ModelForm):
 		super(PrivacyForm,self).__init__(*args, **kwargs)
 		self.fields['phone_number_ip'].label = "Phone Number"
 		self.fields['company_ip'].label = "Company"
-		self.fields['occupation_ip'].label = "Occupation"
 		self.fields['website_ip'].label = "Website"
 		self.fields['email_adress_ip'].label = "Email"
+		self.fields['street_ip'].label = "Street name"
+		self.fields['house_number_ip'].label = "House number"
+		self.fields['zip_code_ip'].label = "ZIP"
+		self.fields['city_ip'].label = "City"
 		self.helper=FormHelper()
 		self.helper.layout=Layout(
+			HTML(
+				'What information should be public to other users? </br>'
+				),
 			Div(
 				'email_adress_ip',
 				'phone_number_ip',
 				'company_ip',
 				'occupation_ip',
 				'website_ip',
+				'street_ip',
+				'house_number_ip',
+				'zip_code_ip',
+				'city_ip',
 				),
 		)
-		self.helper[0].wrap(Div,css_id="privacy",role="tabpanel" , css_class="tab-pane")
-		self.helper[1].wrap(Div,css_id="submit",role="tabpanel" , css_class="tab-pane")
 		self.helper.form_tag = False
 
 class SubmitForm(forms.Form):
@@ -154,8 +171,7 @@ class SubmitForm(forms.Form):
 		self.helper=FormHelper()
 		self.helper.layout=Layout(
 			FormActions(
-				Submit('save', 'Save changes'),
-				Button('cancel', 'Cancel'),
+				Submit('submit', 'Save changes'),
 			),
 		)
 		self.helper.form_tag = False
@@ -201,7 +217,6 @@ class DisplayProfileForm(forms.ModelForm):
 		if instance and instance.pk:
 			self.fields['phone_number'].widget.attrs['disabled'] = True
 			self.fields['company'].widget.attrs['disabled'] = True
-			self.fields['occupation'].widget.attrs['disabled'] = True
 			self.fields['website'].widget.attrs['disabled'] = True
 			self.fields['email_adress'].widget.attrs['disabled'] = True
 		self.helper = FormHelper()
@@ -211,7 +226,6 @@ class DisplayProfileForm(forms.ModelForm):
 				'email_adress',
 				'phone_number',
 				'company',
-				'occupation',
 				'website',
 				css_class="tab-pane",
 				css_id="profile",
