@@ -9,6 +9,7 @@ urlpatterns = patterns('',
 	# ex: /Ideas/5/
 	url(r'^post/$', views.post, name='post'),
 	url(r'^edit/(?P<Idea_id>\d+)/$', views.edit, name='edit'),
+	url(r'^addmember/(?P<Idea_id>\d+)/$', views.addmember, name='add_member'),
 	url(r'^request/post/(?P<Idea_id>\d+)/$', post_announcement, name='post_announcement'),
 	url(r'^(?P<Idea_id>\d+)/$', views.detail, name='detail'),
 	url(r'^comment/(?P<Idea_id>\d+)/$', views.createcomment, name='createcomment'),

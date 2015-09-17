@@ -8,11 +8,13 @@ from django.contrib.auth.models import User, Group
 from guardian.shortcuts import assign_perm, get_perms
 from django.forms.models import modelform_factory
 import re
-from ManageIdea.models import Idea, IdeaPrivacy, Comment
-from ManageIdea.forms import PostForm, PrivacyForm, DisplayIdeaForm, CommentForm
+from ManageIdea.models import Idea, IdeaPrivacy, Comment, IdeaMembership
+from ManageIdea.forms import PostForm, PrivacyForm, DisplayIdeaForm, CommentForm, AddMemberForm
 from ManageConnections.models import Announcement
 
 from IBID.functions import get_ip_instance, assign_permissions
+
+
 
 @login_required
 def detail(request, Idea_id):
@@ -35,7 +37,38 @@ def detail(request, Idea_id):
 	else:
 		#only print public fields
 		print("user has no permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy),'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'commentform':commentform, 'edit_idea':edit_idea})
+		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy,Idea),'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'commentform':commentform, 'edit_idea':edit_idea})
+
+@login_required
+def addmember(request, Idea_id):
+	idea=get_object_or_404(Idea,pk=Idea_id)
+	if request.method=='POST':
+		add_member_form = AddMemberForm(data=request.POST)
+
+		if add_member_form.is_valid():
+			print("valid form")
+			membership = add_member_form.save(commit=False)
+			membership.idea=idea
+			username=add_member_form.cleaned_data.get('username')
+			membership.member=User.objects.get(username=username)
+			membership.save()
+			assign_permissions(user=idea.owner,instance=membership)
+			return HttpResponseRedirect(reverse('ManageIdea:detail', args=[Idea_id,]))
+		else:
+			print(add_member_form.errors)
+			return render(request, 'ManageIdea/add_member.html',{'Idea':idea, 'add_member_form':add_member_form} )
+	else:
+		add_member_form = AddMemberForm()
+	return render(request, 'ManageIdea/add_member.html',{'Idea':idea, 'add_member_form':add_member_form} )
+	
+
+@login_required
+def removemember(request, Idea_id):
+	pass
+
+@login_required
+def editmember(request, Idea_id):
+	pass
 
 def createcomment(request, Idea_id):
 	if request.method =='POST':
