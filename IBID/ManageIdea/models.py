@@ -13,7 +13,7 @@ from taggit.managers import TaggableManager
 
 class Idea(models.Model):
 	title=models.CharField(max_length = 400, unique=True)
-	owner = models.ForeignKey(User)
+	owner = models.ForeignKey(User, related_name='owner')
 	date_added=models.DateField(default=timezone.now)
 	description_short=models.CharField(max_length=2048, blank=True)
 	description_long=models.CharField(max_length=2048, blank=True)
@@ -22,6 +22,7 @@ class Idea(models.Model):
 	ressources = models.CharField(max_length=2048, blank=True)
 	pictures = models.ImageField(upload_to='pictures', blank=True)
 	files = models.FileField(upload_to='idea_files', blank=True)
+	members = models.ManyToManyField(User, through='IdeaMembership', related_name='members')
 	class Meta:
 		permissions = (
 			('view', 'View Idea'),
@@ -48,6 +49,17 @@ class Comment(models.Model):
 	title=models.CharField(max_length=64,blank=False, default='')
 	message = models.TextField(blank=False)
 	date_added = models.DateTimeField(default=timezone.now)
+	class Meta:
+		permissions = (
+			('view', 'View Idea'),
+			('edit', 'Edit Idea'),
+		)
+
+class IdeaMembership(models.Model):
+	idea = models.ForeignKey(Idea)
+	member = models.ForeignKey(User)
+	task = models.CharField(max_length=64, blank=True, default='')
+	date_added = models.DateTimeField(default = timezone.now)
 	class Meta:
 		permissions = (
 			('view', 'View Idea'),

@@ -75,6 +75,12 @@ class RegisterForm(forms.ModelForm):
 			)
 		return password2
 
+	def clean_email(self):
+		email = self.cleaned_data.get('email')
+		if email and UserProfile.objects.filter(email_adress=email).count():
+			raise forms.ValidationError('Email already exists')
+		return email
+
 	def save(self, commit=True):
 		user = super(RegisterForm, self).save(commit=False)
 		user.set_password(self.cleaned_data["password1"])

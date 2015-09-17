@@ -1,0 +1,18 @@
+
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+<!-- tabs left -->
+
+
+{% block body_middle_block-1 %}
+
+
+<b> you are now adding another user to your idea {{Idea}} !</b><br>
+Please enter an username
+
+    {% crispy add_member_form %}
+
+
+{% endblock %}

@@ -75,9 +75,45 @@
       				<span class="glyphicon glyphicon-king" aria-hidden="true"></span>
       			</div>
       			<div class="col-md-11">
-		        	<p class="list-group-item-text"><a href="{% url 'ManageUsers:userprofile' Idea.owner.id %}">{{ Idea.owner }}</a></p>
+		        	<p class="list-group-item-text"><b><a href="{% url 'ManageUsers:userprofile' Idea.owner.id %}">{{ Idea.owner }}</a></b></p>
       			</div>
 			</div>
+	    </div><hr>
+	    <div class="list-group">
+	    	<div class="row">
+	    		<div class="col-md-1 col-sm-1">
+      			</div>
+      			<div class="col-md-10 col-sm-10">
+      				<b><center>Shared with</center></b>
+      			</div>
+      			<div class="col-md-1 col-sm-1">
+      				<div class="btn-group pull-right">
+      					{% if request.user|can_edit:Idea %}
+				          <a href="{% url 'ManageIdea:add_member' Idea.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				          </a>
+				        {% endif %}
+			        </div>
+      			</div>
+	    	</div>
+	    </div>
+
+		<div class="list-group">
+			{% for member in Idea.members.all %}
+			<div class="row">
+				<div class="col-md-1 col-sm-1">
+      				<span class="glyphicon glyphicon-pawn" aria-hidden="true"></span>
+      			</div>
+   
+      			<div class="col-md-10 col-sm-10">
+			            <p class="list-group-item-text">
+			            	<b><a href="{% url 'ManageUsers:userprofile' member.id %}">{{ member }}</a></b>
+			            </p>
+				      	<p>{{member|get_task:Idea}}</p>
+      			</div>
+      			<div class="col-md-1 col-sm-1">
+      			</div>
+			</div>
+			{% endfor %}
 	    </div>
 	    <hr>
 	    <div class="list-group">
