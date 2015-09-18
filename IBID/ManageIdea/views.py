@@ -52,6 +52,13 @@ def addmember(request, Idea_id):
 			username=add_member_form.cleaned_data.get('username')
 			membership.member=User.objects.get(username=username)
 			membership.save()
+			can_edit=add_member_form.cleaned_data.get('can_edit')
+			print(can_edit)
+			if can_edit:
+				assign_permissions(user=membership.member, instance = idea)
+			else:
+				assign_perm('view', membership.member, idea)
+
 			assign_permissions(user=idea.owner,instance=membership)
 			return HttpResponseRedirect(reverse('ManageIdea:detail', args=[Idea_id,]))
 		else:
@@ -100,6 +107,8 @@ def edit(request, Idea_id):
 	idea=get_object_or_404(Idea, pk=Idea_id)
 	privacy=get_object_or_404(IdeaPrivacy, instance=idea)
 	if request.method == 'GET':
+		if not request.user.has_perm('edit', idea):
+			return HttpResponse('No!')
 		post_form = PostForm(instance=idea)
 		privacy_form = PrivacyForm(instance=privacy)
 		return render(request, 'ManageIdea/edit.html', {'post_form':post_form, 'privacy_form':privacy_form})

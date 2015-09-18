@@ -29,8 +29,12 @@ class Idea(models.Model):
 			('edit', 'Edit Idea'),
 		)
 
+
 	def __str__(self):
 		return self.title
+
+	
+		
 
 class IdeaPrivacy(models.Model):
 	instance = models.ForeignKey(Idea)
@@ -65,3 +69,7 @@ class IdeaMembership(models.Model):
 			('view', 'View Idea'),
 			('edit', 'Edit Idea'),
 		)
+		unique_together = (
+			'idea',
+			'member',
+			)

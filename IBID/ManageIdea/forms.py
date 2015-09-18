@@ -13,7 +13,7 @@ class PostForm(forms.ModelForm):
 	description_long = forms.CharField(widget=forms.Textarea)
 	class Meta:
 		model = Idea
-		exclude = ['owner','date_added', 'stati']
+		exclude = ['owner','date_added', 'members']
 	def __init__(self, *args, **kwargs):
 		super(PostForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
@@ -133,10 +133,12 @@ class AddMemberForm(forms.ModelForm):
 		self.helper = FormHelper()
 		self.fields['username'].label = "Username"
 		self.fields['task'].label = "Task"
+		self.fields['can_edit'].label = "Allow this user to edit the idea?"
 		self.helper.layout = Layout(
 			Div(
 				'username',
 				'task',
+				'can_edit'
 				),
 			FormActions(
 				Submit('save', 'Submit'),
