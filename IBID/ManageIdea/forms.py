@@ -51,23 +51,23 @@ class PrivacyForm(forms.ModelForm):
 		self.fields['ressources_ip'].label = "Ressources"
 		self.fields['pictures_ip'].label = "Pictures"
 		self.fields['files_ip'].label = "Files"
+		self.fields['members_ip'].label = "Members"
 		self.helper=FormHelper()
 		self.helper.layout=Layout(
 			Div(
+				HTML("<b>What information should be public? </b>"),
 				'description_long_ip',
 				'tags_ip',
 			    'status_ip',
 			    'ressources_ip',
 			    'pictures_ip',
 			    'files_ip',
-				),
-			FormActions(
-				Submit('save', 'Save changes'),
-				Button('cancel', 'Cancel'),
-			),
-		)
-		self.helper[0].wrap(Div,css_id="privacy",role="tabpanel" , css_class="tab-pane")
-		self.helper[1].wrap(Div,css_id="submit",role="tabpanel" , css_class="tab-pane")
+			    'members_ip',
+			    css_class="tab-pane",
+				css_id="privacy",
+				role="tabpanel" ,
+			    ),
+			)
 		self.helper.form_tag = False
 
 class DisplayIdeaForm(forms.ModelForm):

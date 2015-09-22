@@ -26,34 +26,20 @@ def detail(request, Idea_id):
 	detail_form = DisplayIdeaForm(instance=idea)
 	announcements = Announcement.objects.filter(idea=idea)
 	perms = get_perms(request.user, idea)
-	if 'edit' in perms:
-		edit_idea = True
-	else:
-		edit_idea=False
-	if ('view' or idea.title) in get_perms(request.user, idea):
-		#has 'view_idea' permission
-		print("user has permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':idea, 'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'commentform':commentform,'edit_idea':edit_idea})
-	else:
-		#only print public fields
-		print("user has no permission")
-		return render(request, 'ManageIdea/detail.html', {'Idea':get_ip_instance(ideaprivacy,Idea),'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'commentform':commentform, 'edit_idea':edit_idea})
+	return render(request, 'ManageIdea/detail.html', {'Idea':idea,'IdeaPrivacy':ideaprivacy, 'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'commentform':commentform})
 
 @login_required
 def addmember(request, Idea_id):
 	idea=get_object_or_404(Idea,pk=Idea_id)
 	if request.method=='POST':
 		add_member_form = AddMemberForm(data=request.POST)
-
 		if add_member_form.is_valid():
-			print("valid form")
 			membership = add_member_form.save(commit=False)
 			membership.idea=idea
 			username=add_member_form.cleaned_data.get('username')
 			membership.member=User.objects.get(username=username)
 			membership.save()
 			can_edit=add_member_form.cleaned_data.get('can_edit')
-			print(can_edit)
 			if can_edit:
 				assign_permissions(user=membership.member, instance = idea)
 			else:
