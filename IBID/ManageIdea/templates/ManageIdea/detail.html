@@ -201,8 +201,11 @@
 				</div>
 				<div class="col-md-10 col-sm-10">
 					<p class="list-group-item-text">
-						<b >{{ comment.title }} </b> by <a href="{% url 'ManageUsers:userprofile' comment.supervisor.id %}"> {{ comment.supervisor }} </a>
-						<p class="list-group-item-text">{{ comment.message }}</p>
+						<b >{{ comment.title }} </b> by <a href="{% url 'ManageUsers:userprofile' comment.supervisor.id %}"> {{ comment.supervisor }} </a> 
+						{% if request.user|can_edit:comment%}
+							(<a href="{% url 'ManageIdea:edit_comment' comment.id %}">edit</a>)
+						{% endif %}
+						<p class="list-group-item-text">{{ comment.message|linebreaks }}</p>
 					</p>
 				</div>
 				<div class="col-md-1 col-sm-1">

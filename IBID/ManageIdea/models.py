@@ -53,6 +53,8 @@ class Comment(models.Model):
 	title=models.CharField(max_length=64,blank=False, default='')
 	message = models.TextField(blank=False)
 	date_added = models.DateTimeField(default=timezone.now)
+	def __str__(self):
+		return self.title
 	class Meta:
 		permissions = (
 			('view', 'View Comment'),

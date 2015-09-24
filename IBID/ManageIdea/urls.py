@@ -15,4 +15,6 @@ urlpatterns = patterns('',
 	url(r'^request/post/(?P<Idea_id>\d+)/$', post_announcement, name='post_announcement'),
 	url(r'^(?P<Idea_id>\d+)/$', views.detail, name='detail'),
 	url(r'^comment/(?P<Idea_id>\d+)/$', views.createcomment, name='createcomment'),
+	url(r'^editcomment/(?P<Comment_id>\d+)/$', views.editcomment, name='edit_comment'),
+	url(r'^removecomment/(?P<Comment_id>\d+)/$', views.removecomment, name='remove_comment'),
 )

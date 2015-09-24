@@ -87,10 +87,8 @@ def editmember(request, Membership_id):
 def removemember(request, Membership_id):
 	membership=get_object_or_404(IdeaMembership,pk=Membership_id)
 	idea=membership.idea
-	print("in delete member function")
 	if not 'edit' in get_perms(request.user, idea):
 		return HttpResponse('No!')	
-
 	membership.delete()
 	return HttpResponseRedirect(reverse('ManageIdea:detail', args=[idea.id,]))
 	
@@ -109,9 +107,37 @@ def createcomment(request, Idea_id):
 			assign_perm('view', staff,comment)
 			assign_perm('edit', staff,comment)
 		else:
-			print("form not valid")
 			print(comment_form.errors)
 		return HttpResponseRedirect(reverse('ManageIdea:detail', args=[Idea_id,]))
+
+def editcomment(request, Comment_id):
+	comment=get_object_or_404(Comment,pk=Comment_id)
+	if request.method=='POST':
+		comment_form=CommentForm(data=request.POST, instance=comment)
+		if comment_form.is_valid():
+			comment.save()
+			if comment_form.cleaned_data['visible'] == True:
+				assign_perm('view', comment.idea.owner,comment)
+			else:
+				remove_perm('view', comment.idea.owner,comment)
+			staff = Group.objects.get(name='staff')
+			assign_perm('view', staff,comment)
+			assign_perm('edit', staff,comment)
+			return HttpResponseRedirect(reverse('ManageIdea:detail', args=[comment.idea.id,]))
+	elif request.method=='GET':
+		if not request.user.has_perm('edit',comment):
+			return HttpResponse('No!')
+		comment_form=CommentForm(instance=comment)
+		comment_form.fields['visible'].initial=comment.idea.owner.has_perm('view',comment)
+	return render(request, 'ManageIdea/edit_comment.html',{'Comment':comment,'comment_form':comment_form})
+
+def removecomment(request, Comment_id):
+	comment=get_object_or_404(Comment,pk=Comment_id)
+	idea=comment.idea
+	if not request.user.has_perm('edit',comment):
+			return HttpResponse('No!')
+	comment.delete()
+	return HttpResponseRedirect(reverse('ManageIdea:detail', args=[comment.idea.id,]))
 
 def index(request):
 	all_ideas = Idea.objects.all()

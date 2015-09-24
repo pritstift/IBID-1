@@ -2,8 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from django.utils.timezone import utc
-import datetime
+import django.utils.timezone
 
 
 class Migration(migrations.Migration):
@@ -15,11 +14,11 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Announcement',
             fields=[
-                ('id', models.AutoField(primary_key=True, verbose_name='ID', serialize=False, auto_created=True)),
-                ('title', models.CharField(max_length=400, unique=True)),
-                ('date_added', models.DateField(default=datetime.datetime(2015, 8, 19, 18, 20, 17, 328457, tzinfo=utc))),
-                ('description_short', models.CharField(max_length=2048, default='this request has no short description yet')),
-                ('description_long', models.CharField(max_length=2048, default='this request has no long description yet')),
+                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
+                ('title', models.CharField(unique=True, max_length=400)),
+                ('date_added', models.DateField(default=django.utils.timezone.now)),
+                ('description_short', models.CharField(default='this request has no short description yet', max_length=2048)),
+                ('description_long', models.CharField(default='this request has no long description yet', max_length=2048)),
             ],
             options={
                 'permissions': (('view', 'View Announcement'), ('edit', 'Edit Announcement')),
