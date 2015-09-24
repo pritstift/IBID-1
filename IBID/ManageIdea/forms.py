@@ -7,6 +7,8 @@ from crispy_forms.bootstrap import FormActions, InlineRadios
 from ManageUsers.models import UserProfile
 from django.contrib.auth.models import User
 
+from guardian.shortcuts import assign_perm, get_perms, remove_perm
+
 
 
 class PostForm(forms.ModelForm):
@@ -147,6 +149,34 @@ class AddMemberForm(forms.ModelForm):
 
 	def clean_username(self):
 		username=self.cleaned_data.get('username')
+
 		if not User.objects.filter(username=username).count():
-			raise forms.ValidationError('There is no userwith that username')
+			raise forms.ValidationError('There is no user with that username')
+		
+		if IdeaMembership.objects.filter(member=User.objects.get(username=username)).count():
+			raise forms.ValidationError('You already added this user')
 		return username
+
+class EditMemberForm(forms.ModelForm):
+	can_edit = forms.BooleanField(required=False, initial = False)
+	class Meta:
+		model = IdeaMembership
+		exclude = ['idea', 'date_added']
+	
+	def __init__(self, *args, **kwargs):
+		super(EditMemberForm, self).__init__(*args, **kwargs)
+		self.helper = FormHelper()
+		self.fields['member'].label = "User"
+		self.fields['task'].label = "Task"
+		self.fields['can_edit'].label = "Allow this user to edit the idea?"
+		self.helper.form_tag = False
+		self.helper.layout = Layout(
+			Div(
+				'member',
+				readonly="readonly",
+				),
+			Div(
+				'task',
+				'can_edit',
+				),
+		)

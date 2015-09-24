@@ -92,7 +92,7 @@
 		</div>
 
 		<div class="list-group">
-			{% for member in Idea.members.all %}
+			{% for membership in Idea.ideamembership_set.all %}
 			<div class="row">
 				<div class="col-md-1 col-sm-1">
 					<span class="glyphicon glyphicon-pawn" aria-hidden="true"></span>
@@ -100,9 +100,11 @@
 
 				<div class="col-md-10 col-sm-10">
 					<p class="list-group-item-text">
-						<b><a href="{% url 'ManageUsers:userprofile' member.id %}">{{ member }}</a></b>
+						<b><a href="{% url 'ManageUsers:userprofile' membership.member.id %}">{{ membership.member }}</a></b> 
+						{% if request.user|can_edit:Idea %}(<a href="{% url 'ManageIdea:edit_member' membership.id %}">edit</a>)
+						{% endif %}
 					</p>
-					<p>{{member|get_task:Idea}}</p>
+					<p>{{membership.member|get_task:Idea}}</p>
 				</div>
 				<div class="col-md-1 col-sm-1">
 				</div>

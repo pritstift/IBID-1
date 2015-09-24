@@ -5,11 +5,12 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, render
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User, Group
-from guardian.shortcuts import assign_perm, get_perms
+from guardian.shortcuts import assign_perm, get_perms, remove_perm
 from django.forms.models import modelform_factory
+from django.forms.formsets import formset_factory
 import re
 from ManageIdea.models import Idea, IdeaPrivacy, Comment, IdeaMembership
-from ManageIdea.forms import PostForm, PrivacyForm, DisplayIdeaForm, CommentForm, AddMemberForm
+from ManageIdea.forms import PostForm, PrivacyForm, DisplayIdeaForm, CommentForm, AddMemberForm, EditMemberForm
 from ManageConnections.models import Announcement
 
 from IBID.functions import get_ip_instance, assign_permissions
@@ -51,17 +52,48 @@ def addmember(request, Idea_id):
 			print(add_member_form.errors)
 			return render(request, 'ManageIdea/add_member.html',{'Idea':idea, 'add_member_form':add_member_form} )
 	else:
+		if not 'edit' in get_perms(request.user, idea):
+			return HttpResponse('No!')
 		add_member_form = AddMemberForm()
 	return render(request, 'ManageIdea/add_member.html',{'Idea':idea, 'add_member_form':add_member_form} )
+
+@login_required
+def editmember(request, Membership_id):
+	membership=get_object_or_404(IdeaMembership,pk=Membership_id)
+	idea=membership.idea
+	if request.method == 'GET':
+		if not 'edit' in get_perms(request.user, idea):
+			return HttpResponse('No!')
+		edit_member_form = EditMemberForm(instance=membership)
+		edit_member_form.fields['can_edit'].initial=membership.member.has_perm('edit', idea)
+		return render(request, 'ManageIdea/edit_member.html',{'Idea':idea,'Membership':membership,'edit_member_form':edit_member_form})
+	elif request.method == 'POST':
+		edit_member_form = EditMemberForm(data=request.POST)
+		if edit_member_form.is_valid():
+			print("is valid")
+			membership.task=edit_member_form.cleaned_data['task'] 
+			membership.save()
+			can_edit=edit_member_form.cleaned_data.get('can_edit')
+			if can_edit:
+				assign_permissions(user=membership.member, instance = idea)
+			else:
+				remove_perm('edit', membership.member, idea)
+				assign_perm('view', membership.member, idea)
+			return HttpResponseRedirect(reverse('ManageIdea:detail', args=[idea.id,]))
+		else:
+			return render(request, 'ManageIdea/edit_member.html',{'Idea':idea, 'edit_member_form':edit_member_form} )
 	
-
 @login_required
-def removemember(request, Idea_id):
-	pass
+def removemember(request, Membership_id):
+	membership=get_object_or_404(IdeaMembership,pk=Membership_id)
+	idea=membership.idea
+	print("in delete member function")
+	if not 'edit' in get_perms(request.user, idea):
+		return HttpResponse('No!')	
 
-@login_required
-def editmember(request, Idea_id):
-	pass
+	membership.delete()
+	return HttpResponseRedirect(reverse('ManageIdea:detail', args=[idea.id,]))
+	
 
 def createcomment(request, Idea_id):
 	if request.method =='POST':
