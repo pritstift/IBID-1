@@ -9,7 +9,7 @@ def can_view(user, instance):
 	return True if "view" in get_perms(user, instance) else False
 
 @register.filter(name='can_edit')
-def can_edit(user, instance): 
+def can_edit(user, instance):
 	return True if "edit" in get_perms(user, instance) else False
 
 @register.filter(name='has_group') 

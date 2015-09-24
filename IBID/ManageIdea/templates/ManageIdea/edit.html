@@ -3,8 +3,7 @@
 {% load crispy_forms_tags %}
 
 <!-- tabs -->
-<form action="" method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
+
 <div class="tabbable">
 	{% block body_middle_block-7 %}
 		<ul class="nav nav-pills nav-stacked">
@@ -15,12 +14,17 @@
     {% endblock %}
     
     {% block body_right_block-7 %}
+    <form action="" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
     <div class="tab-content">
 	    {% crispy post_form %}
 	    {% crispy privacy_form %}
 	</div>
-    {% endblock %}
+	<button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Submit</button>
+    
 </div>
+
  </form>
 <!-- /tabs -->
 
+{% endblock %}

@@ -7,13 +7,15 @@ from crispy_forms.bootstrap import FormActions, InlineRadios
 from ManageUsers.models import UserProfile
 from django.contrib.auth.models import User
 
+from guardian.shortcuts import assign_perm, get_perms, remove_perm
+
 
 
 class PostForm(forms.ModelForm):
 	description_long = forms.CharField(widget=forms.Textarea)
 	class Meta:
 		model = Idea
-		exclude = ['owner','date_added', 'stati']
+		exclude = ['owner','date_added', 'members']
 	def __init__(self, *args, **kwargs):
 		super(PostForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
@@ -51,23 +53,23 @@ class PrivacyForm(forms.ModelForm):
 		self.fields['ressources_ip'].label = "Ressources"
 		self.fields['pictures_ip'].label = "Pictures"
 		self.fields['files_ip'].label = "Files"
+		self.fields['members_ip'].label = "Members"
 		self.helper=FormHelper()
 		self.helper.layout=Layout(
 			Div(
+				HTML("<b>What information should be public? </b>"),
 				'description_long_ip',
 				'tags_ip',
 			    'status_ip',
 			    'ressources_ip',
 			    'pictures_ip',
 			    'files_ip',
-				),
-			FormActions(
-				Submit('save', 'Save changes'),
-				Button('cancel', 'Cancel'),
-			),
-		)
-		self.helper[0].wrap(Div,css_id="privacy",role="tabpanel" , css_class="tab-pane")
-		self.helper[1].wrap(Div,css_id="submit",role="tabpanel" , css_class="tab-pane")
+			    'members_ip',
+			    css_class="tab-pane",
+				css_id="privacy",
+				role="tabpanel" ,
+			    ),
+			)
 		self.helper.form_tag = False
 
 class DisplayIdeaForm(forms.ModelForm):
@@ -133,10 +135,12 @@ class AddMemberForm(forms.ModelForm):
 		self.helper = FormHelper()
 		self.fields['username'].label = "Username"
 		self.fields['task'].label = "Task"
+		self.fields['can_edit'].label = "Allow this user to edit the idea?"
 		self.helper.layout = Layout(
 			Div(
 				'username',
 				'task',
+				'can_edit'
 				),
 			FormActions(
 				Submit('save', 'Submit'),
@@ -145,6 +149,34 @@ class AddMemberForm(forms.ModelForm):
 
 	def clean_username(self):
 		username=self.cleaned_data.get('username')
+
 		if not User.objects.filter(username=username).count():
-			raise forms.ValidationError('There is no userwith that username')
+			raise forms.ValidationError('There is no user with that username')
+		
+		if IdeaMembership.objects.filter(member=User.objects.get(username=username)).count():
+			raise forms.ValidationError('You already added this user')
 		return username
+
+class EditMemberForm(forms.ModelForm):
+	can_edit = forms.BooleanField(required=False, initial = False)
+	class Meta:
+		model = IdeaMembership
+		exclude = ['idea', 'date_added']
+	
+	def __init__(self, *args, **kwargs):
+		super(EditMemberForm, self).__init__(*args, **kwargs)
+		self.helper = FormHelper()
+		self.fields['member'].label = "User"
+		self.fields['task'].label = "Task"
+		self.fields['can_edit'].label = "Allow this user to edit the idea?"
+		self.helper.form_tag = False
+		self.helper.layout = Layout(
+			Div(
+				'member',
+				readonly="readonly",
+				),
+			Div(
+				'task',
+				'can_edit',
+				),
+		)

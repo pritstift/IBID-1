@@ -1,0 +1,23 @@
+
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+<!-- tabs left -->
+
+
+{% block body_middle_block-2 %}
+
+
+<b> you are now editing the membership of {{ Membership.member }} of your idea {{Idea}} !</b><br>
+
+<form action="" method="POST">
+{% csrf_token %}
+
+
+    {% crispy edit_member_form %}
+
+       <button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Update</button> 
+</form>
+<a href="{% url 'ManageIdea:remove_member' Membership.id %}" class="btn btn-danger">Remove Member</a>
+{% endblock %}

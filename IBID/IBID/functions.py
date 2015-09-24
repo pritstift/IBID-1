@@ -33,6 +33,7 @@ def get_ip_instance(PrivacyInstance,InstanceModel):
 	for i in PrivacyInstance.instance._meta.get_fields():
 		if i.concrete:
 			if i.name not in ipList:
+				print(getattr(PrivacyInstance.instance,i.name))
 				setattr(modInstance.instance,i.name,getattr(PrivacyInstance.instance, i.name))
 	return modInstance.instance
 
