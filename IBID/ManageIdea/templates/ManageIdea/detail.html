@@ -141,6 +141,9 @@
 				<div class="col-md-10 col-sm-10">
 					<p class="list-group-item-text">
 						<a href="{% url 'ManageConnections:detail_announcement' announcement.id %}"><b>{{ announcement.title }}</b></a>
+						{% if request.user|can_edit:Idea %}
+							(<a href="{% url 'ManageConnections' %}"></a>)
+						{% endif %}
 					</p>
 					<p class="list-group-item-text">{{ announcement.description_short }}</p>
 					<p>
