@@ -5,9 +5,10 @@
 
 <form action="" method="POST">
   {% csrf_token %}
-  {{ crispy announcement_form }}
-  <button type="submit" class="btn btn-default" name="next" value="{{ next }}">Update</button>
+  {% crispy announcement_form %}
+  <button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Update</button>
+  <a class="btn btn-danger"  href="{% url 'ManageIdea:remove_announcement' announcement.idea.id announcement.id %}">Remove Announcement</a>
 
 </form>
-<a class="btn btn-alert"  href="{% url 'ManageConnections:remove_announcement' announcement.id %}">Remove Announcement</a>
+
 {% endblock %}
