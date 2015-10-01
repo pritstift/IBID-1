@@ -47,6 +47,7 @@ INSTALLED_APPS = (
 	'widget_tweaks',
 	'bootstrapform',
 	'crispy_forms',
+	'datetimewidget',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from ManageIdea.models import Idea, IdeaMembership
+from ManageIdea.models import Idea, IdeaMembership, Measure
 
 from guardian.admin import GuardedModelAdmin
 
@@ -22,5 +22,6 @@ class IdeaAdmin(GuardedModelAdmin):
 
 admin.site.register(Idea,IdeaAdmin)
 admin.site.register(IdeaMembership)
+admin.site.register(Measure)
 
 # Register your models here.
