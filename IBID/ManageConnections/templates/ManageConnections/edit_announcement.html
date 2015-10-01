@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body_middle_block-2 %}
+
+<form action="" method="POST">
+  {% csrf_token %}
+  {% crispy announcement_form %}
+  <button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Update</button>
+  <a class="btn btn-danger"  href="{% url 'ManageIdea:remove_announcement' announcement.idea.id announcement.id %}">Remove Announcement</a>
+
+</form>
+
+{% endblock %}

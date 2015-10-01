@@ -1,0 +1,20 @@
+
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+<!-- tabs left -->
+
+
+{% block body_middle_block-2 %}
+
+
+
+<form action="" method="POST">
+
+    {% crispy IdeaMeasureForm %}
+
+       <button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Update</button> 
+       <a href="{% url 'ManageIdea:remove_measure' Measure.id %}" class="btn btn-danger">Delete Measure</a>
+</form>
+{% endblock %}

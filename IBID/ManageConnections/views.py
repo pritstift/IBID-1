@@ -9,7 +9,7 @@ from ManageConnections.models import Announcement
 from ManageIdea.models import Idea
 from ManageUsers.models import UserProfile
 from django.contrib.auth.models import User, Group
-from guardian.shortcuts import assign_perm, get_perms
+from guardian.shortcuts import assign_perm, get_perms, remove_perm
 
 def index(request):
 	announcements = Announcement.objects.all()
@@ -46,7 +46,9 @@ def post_announcement(request,**kwargs):
 				Idea_id = kwargs["Idea_id"]
 				idea = get_object_or_404(Idea,pk=Idea_id)
 				announcement.idea=idea
-			announcement.owner=request.user
+				announcement.owner=idea.owner
+			else:
+				announcement.owner = user
 			announcement.save()
 			staff = Group.objects.get(name='staff')
 			assign_perm('edit', announcement.owner,announcement)
@@ -64,5 +66,34 @@ def detail_announcement(request, Request_id):
 	return render(request, 'ManageConnections/detail_announcement.html', {'announcement':announcement})
 
 @login_required
-def edit_announcement(request, Request_id):
-	pass
+def edit_announcement(request, **kwargs):
+	Request_id=kwargs["Request_id"]
+	announcement=get_object_or_404(Announcement, pk=Request_id)
+	if request.method=='POST':
+		''' Check for edit permissions on announcement'''
+		if not request.user.has_perm('edit', announcement):
+			return HttpResponse('No!')
+		announcement_form=AnnouncementForm(data=request.POST, instance=announcement)
+
+		if announcement_form.is_valid():
+			'''If Form is valid: save und return to the page of the idea'''
+			announcement.save()
+			if "Idea_id" in kwargs:
+				return HttpResponseRedirect(reverse('ManageIdea:detail', args=[kwargs["Idea_id"],]))
+			elif "User_id" in kwargs:
+				return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[kwargs["User_id"],]))
+	elif request.method=='GET':
+		announcement_form=AnnouncementForm(instance=announcement)
+		return render(request,'ManageConnections/edit_announcement.html',{'announcement':announcement,'announcement_form':announcement_form})
+
+@login_required
+def remove_announcement(request, **kwargs):
+	Request_id=kwargs["Request_id"]
+	announcement=get_object_or_404(Announcement, pk=Request_id)
+	announcement.delete()
+	if "Idea_id" in kwargs:
+		return HttpResponseRedirect(reverse('ManageIdea:detail', args=[kwargs["Idea_id"],]))
+	elif "User_id" in kwargs:
+		return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[kwargs["User_id"],]))
+
+
