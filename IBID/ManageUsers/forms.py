@@ -139,19 +139,17 @@ class UserProfileForm(forms.ModelForm):
 		self.helper.form_tag = False
 
 class PrivacyForm(forms.ModelForm):
+	address_ip = forms.BooleanField(required=False, initial=False)
 	class Meta:
 		model = UserProfilePrivacy
-		exclude = ['instance']
+		exclude = ['instance', 'street_ip', 'house_number_ip', 'zip_code_ip', 'city_ip']
 	def __init__(self, *args, **kwargs):
 		super(PrivacyForm,self).__init__(*args, **kwargs)
 		self.fields['phone_number_ip'].label = "Phone Number"
 		self.fields['company_ip'].label = "Company"
 		self.fields['website_ip'].label = "Website"
 		self.fields['email_adress_ip'].label = "Email"
-		self.fields['street_ip'].label = "Street name"
-		self.fields['house_number_ip'].label = "House number"
-		self.fields['zip_code_ip'].label = "ZIP"
-		self.fields['city_ip'].label = "City"
+		self.fields['address_ip'].label = "Address"
 		self.helper=FormHelper()
 		self.helper.layout=Layout(
 			HTML(
@@ -163,10 +161,7 @@ class PrivacyForm(forms.ModelForm):
 				'company_ip',
 				'occupation_ip',
 				'website_ip',
-				'street_ip',
-				'house_number_ip',
-				'zip_code_ip',
-				'city_ip',
+				'address_ip',
 				),
 		)
 		self.helper.form_tag = False

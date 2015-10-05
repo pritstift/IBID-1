@@ -146,6 +146,10 @@ def edit(request, User_id):
 			if  user_form.is_valid() and profile_form.is_valid() and privacy_form.is_valid():
 				user_form.save()
 				profile.save()
+				privacy.street_ip=privacy_form.cleaned_data['address_ip']
+				privacy.house_number_ip=privacy_form.cleaned_data['address_ip']
+				privacy.zip_code_ip=privacy_form.cleaned_data['address_ip']
+				privacy.city_ip=privacy_form.cleaned_data['address_ip']
 				privacy.save()
 				return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[user.id,]))
 			else:
