@@ -18,7 +18,6 @@ class AnnouncementForm(forms.ModelForm):
 		self.helper.layout=Layout(
 			Div(
 				'title',
-				'description_short',
 				'description_long',
 				),
 		)

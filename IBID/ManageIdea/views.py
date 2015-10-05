@@ -179,7 +179,7 @@ def edit(request, Idea_id):
 		#if form data is invalid
 		else:
 			print(post_form.errors)
-			return render(request, 'ManageIdea/upload.html', {'post_form':post_form,'privacy_form':privacy_form})
+			return render(request, 'ManageIdea/edit.html', {'post_form':post_form,'privacy_form':privacy_form})
 
 
 @login_required

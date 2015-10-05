@@ -145,7 +145,7 @@
 							(<a href="{% url 'ManageIdea:edit_announcement' Idea.id announcement.id %}">edit</a>)
 						{% endif %}
 					</p>
-					<p class="list-group-item-text">{{ announcement.description_short }}</p>
+					<p class="list-group-item-text">{{ announcement.description_long | linebreaks }}</p>
 					<p>
 					</p>
 				</div>
