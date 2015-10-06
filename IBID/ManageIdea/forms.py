@@ -216,3 +216,4 @@ class AddIdeaMeasureForm(forms.ModelForm):
 					raise forms.ValidationError('The start date must be earlier than the end date ')
 			else:
 				raise forms.ValidationError('Leave empty or provide a start date ')    			
+		return end_date
