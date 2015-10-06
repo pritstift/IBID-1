@@ -17,7 +17,7 @@ class PostForm(forms.ModelForm):
 	description_long = forms.CharField(widget=forms.Textarea)
 	class Meta:
 		model = Idea
-		exclude = ['owner','date_added', 'members']
+		exclude = ['owner','date_added', 'members', 'measures']
 	def __init__(self, *args, **kwargs):
 		super(PostForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
@@ -216,3 +216,4 @@ class AddIdeaMeasureForm(forms.ModelForm):
 					raise forms.ValidationError('The start date must be earlier than the end date ')
 			else:
 				raise forms.ValidationError('Leave empty or provide a start date ')    			
+		return end_date

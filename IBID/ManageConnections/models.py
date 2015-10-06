@@ -12,7 +12,6 @@ class Announcement(models.Model):
     owner = models.ForeignKey(User)
     idea = models.ForeignKey(Idea, blank=True, null=True)
     date_added = models.DateField(default=timezone.now)
-    description_short=models.CharField(max_length=2048,default="this request has no short description yet")
     description_long=models.CharField(max_length=2048,default="this request has no long description yet")
     class Meta:
         permissions = (
