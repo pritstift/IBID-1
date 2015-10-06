@@ -7,7 +7,7 @@ urlpatterns = patterns('',
 	# ex: /Ideas/
 	url(r'^$', views.index, name='index'),
 	# ex: /Ideas/5/
-	url(r'^post/$', views.post, name='post'),
+	url(r'^post/(?P<User_id>\d+)/', views.post, name='post'),
 	url(r'^edit/(?P<Idea_id>\d+)/$', views.edit, name='edit'),
 	url(r'^addmember/(?P<Idea_id>\d+)/$', views.addmember, name='add_member'),
 	url(r'^editmember/(?P<Membership_id>\d+)/$', views.editmember, name='edit_member'),

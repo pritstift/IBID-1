@@ -183,7 +183,7 @@ def edit(request, Idea_id):
 
 
 @login_required
-def post(request):
+def post(request, **kwargs):
 	if request.method == 'GET':
 		post_form = PostForm()
 		privacy_form = PrivacyForm()
@@ -197,13 +197,17 @@ def post(request):
 		if post_form.is_valid() and privacy_form.is_valid():
 			idea=post_form.save(commit=False)
 			# add user and save to database
-			idea.owner=request.user
+			if 'User_id' in kwargs:
+				idea.owner=User.objects.get(pk=kwargs['User_id'])
+			else:
+				idea.owner=request.user
 			idea.save()
 			Idea_id=idea.id
 			post_form.save_m2m()
 			privacy=privacy_form.save(commit=False)
 			privacy.instance = idea
 			privacy.save()
+			assign_permissions(user=idea.owner, instance=idea)
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
 		#if form data is invalid
 		else:

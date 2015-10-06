@@ -68,7 +68,7 @@
       </h3>
       <div class="btn-group pull-right">
         {% if edit_profile %}
-          <a href="{% url 'ManageIdea:post'%}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          <a href="{% url 'ManageIdea:post' userprofile.user.id%}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
           </a>
         {% endif %}
       </div>
