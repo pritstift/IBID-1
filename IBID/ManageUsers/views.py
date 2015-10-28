@@ -44,6 +44,8 @@ def logout_user(request):
 	logout(request)
 	return render(request, 'ManageUsers/logout.html')
 
+'''FOR INTERNAL USAGE: ONLY REGISTER USER IF REGISTERED'''
+@login_required
 def register(request):
 	registered = False
 
@@ -62,7 +64,7 @@ def register(request):
 			# This delays saving the model until we're ready to avoid integrity problems.
 			profile = UserProfile()
 			profile.user=user
-			profile.email_adress=register_form.cleaned_data['email']
+			profile.email_adress=user.email
 			profile.save()
 			privacy = UserProfilePrivacy()
 			privacy.instance = profile
@@ -72,10 +74,11 @@ def register(request):
 			#template registration was successful
 			registered=True
 
-			username = request.POST['username']
-			password = request.POST['password2']
-			user = authenticate(username=username, password=password)
-			login(request, user)			
+
+			#username = request.POST['username']
+			#password = request.POST['password2']
+			#user = authenticate(username=username, password=password)
+			#login(request, user)
 			return HttpResponseRedirect(reverse('ManageUsers:userprofile',args=[user.id,]))
 		else:
 			print( register_form.errors)

@@ -1,7 +1,10 @@
 {% extends 'base.html' %}
-
+{% load staticfiles %}
 {% block body_middle_block-1 %}
-
+<style>
+    body {   background: url("{% static  "images/background.png" %}") no-repeat;}
+    
+</style>
 <a href="{% url 'ManageIdea:index' %} ">List of ideas</a></br>
 
 {% endblock %}
