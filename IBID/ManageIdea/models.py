@@ -20,7 +20,7 @@ class Measure(models.Model):
 
 class Idea(models.Model):
 	title=models.CharField(max_length = 400, unique=True)
-	owner = models.ForeignKey(User, related_name='owner')
+	owner = models.ForeignKey(User, related_name='owner', blank=True)
 	date_added=models.DateField(default=timezone.now)
 	description_short=models.CharField(max_length=2048, blank=True)
 	description_long=models.CharField(max_length=2048, blank=True)
