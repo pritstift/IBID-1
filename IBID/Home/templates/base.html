@@ -1,4 +1,5 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+{% load staticfiles %}
 <html lang="en">
 <head>
 {# Load the tag library #}
@@ -12,20 +13,25 @@
 
 {# Display django.contrib.messages as Bootstrap alerts #}
 {% bootstrap_messages %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 
   <title>IBID</title>
+
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% block title %}{% endblock %}
 </head>
 
 <body>
+{% block bg-image %}{% endblock %}
 
+<div id="page-wrap">
   <nav class="navbar navbar-default" role="navigation">
     <div class="container" id="navfluid">
       <div class="row">
-        <div class="col-md-10"><!--Column middle-->
+        <div class="col-md-0 col-lg-0"></div>
+        <div class="col-md-10 col-lg-12"><!--Column middle-->
           <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navigationbar">
@@ -60,11 +66,11 @@
             </ul>
           </div><!-- /.navbar-collapse -->
         </div>
-        <div class="col-md-2"></div>
+        <div class="col-md-0 col-lg-0"></div>
       </div><!-- /.row -->
     </div><!-- /.container-fluid -->
   </nav>
-
+</div>
   <div class="container">
     <div class="row">
       <div class="col-md-10">{% block body_middle_block-1 %}{% endblock %}</div>

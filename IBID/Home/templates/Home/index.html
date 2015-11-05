@@ -1,10 +1,52 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-{% block body_middle_block-1 %}
-<style>
-    body {   background: url("{% static  "images/background.png" %}") no-repeat;}
-    
-</style>
-<a href="{% url 'ManageIdea:index' %} ">List of ideas</a></br>
 
+
+{% block bg-image%}
+
+<img src="{% static  'images/background.png' %}" class="bg"> 
+
+{%endblock%}
+
+	
+{% block body_middle_block-1 %}
+
+	<h1>Welcome To IBID</h1><hr>
+<div class="row">	
+	<div class=" col-sm-6 col-md-6 col-lg-6" align="center">
+		<div class="panel panel-default">
+		    <div class="panel-heading clearfix" >
+		      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-grain" aria-hidden="true"></span>  Neueste Ideen</h3>
+		      <div class="btn-group pull-right">
+		          <a href="{% url 'ManageIdea:register' %}" class="btn btn-success btn-sm" aria-haspopup="true"> Idee anlegen</a>
+		          </a>
+		      </div>
+		    </div>
+		    <div class="panel-body">
+		    </div>
+		</div>
+	</div>
+	<div class="col-sm-6 col-md-6 col-lg-6" align="center">
+	
+		<div class="panel panel-default">
+		    <div class="panel-heading clearfix" >
+		      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-grain" aria-hidden="true"></span>  Neueste User</h3>
+		      <div class="btn-group pull-right">
+		          <a href="{% url 'ManageUsers:register' %}" class="btn btn-primary btn-sm">User Anlegen
+		          </a>
+		      </div>
+		    </div>
+		    <div class="panel-body">
+		    </div>
+		</div>
+	</div>
+	
+</div>
 {% endblock %}
+
+
+
+
+
+
+
