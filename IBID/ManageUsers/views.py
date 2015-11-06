@@ -8,7 +8,7 @@ from django.contrib.auth  import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from guardian.shortcuts import assign_perm, get_perms
-from ManageUsers.forms import UserForm, UserProfileForm, LoginForm, DisplayUserForm, PrivacyForm, DisplayProfileForm, UserEditForm, SubmitForm, RegisterForm
+from ManageUsers.forms import UserForm, UserProfileForm, LoginForm,  PrivacyForm, UserEditForm, SubmitForm, RegisterForm
 from ManageUsers.models import UserProfile, UserProfilePrivacy
 from ManageIdea.models import Idea
 from ManageIdea.views import assign_permissions
@@ -26,8 +26,6 @@ def userprofile(request,User_id):
 	userprofile = get_object_or_404(UserProfile,user=user)
 	announcements = Announcement.objects.filter(owner=user, idea=None)
 	privacy = get_object_or_404(UserProfilePrivacy,instance=userprofile)
-	view_user_form = DisplayUserForm(instance = user)
-	view_profile_form = DisplayProfileForm(instance = userprofile)
 	ideas=Idea.objects.filter(owner=user)
 	perms = get_perms(request.user,userprofile)
 	if 'edit' in perms:
@@ -64,7 +62,6 @@ def register(request):
 			# This delays saving the model until we're ready to avoid integrity problems.
 			profile = UserProfile()
 			profile.user=user
-			profile.email_adress=user.email
 			profile.save()
 			privacy = UserProfilePrivacy()
 			privacy.instance = profile

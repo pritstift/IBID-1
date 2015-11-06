@@ -4,7 +4,7 @@
 
 {% block bg-image%}
 
-<img src="{% static  'images/background.png' %}" class="bg"> 
+<img src="{% static  'images/background_small.jpg' %}" class="bg"> 
 
 {%endblock%}
 
@@ -18,11 +18,19 @@
 		    <div class="panel-heading clearfix" >
 		      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-grain" aria-hidden="true"></span>  Neueste Ideen</h3>
 		      <div class="btn-group pull-right">
-		          <a href="{% url 'ManageIdea:register' %}" class="btn btn-success btn-sm" aria-haspopup="true"> Idee anlegen</a>
+		          <a href="{% url 'ManageIdea:post_idea' %}" class="btn btn-success btn-sm" aria-haspopup="true"> Idee anlegen</a>
 		          </a>
 		      </div>
 		    </div>
 		    <div class="panel-body">
+		    	{% for idea in ideas %}
+			        <div class="list-group">
+			          <a href="{% url 'ManageIdea:detail' idea.id %}" class="list-group-item ">
+			            <h4 class="list-group-item-heading">{{ idea }}</h4>
+			            <p class="list-group-item-text">{{ idea.description_short }}</p>
+			          </a>
+			        </div>
+			      {% endfor %}
 		    </div>
 		</div>
 	</div>
@@ -30,13 +38,21 @@
 	
 		<div class="panel panel-default">
 		    <div class="panel-heading clearfix" >
-		      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-grain" aria-hidden="true"></span>  Neueste User</h3>
+		      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-grain" aria-hidden="true"></span>  Neueste Teilnehmer</h3>
 		      <div class="btn-group pull-right">
 		          <a href="{% url 'ManageUsers:register' %}" class="btn btn-primary btn-sm">User Anlegen
 		          </a>
 		      </div>
 		    </div>
 		    <div class="panel-body">
+		    	{% for profile in profiles %}
+			        <div class="list-group">
+			          <a href="{% url 'ManageUsers:userprofile' profile.user.id %}" class="list-group-item ">
+			            <h4 class="list-group-item-heading">{{ profile.user.first_name }} {{ profile.user.last_name }}</h4>
+			            <p class="list-group-item-text">{{ profile.user.username }}</p>
+			          </a>
+			        </div>
+			      {% endfor %}
 		    </div>
 		</div>
 	</div>

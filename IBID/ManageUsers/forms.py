@@ -40,16 +40,16 @@ class RegisterForm(forms.ModelForm):
 	'''
 	first_name=forms.CharField(required=True)
 	last_name=forms.CharField(required=True)
-	email = forms.EmailField(required=True)	
+	username = forms.EmailField(required=True)	
 	class Meta:
 		model = User
-		fields = ('first_name','last_name',)
+		fields = ('first_name','last_name','username')
 	def __init__(self, *args, **kwargs):
 		super(RegisterForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
 		self.fields['first_name'].label = "First name"
 		self.fields['last_name'].label = "Last name"
-		self.fields['email'].label = "Email"
+		self.fields['username'].label = "Email"
 		''' FOR INTERNAL USE OUTCOMMENTED
 		self.fields['password1'].label = "Password"
 		self.fields['password2'].label = "Repeat Password"
@@ -59,7 +59,7 @@ class RegisterForm(forms.ModelForm):
 			Div(
 				'first_name',
 				'last_name',			
-				'email',
+				'username',
 				''' FOR INTERNAL USE OUTCOMMENTED
 				'username',	
 				'password1',
@@ -193,54 +193,3 @@ class LoginForm(forms.Form):
 	password = forms.CharField(widget=forms.PasswordInput())
 
 
-class DisplayUserForm(forms.ModelForm):
-	class Meta:
-		model = User
-		fields = ('username', 'email','first_name','last_name')
-	def __init__(self, *args, **kwargs):
-		super(DisplayUserForm, self).__init__(*args, **kwargs)
-		instance = getattr(self, 'instance', None)
-		if instance and instance.pk:
-			self.fields['username'].widget.attrs['disabled'] = True
-			self.fields['email'].widget.attrs['disabled'] = True
-			self.fields['first_name'].widget.attrs['disabled'] = True
-			self.fields['last_name'].widget.attrs['disabled'] = True
-		self.helper = FormHelper()
-		self.helper.form_tag = False
-		self.helper.layout = Layout(
-			Div(
-				'username',
-				'email',
-				'first_name',
-				'last_name',
-				css_class="tab-pane active",
-				css_id="user",
-				role="tabpanel" ,
-				),
-		)
-
-class DisplayProfileForm(forms.ModelForm):
-	class Meta:
-		model = UserProfile
-		exclude = ['user', 'date_joined']
-	def __init__(self, *args, **kwargs):
-		super(DisplayProfileForm, self).__init__(*args, **kwargs)
-		instance = getattr(self, 'instance', None)
-		if instance and instance.pk:
-			self.fields['phone_number'].widget.attrs['disabled'] = True
-			self.fields['company'].widget.attrs['disabled'] = True
-			self.fields['website'].widget.attrs['disabled'] = True
-			self.fields['email_adress'].widget.attrs['disabled'] = True
-		self.helper = FormHelper()
-		self.helper.form_tag = False
-		self.helper.layout = Layout(
-			Div(
-				'email_adress',
-				'phone_number',
-				'company',
-				'website',
-				css_class="tab-pane",
-				css_id="profile",
-				role="tabpanel" ,
-				),
-		)
