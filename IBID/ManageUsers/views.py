@@ -76,7 +76,7 @@ def register(request):
 			#password = request.POST['password2']
 			#user = authenticate(username=username, password=password)
 			#login(request, user)
-			return HttpResponseRedirect(reverse('ManageUsers:userprofile',args=[user.id,]))
+			return HttpResponseRedirect(reverse('ManageUsers:edit',args=[user.id,]))
 		else:
 			print( register_form.errors)
 			return render(request, 'ManageUsers/register.html', {'register_form': register_form, 'registered': registered})

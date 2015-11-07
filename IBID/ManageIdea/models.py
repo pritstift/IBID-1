@@ -55,6 +55,8 @@ class IdeaPrivacy(models.Model):
 	def __str__(self):
 		return self.instance.title
 
+    
+
 class Comment(models.Model):
 	supervisor = models.ForeignKey(User)                   # User mit staffpermission
 	idea = models.ForeignKey(Idea)
