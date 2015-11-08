@@ -199,15 +199,20 @@ def post(request, **kwargs):
 			# add user and save to database
 			if 'User_id' in kwargs:
 				idea.owner=User.objects.get(pk=kwargs['User_id'])
+				idea.save()
+				Idea_id=idea.id
+				post_form.save_m2m()
+				privacy=privacy_form.save(commit=False)
+				privacy.instance = idea
+				privacy.save()
+				assign_permissions(user=idea.owner, instance=idea)
 			else:
-				idea.owner=request.user
-			idea.save()
-			Idea_id=idea.id
-			post_form.save_m2m()
-			privacy=privacy_form.save(commit=False)
-			privacy.instance = idea
-			privacy.save()
-			assign_permissions(user=idea.owner, instance=idea)
+				idea.save()
+				Idea_id=idea.id
+				post_form.save_m2m()
+				privacy=privacy_form.save(commit=False)
+				privacy.instance = idea
+				privacy.save()
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
 		#if form data is invalid
 		else:
