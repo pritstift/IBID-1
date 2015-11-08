@@ -20,10 +20,11 @@ class Measure(models.Model):
 
 class Idea(models.Model):
 	title=models.CharField(max_length = 400, unique=True)
-	owner = models.ForeignKey(User, related_name='owner', blank=True, null=True)
+	originator = models.CharField(max_length = 400, blank=True, null=True)
+	secret = models.BooleanField(default=False)
 	date_added=models.DateField(default=timezone.now)
-	description_short=models.CharField(max_length=2048, blank=True)
-	description_long=models.CharField(max_length=2048, blank=True)
+	description_short=models.CharField(max_length=2048)
+	description_long=models.CharField(max_length=2048)
 	status = models.CharField(max_length=2048, blank=True)
 	tags = TaggableManager(help_text="A comma-separated list of tags.")
 	ressources = models.CharField(max_length=2048, blank=True)
@@ -31,16 +32,16 @@ class Idea(models.Model):
 	files = models.FileField(upload_to='idea_files', blank=True)
 	members = models.ManyToManyField(User, through='IdeaMembership', related_name='members')
 	measures=models.ManyToManyField(Measure, through='IdeaMeasures')
+	
 	class Meta:
 		permissions = (
 			('view', 'View Idea'),
 			('edit', 'Edit Idea'),
 		)
 
-
 	def __str__(self):
 		return self.title
-		
+					
 
 class IdeaPrivacy(models.Model):
 	instance = models.ForeignKey(Idea)
@@ -55,7 +56,14 @@ class IdeaPrivacy(models.Model):
 	def __str__(self):
 		return self.instance.title
 
-    
+
+class Steckbrief(models.Model):
+	"""
+	Description: Steckbrief zu Idee
+	"""
+	idea=models.ForeignKey(Idea)
+	date_added=models.DateField(default=timezone.now)
+
 
 class Comment(models.Model):
 	supervisor = models.ForeignKey(User)                   # User mit staffpermission
@@ -74,7 +82,7 @@ class Comment(models.Model):
 class IdeaMembership(models.Model):
 	idea = models.ForeignKey(Idea)
 	member = models.ForeignKey(User)
-	task = models.CharField(max_length=64, blank=True, default='')
+	task = models.CharField(max_length=64, blank=True, null=True)
 	date_added = models.DateTimeField(default = timezone.now)
 	class Meta:
 		permissions = (

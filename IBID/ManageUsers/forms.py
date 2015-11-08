@@ -176,6 +176,13 @@ class PrivacyForm(forms.ModelForm):
 		)
 		self.helper.form_tag = False
 
+class AgreementForm(forms.ModelForm):
+	"""Form für die Teilnehmervereinbarungen"""
+	def __init__(self, arg):
+		super(AgreementForm, self).__init__()
+		self.arg = arg
+		
+
 class SubmitForm(forms.Form):
 	def __init__(self, *args, **kwargs):
 		super(SubmitForm,self).__init__(*args, **kwargs)

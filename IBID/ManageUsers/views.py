@@ -26,7 +26,7 @@ def userprofile(request,User_id):
 	userprofile = get_object_or_404(UserProfile,user=user)
 	announcements = Announcement.objects.filter(owner=user, idea=None)
 	privacy = get_object_or_404(UserProfilePrivacy,instance=userprofile)
-	ideas=Idea.objects.filter(owner=user)
+	ideas=Idea.objects.filter(originator=user)
 	perms = get_perms(request.user,userprofile)
 	if 'edit' in perms:
 		edit_profile = user.id
@@ -36,6 +36,7 @@ def userprofile(request,User_id):
 		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'announcements':announcements,'edit_profile':edit_profile, 'userprofile':userprofile})
 	else:
 		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'announcements':announcements, 'edit_profile':edit_profile,  'userprofile':get_ip_instance(privacy, UserProfile)})
+
 
 
 def logout_user(request):
