@@ -2,9 +2,8 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-import datetime
-from django.utils.timezone import utc
 from django.conf import settings
+import django.utils.timezone
 import taggit.managers
 
 
@@ -12,76 +11,115 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('taggit', '0001_initial'),
+        ('taggit', '0002_auto_20150616_2121'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='Comment',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
+                ('title', models.CharField(max_length=64, default='')),
                 ('message', models.TextField()),
-                ('date_added', models.DateTimeField(default=datetime.datetime(2015, 7, 2, 23, 45, 14, 69394, tzinfo=utc))),
+                ('date_added', models.DateTimeField(default=django.utils.timezone.now)),
             ],
+            options={
+                'permissions': (('view', 'View Comment'), ('edit', 'Edit Comment')),
+            },
         ),
         migrations.CreateModel(
             name='Idea',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
                 ('title', models.CharField(max_length=400, unique=True)),
-                ('date_added', models.DateField(default=datetime.datetime(2015, 7, 2, 23, 45, 14, 64061, tzinfo=utc))),
-                ('description_short', models.CharField(max_length=2048, default='this Idea has no short description yet')),
-                ('description_long', models.CharField(max_length=2048, default='this Idea has no long description yet')),
-                ('description_long_ip', models.BooleanField(default=False)),
-                ('tags_ip', models.BooleanField(default=False)),
-                ('status_ip', models.BooleanField(default=False)),
-                ('ressources', models.CharField(max_length=2048, default='Any ressources in need?')),
-                ('ressources_ip', models.BooleanField(default=False)),
-                ('pictures', models.ImageField(blank=True, upload_to='idea_images')),
-                ('pictures_ip', models.BooleanField(default=False)),
-                ('files', models.FileField(blank=True, upload_to='idea_files')),
-                ('files_ip', models.BooleanField(default=False)),
-                ('score_ip', models.BooleanField(default=False)),
-                ('maintenanceStatus_ip', models.BooleanField(default=False)),
-                ('owner', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
-                ('tags', taggit.managers.TaggableManager(through='taggit.TaggedItem', verbose_name='Tags', to='taggit.Tag', help_text='A comma-separated list of tags.')),
+                ('originator', models.CharField(null=True, max_length=400, blank=True)),
+                ('secret', models.BooleanField(default=False)),
+                ('date_added', models.DateField(default=django.utils.timezone.now)),
+                ('description_short', models.CharField(max_length=2048)),
+                ('description_long', models.CharField(max_length=2048)),
+                ('status', models.CharField(max_length=2048, blank=True)),
+                ('ressources', models.CharField(max_length=2048, blank=True)),
+                ('pictures', models.ImageField(upload_to='pictures', blank=True)),
+                ('files', models.FileField(upload_to='idea_files', blank=True)),
             ],
             options={
-                'permissions': (('view', 'View Idea'),),
+                'permissions': (('view', 'View Idea'), ('edit', 'Edit Idea')),
             },
         ),
         migrations.CreateModel(
-            name='MaintenanceStatus',
+            name='IdeaMeasures',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
-                ('title', models.CharField(max_length=400, unique=True)),
-                ('date_added', models.DateTimeField(default=datetime.datetime(2015, 7, 2, 23, 45, 14, 67601, tzinfo=utc))),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
+                ('start_date', models.DateField(null=True, blank=True)),
+                ('end_date', models.DateField(null=True, blank=True)),
+                ('date_added', models.DateTimeField(default=django.utils.timezone.now)),
                 ('idea', models.ForeignKey(to='ManageIdea.Idea')),
-                ('supervisor', models.ManyToManyField(to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.CreateModel(
-            name='Status',
+            name='IdeaMembership',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
-                ('title', models.CharField(max_length=400, unique=True)),
-                ('date_added', models.DateField(default=datetime.datetime(2015, 7, 2, 23, 45, 14, 65991, tzinfo=utc))),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
+                ('task', models.CharField(null=True, max_length=64, blank=True)),
+                ('date_added', models.DateTimeField(default=django.utils.timezone.now)),
+                ('idea', models.ForeignKey(to='ManageIdea.Idea')),
+                ('member', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'permissions': (('view', 'View Membership'), ('edit', 'Edit Membership')),
+            },
+        ),
+        migrations.CreateModel(
+            name='IdeaPrivacy',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
+                ('description_long_ip', models.BooleanField(default=False)),
+                ('tags_ip', models.BooleanField(default=False)),
+                ('status_ip', models.BooleanField(default=False)),
+                ('ressources_ip', models.BooleanField(default=False)),
+                ('pictures_ip', models.BooleanField(default=False)),
+                ('files_ip', models.BooleanField(default=False)),
+                ('members_ip', models.BooleanField(default=False)),
+                ('comments_ip', models.BooleanField(default=False)),
+                ('instance', models.ForeignKey(to='ManageIdea.Idea')),
             ],
         ),
         migrations.CreateModel(
-            name='StatusRelationship',
+            name='Measure',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, primary_key=True, auto_created=True)),
-                ('date_added', models.DateField(default=datetime.datetime(2015, 7, 2, 23, 45, 14, 66744, tzinfo=utc))),
-                ('species', models.CharField(max_length=10, default='EMPTY', choices=[('EMPTY', ''), ('FINISHED', 'Abgeschlossen'), ('CURRENT', 'Aktiv')])),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
+                ('title', models.CharField(max_length=64, unique=True)),
+                ('description_long', models.TextField(max_length=2048)),
+                ('date_added', models.DateTimeField(default=django.utils.timezone.now)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Steckbrief',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
+                ('date_added', models.DateField(default=django.utils.timezone.now)),
                 ('idea', models.ForeignKey(to='ManageIdea.Idea')),
-                ('status', models.ForeignKey(to='ManageIdea.Status')),
             ],
         ),
         migrations.AddField(
-            model_name='status',
-            name='ideas',
-            field=models.ManyToManyField(through='ManageIdea.StatusRelationship', to='ManageIdea.Idea'),
+            model_name='ideameasures',
+            name='measure',
+            field=models.ForeignKey(to='ManageIdea.Measure'),
+        ),
+        migrations.AddField(
+            model_name='idea',
+            name='measures',
+            field=models.ManyToManyField(through='ManageIdea.IdeaMeasures', to='ManageIdea.Measure'),
+        ),
+        migrations.AddField(
+            model_name='idea',
+            name='members',
+            field=models.ManyToManyField(through='ManageIdea.IdeaMembership', to=settings.AUTH_USER_MODEL, related_name='members'),
+        ),
+        migrations.AddField(
+            model_name='idea',
+            name='tags',
+            field=taggit.managers.TaggableManager(verbose_name='Tags', help_text='A comma-separated list of tags.', through='taggit.TaggedItem', to='taggit.Tag'),
         ),
         migrations.AddField(
             model_name='comment',
@@ -92,5 +130,13 @@ class Migration(migrations.Migration):
             model_name='comment',
             name='supervisor',
             field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AlterUniqueTogether(
+            name='ideamembership',
+            unique_together=set([('idea', 'member')]),
+        ),
+        migrations.AlterUniqueTogether(
+            name='ideameasures',
+            unique_together=set([('idea', 'measure')]),
         ),
     ]

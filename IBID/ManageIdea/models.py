@@ -10,74 +10,101 @@ from django.contrib import admin
 
 from taggit.managers import TaggableManager
 
-
-class Status(models.Model):
-    title = models.CharField(max_length = 400, unique=True)
-    date_added=models.DateField(default=timezone.now())
-    def __str__(self):
-        return self.title
+class Measure(models.Model):
+	title=models.CharField(max_length=64, blank=False, unique=True)
+	description_long=models.TextField(max_length=2048, blank=False)
+	date_added=models.DateTimeField(default=timezone.now)
+	
+	def __str__(self):
+		return self.title
 
 class Idea(models.Model):
-    title=models.CharField(max_length = 400, unique=True)
-    owner = models.ForeignKey(User)
-    date_added=models.DateField(default=timezone.now())
-    description_short=models.CharField(max_length=2048,default="this Idea has no short description yet")
-    description_long=models.CharField(max_length=2048,default="this Idea has no long description yet")
-    stati = models.ManyToManyField(Status, through='StatusRelationship')
-    tags = TaggableManager(help_text="A comma-separated list of tags.")
-    ressources = models.CharField(max_length=2048,default="Any ressources in need?")
-    pictures = models.ImageField(upload_to='idea_images', blank=True)
-    files = models.FileField(upload_to='idea_files', blank=True)
-    #score = models.IntegerField(default=2)
-    #maintenanceStatus = models.ForeignKey(MaintenanceStatus)
-    class Meta:
-        permissions = (
-            ('view', 'View Idea'),
-            ('edit', 'Edit Idea'),
-        )
+	title=models.CharField(max_length = 400, unique=True)
+	originator = models.CharField(max_length = 400, blank=True, null=True)
+	secret = models.BooleanField(default=False)
+	date_added=models.DateField(default=timezone.now)
+	description_short=models.CharField(max_length=2048)
+	description_long=models.CharField(max_length=2048)
+	status = models.CharField(max_length=2048, blank=True)
+	tags = TaggableManager(help_text="A comma-separated list of tags.")
+	ressources = models.CharField(max_length=2048, blank=True)
+	pictures = models.ImageField(upload_to='pictures', blank=True)
+	files = models.FileField(upload_to='idea_files', blank=True)
+	members = models.ManyToManyField(User, through='IdeaMembership', related_name='members')
+	measures=models.ManyToManyField(Measure, through='IdeaMeasures')
+	
+	class Meta:
+		permissions = (
+			('view', 'View Idea'),
+			('edit', 'Edit Idea'),
+		)
 
-    def __str__(self):
-        return self.title
+	def __str__(self):
+		return self.title
+					
 
 class IdeaPrivacy(models.Model):
-    instance = models.ForeignKey(Idea)
-    description_long_ip = models.BooleanField(default=False)
-    tags_ip = models.BooleanField(default=False)
-    status_ip = models.BooleanField(default=False)
-    ressources_ip = models.BooleanField(default=False)
-    pictures_ip = models.BooleanField(default=False)
-    files_ip = models.BooleanField(default=False)
-    def __str__(self):
-        return self.instance.title
+	instance = models.ForeignKey(Idea)
+	description_long_ip = models.BooleanField(default=False)
+	tags_ip = models.BooleanField(default=False)
+	status_ip = models.BooleanField(default=False)
+	ressources_ip = models.BooleanField(default=False)
+	pictures_ip = models.BooleanField(default=False)
+	files_ip = models.BooleanField(default=False)
+	members_ip = models.BooleanField(default=False)
+	comments_ip = models.BooleanField(default=False)
+	def __str__(self):
+		return self.instance.title
 
-class StatusRelationship(models.Model):
-    CHOICES = (
-    ('EMPTY', ''),
-    ('FINISHED', 'Abgeschlossen'),
-    ('CURRENT', 'Aktiv'),
-    )
-    idea = models.ForeignKey(Idea)
-    status = models.ForeignKey(Status)
-    date_added = models.DateField(default=timezone.now())
-    species = models.CharField(max_length=10,choices=CHOICES,default='EMPTY')
-    def __str__(self):
-        return self.species
 
-class StatusRelationshipInline(admin.TabularInline):
-    model = StatusRelationship
-    extra = 2 # how many rows to show
+class Steckbrief(models.Model):
+	"""
+	Description: Steckbrief zu Idee
+	"""
+	idea=models.ForeignKey(Idea)
+	date_added=models.DateField(default=timezone.now)
 
-class StatusAdmin(admin.ModelAdmin):
-    inlines = (StatusRelationshipInline,)
-
-class MaintenanceStatus(models.Model):
-    supervisor = models.ManyToManyField(User)              # User mit staffpermission
-    idea = models.ForeignKey(Idea)
-    title = models.CharField(max_length = 400, unique=True)
-    date_added = models.DateTimeField(default=timezone.now())
 
 class Comment(models.Model):
-    supervisor = models.ForeignKey(User)                   # User mit staffpermission
-    idea = models.ForeignKey(Idea)
-    message = models.TextField(blank=False)
-    date_added = models.DateTimeField(default=timezone.now())
+	supervisor = models.ForeignKey(User)                   # User mit staffpermission
+	idea = models.ForeignKey(Idea)
+	title=models.CharField(max_length=64,blank=False, default='')
+	message = models.TextField(blank=False)
+	date_added = models.DateTimeField(default=timezone.now)
+	def __str__(self):
+		return self.title
+	class Meta:
+		permissions = (
+			('view', 'View Comment'),
+			('edit', 'Edit Comment'),
+		)
+
+class IdeaMembership(models.Model):
+	idea = models.ForeignKey(Idea)
+	member = models.ForeignKey(User)
+	task = models.CharField(max_length=64, blank=True, null=True)
+	date_added = models.DateTimeField(default = timezone.now)
+	class Meta:
+		permissions = (
+			('view', 'View Membership'),
+			('edit', 'Edit Membership'),
+		)
+		unique_together = (
+			'idea',
+			'member',
+			)
+
+
+	
+class IdeaMeasures(models.Model):
+	measure=models.ForeignKey(Measure)
+	idea=models.ForeignKey(Idea)
+	start_date=models.DateField(blank=True, null=True)
+	end_date=models.DateField(blank=True, null=True)
+	date_added=models.DateTimeField(default=timezone.now)
+	class Meta:
+		unique_together=(
+			'idea',
+			'measure',
+			)
+
