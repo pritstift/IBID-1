@@ -14,11 +14,10 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Announcement',
             fields=[
-                ('id', models.AutoField(auto_created=True, serialize=False, verbose_name='ID', primary_key=True)),
-                ('title', models.CharField(unique=True, max_length=400)),
+                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
+                ('title', models.CharField(max_length=400, unique=True)),
                 ('date_added', models.DateField(default=django.utils.timezone.now)),
-                ('description_short', models.CharField(default='this request has no short description yet', max_length=2048)),
-                ('description_long', models.CharField(default='this request has no long description yet', max_length=2048)),
+                ('description_long', models.CharField(max_length=2048, default='this request has no long description yet')),
             ],
             options={
                 'permissions': (('view', 'View Announcement'), ('edit', 'Edit Announcement')),

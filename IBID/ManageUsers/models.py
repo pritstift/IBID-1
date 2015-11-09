@@ -11,6 +11,15 @@ class UserType(models.Model):
 	def __str__(self):
 		return self.title
 		
+class UserRole(models.Model):
+	"""
+	Description: In welcher Rolle sieht sich der Nutzer in seinem (hypotetischen) Unternehmen?
+	"""
+	title = models.CharField(max_length=32)
+	descritpion = models.TextField(max_length=256)
+	date_added= models.DateField(default=timezone.now)
+	def __str__(self):
+		return self.title
 
 
 class UserProfile(models.Model):
@@ -24,7 +33,29 @@ class UserProfile(models.Model):
 	zip_code = models.IntegerField(blank=True, null=True)
 	city = models.CharField(max_length=256, blank=True, null=True)
 	user_type = models.ForeignKey(UserType, blank=True, null=True)
+	
 	date_joined = models.DateField(default=timezone.now)
+
+	"""
+	Description: Felder, um die Eignung des Gründers zu erkennen
+	"""
+	PERSONALITY_CHOICES = (
+		('1','Ja'),
+		('0','Nein'),
+	)
+	skills = models.TextField(blank=True, null=True, default=None)
+	education = models.TextField(null=True, blank=True, default=None)
+	role = models.ForeignKey(UserRole, blank=True, null=True, default=None)
+	seeks_opportunity = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	delayed_gratifikation = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	target_oriented = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	flexible_thinker = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	social_stable = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	curious = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	responsible = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	risk_taking = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	determined = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	stamina = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
 	# Override the __unicode__() method to return out something meaningful!
 	class Meta:
 		permissions = (
@@ -33,6 +64,8 @@ class UserProfile(models.Model):
 		)
 	def __str__(self):
 		return self.user.username
+
+
 
 class Agreement(models.Model):
 	user=models.ForeignKey(User)
@@ -88,13 +121,13 @@ class Agreement(models.Model):
 		('C','Keine Angabe'),
 	)
 	disadvantage = models.CharField(max_length=1,choices=DISADVANTAGE_CHOICES)
+	date_added=models.DateField(default=timezone.now)
 
 class UserProfilePrivacy(models.Model):
 	instance = models.ForeignKey(UserProfile)
 	phone_number_ip = models.BooleanField(default=False)
 	company_ip = models.BooleanField(default=False)	
 	website_ip = models.BooleanField(default=False)
-	email_adress_ip = models.BooleanField(default=False)
 	street_ip = models.BooleanField(default=False)
 	house_number_ip = models.BooleanField(default=False)
 	zip_code_ip = models.BooleanField(default=False)

@@ -7,12 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('ManageConnections', '0004_announcement_description_short'),
+        ('ManageUsers', '0001_initial'),
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='announcement',
-            name='description_short',
+        migrations.RenameField(
+            model_name='userprofile',
+            old_name='self_determined',
+            new_name='determined',
         ),
     ]

@@ -17,14 +17,15 @@
       </div>
     </div>
     <div class="panel-body">
+      <b><center>Grunddaten</center></b></br>
       <div class="row">
         <div class="col-sm-6 text">
           <b class="list-group-item-heading">Kontakt</b></br>
           <div class="panel panel-default">
             <div class="panel-body">
-              <p class="list-group-item-text"><a href="mailto:{{ userprofile.user.username }}">{{ userprofile.user.username }}</a></p>
+              <p class="list-group-item-text"><a href="mailto:{{ userprofile.user.username }}">{{ userprofile.user.username }}</a></p></br>
               {% if userprofile.phone_number %}
-                 <p class="list-group-item-text"> {{userprofile.phone_number}}</p>
+                 <p class="list-group-item-text"> {{userprofile.phone_number}}</p></br>
               {% endif %}
               {% if userprofile.street %}
                 <p class="list-group-item-text">{{ userprofile.street }}
@@ -38,7 +39,7 @@
                 <p class="list-group-item-text">{{ userprofile.zip_code }}</a> 
               {% endif %}
               {% if userprofile.city %}
-                {{ userprofile.city }} </p>
+                {{ userprofile.city }} </p></br>
               {% else %}
                 </p>
               {% endif %}
@@ -53,40 +54,202 @@
           <b class="list-group-item-heading">Teilnehmervereinbarung</b></br>
           <div class="panel panel-default">
             <div class="panel-body">
-
+              {% if agreement %}
+                <p class="list-group-item-text"> Teilnehmervereinbarung vom {{ agreement.date_added }}</p>
+              {% else %}
+                <p class="list-group-item-text"> Der Nutzer hat noch keine Teilnehmervereinbarung unterschrieben </p>
+              {% endif %}
             </div>
           </div>
         </div>
         <div class="col-sm-6 text">
-          <b class="list-group-item-heading">Studium</b></br>
+          <b class="list-group-item-heading">Ausbildung</b></br>
           <div class="panel panel-default">
             <div class="panel-body">
-
+              {% if userprofile.education %}
+                <p class="list-group-item-text">{{ userprofile.education }}</p>
+              {% else %}
+                <p class="list-group-item-text"> Noch keine Angaben zur Ausbildung</p>
+              {% endif %}
             </div>
           </div>
           
-          <b class="list-group-item-heading">Skills</b></br>
+          <b class="list-group-item-heading">Fähigkeiten</b></br>
           <div class="panel panel-default">
             <div class="panel-body">
-
-            </div>
-          </div>
-
-          <b class="list-group-item-heading">Rolle</b></br>
-          <div class="panel panel-default">
-            <div class="panel-body">
-
-            </div>
-          </div>
-         
-          <b class="list-group-item-heading">Gründereignung</b></br>
-          <div class="panel panel-default">
-            <div class="panel-body">
-
+              {% if userprofile.skills %}
+                <p class="list-group-item-text">{{ userprofile.skills }}</p>
+              {% else %}
+                <p class="list-group-item-text"> Noch keine Angaben zu den Fähigkeiten des Nutzers </p>
+              {% endif %}
             </div>
           </div>
         </div>
       </div> <hr>
+      <div class="list-group">
+        <div class="row">
+          <div class="col-md-1 col-sm-1">
+          </div>
+          <div class="col-md-10 col-sm-10">
+            <b><center>Einschätzung der Gründerfertigkeiten</center></b>
+          </div>
+          <div class="col-md-1 col-sm-1">
+            <div class="btn-group pull-right">
+              {% if request.user|has_group:'staff' %}
+              <a href="{% url 'ManageIdea:post' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="list-group">
+        <table class="table table-hover">
+          <tr>
+            {% if userprofile.role %}
+              <td class="col-md-6 success">Gründertyp/Rolle: </td>
+              <td class="col-md-6 success">
+                <b>{{ userprofile.role }} </b>
+              </td>  
+            {% else %}
+              <td class="col-md-6 warning"> Gründertyp/Rolle: </td>
+              <td class="col-md-6 warning">
+                <b><em> keine Einschätzung </em> </b>
+              </td>
+            {% endif %}
+          </tr>
+          <tr>
+            {% if userprofile.seeks_opportunity %}
+              <td class="col-md-6 success"> Sucht nach Gelegenheiten etwas in der Welt besser zu machen: </td>
+              <td class="col-md-6 success">
+                <b>{{ userprofile.seeks_opportunity }} </b>
+              </td>  
+            {% else %}
+              <td class="col-md-6 warning"> Sucht nach Gelegenheiten etwas in der Welt besser zu machen: </td>
+              <td class="col-md-6 warning">
+                <b><em> keine Einschätzung </em> </b>
+              </td>
+            {% endif %}
+          </tr>
+          <tr>
+            {% if userprofile.delayed_gratifikation %}
+              <td class="col-md-6 success"> Nimmt kurz- und mittelfristig Opfer in Kauf, um langfristig eine bessere Zukunft zu haben (Delayed Gratification): </td>
+              <td class="col-md-6 success">
+                <b>{{ userprofile.delayed_gratifikation }} </b>
+              </td>  
+            {% else %}
+              <td class="col-md-6 warning"> Nimmt kurz- und mittelfristig Opfer in Kauf, um langfristig eine bessere Zukunft zu haben (Delayed Gratification): </td>
+              <td class="col-md-6 warning">
+                <b><em> keine Einschätzung </em> </b>
+              </td>
+            {% endif %}
+          </tr>
+          <tr>
+            {% if userprofile.target_oriented %}
+              <td class="col-md-6 success"> Ist verliebt in ein Ziel und nicht in sein Produkt (Menschen Finden Dinge vs. Suchmaschine): </td>
+              <td class="col-md-6 success">
+                <b>{{ userprofile.target_oriented }} </b>
+              </td>  
+            {% else %}
+              <td class="col-md-6 warning"> Ist verliebt in ein Ziel und nicht in sein Produkt (Menschen Finden Dinge vs. Suchmaschine): </td>
+              <td class="col-md-6 warning">
+                <b><em> keine Einschätzung </em> </b>
+              </td>
+            {% endif %}
+          </tr>
+          <tr>
+            {% if userprofile.flexible_thinker %}
+              <td class="col-md-6 success"> Kann schnell umdenken: </td>
+              <td class="col-md-6 success">
+                <b>{{ userprofile.flexible_thinker }} </b>
+              </td>  
+            {% else %}
+              <td class="col-md-6 warning"> Kann schnell umdenken: </td>
+              <td class="col-md-6 warning">
+                <b><em> keine Einschätzung </em> </b>
+              </td>
+            {% endif %}
+          </tr>
+          <tr>
+            {% if userprofile.social_stable %}
+              <td class="col-md-6 success"> Ist sozial stabil und hat eine stabile Umgebung: </td>
+              <td class="col-md-6 success">
+                <b>{{ userprofile.social_stable }} </b>
+              </td>  
+            {% else %}
+              <td class="col-md-6 warning"> Ist sozial stabil und hat eine stabile Umgebung: </td>
+              <td class="col-md-6 warning">
+                <b><em> keine Einschätzung </em> </b>
+              </td>
+            {% endif %}
+          </tr>
+          <tr>
+            {% if userprofile.curious %}
+              <td class="col-md-6 success"> Kann zwar noch nicht alles, will es aber kennen lernen: </td>
+              <td class="col-md-6 success">
+                <b>{{ userprofile.curious }} </b>
+              </td>  
+            {% else %}
+              <td class="col-md-6 warning"> Kann zwar noch nicht alles, will es aber kennen lernen: </td>
+              <td class="col-md-6 warning">
+                <b><em> keine Einschätzung </em> </b>
+              </td>
+            {% endif %}
+          </tr>
+          <tr>
+            {% if userprofile.responsible %}
+              <td class="col-md-6 success"> Übernimmt die Verantwortung für sein Handeln und etwaige Konsequenzen: </td>
+              <td class="col-md-6 success">
+                <b>{{ userprofile.responsible }} </b>
+              </td>  
+            {% else %}
+              <td class="col-md-6 warning"> Übernimmt die Verantwortung für sein Handeln und etwaige Konsequenzen: </td>
+              <td class="col-md-6 warning">
+                <b><em> keine Einschätzung </em> </b>
+              </td>
+            {% endif %}
+          </tr>
+          <tr>
+            {% if userprofile.risk_taking %}
+              <td class="col-md-6 success"> Ist bereit (absehbare) Risiken einzugehen: </td>
+              <td class="col-md-6 success">
+                <b>{{ userprofile.risk_taking }} </b>
+              </td>  
+            {% else %}
+              <td class="col-md-6 warning"> Ist bereit (absehbare) Risiken einzugehen: </td>
+              <td class="col-md-6 warning">
+                <b><em> keine Einschätzung </em> </b>
+              </td>
+            {% endif %}
+          </tr>
+          <tr>
+            {% if userprofile.determined %}
+              <td class="col-md-6 success"> Keine Angst vor Autoritäten: </td>
+              <td class="col-md-6 success">
+                <b>{{ userprofile.determined }} </b>
+              </td>  
+            {% else %}
+              <td class="col-md-6 warning"> Keine Angst vor Autoritäten: </td>
+              <td class="col-md-6 warning">
+                <b><em> keine Einschätzung </em> </b>
+              </td>
+            {% endif %}
+          </tr>
+          <tr>
+            {% if userprofile.stamina %}
+              <td class="col-md-6 success"> Hat Biss und Durchhaltevermögen und lässt sich durch Hürden nicht abschrecken: </td>
+              <td class="col-md-6 success">
+                <b>{{ userprofile.stamina }} </b>
+              </td>  
+            {% else %}
+              <td class="col-md-6 warning"> Hat Biss und Durchhaltevermögen und lässt sich durch Hürden nicht abschrecken: </td>
+              <td class="col-md-6 warning">
+                <b><em> keine Einschätzung </em> </b>
+              </td>
+            {% endif %}
+          </tr>
+        </table>        
+      </div><hr>
       <div class="list-group">
         <div class="row">
           <div class="col-md-1 col-sm-1">
@@ -233,7 +396,7 @@
       </div>
 
       <div class="list-group">
-        {% for announcement in announcements %}
+        {% for comment in comments %}
         <div class="row">
           <div class="col-md-1 col-sm-1">
             <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>

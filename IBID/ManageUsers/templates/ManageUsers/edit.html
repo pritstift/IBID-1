@@ -1,30 +1,43 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load idea_extras %}
 
 <!-- tabs -->
 
-<div class="tabbable">
-  {% block body_middle_block-7 %}
+
+  <div class="tabbable">
+  {% block body_middle_block-7 %} 
+  <form action="" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
     <ul class="nav nav-pills nav-stacked">
-        <li role="presentation" class="active"><a href="#user_data" aria-controls="user_date" role="tab" data-toggle="tab">Personal Data</a></li>
+        <li role="presentation" class="active"><a href="#user_data" aria-controls="user_data" role="tab" data-toggle="tab">Nutzerdaten</a></li> 
+        {% if user|has_group:'staff' %}
+        <li role="presentation"><a href="#additional_data" aria-controls="additional_data" role="tab" data-toggle="tab">Angaben zur Eignung</a></li>
+        {% endif %}
       <li role="presentation"><a href="#privacy" aria-controls="privacy" role="tab" data-toggle="tab">Privacy Settings</a></li>
+      <li><center><button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Submit</button></center></li>
     </ul>
   {% endblock %}
     
   {% block body_right_block-7 %}
-  <form action="" method="POST" enctype="multipart/form-data">
-  {% csrf_token %}
+  
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="user_data">
         {% crispy user_form %}
         {% crispy profile_form %}
     </div>
+    {% if user|has_group:'staff' %}
+    <div role="tabpanel" class="tab-pane" id="additional_data">
+      {% crispy personality_form %}
+    </div>
+    {% endif %}
     <div role="tabpanel" class="tab-pane" id="privacy"> 
       {% crispy privacy_form %}
     </div>
-       <button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Submit</button>
-    </div>
-  </form>
+    
+  </div>
+  
   {% endblock %}
-</div>
+  </div>
+</form>
 <!-- /tabs -->

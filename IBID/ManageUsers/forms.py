@@ -122,7 +122,7 @@ class UserEditForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
 	class Meta:
 		model = UserProfile
-		exclude=['user','date_joined']
+		fields=['street', 'house_number', 'zip_code', 'city', 'company', 'website','phone_number', 'user_type']
 	def __init__(self, *args, **kwargs):
 		super(UserProfileForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
@@ -158,7 +158,6 @@ class PrivacyForm(forms.ModelForm):
 		self.fields['phone_number_ip'].label = "Phone Number"
 		self.fields['company_ip'].label = "Company"
 		self.fields['website_ip'].label = "Website"
-		self.fields['email_adress_ip'].label = "Email"
 		self.fields['address_ip'].label = "Address"
 		self.helper=FormHelper()
 		self.helper.layout=Layout(
@@ -166,15 +165,53 @@ class PrivacyForm(forms.ModelForm):
 				'What information should be public to other users? </br>'
 				),
 			Div(
-				'email_adress_ip',
 				'phone_number_ip',
 				'company_ip',
-				'occupation_ip',
 				'website_ip',
 				'address_ip',
 				),
 		)
 		self.helper.form_tag = False
+
+class UserPersonalityForm(forms.ModelForm):
+	""" Form für die Erfassung der Gründereignung """
+	class Meta:
+		model=UserProfile
+		exclude =['user','date_joined', 'street', 'house_number', 'zip_code', 'city', 'company', 'website','phone_number', 'user_type']
+	def __init__(self,*args,**kwargs):
+		super(UserPersonalityForm,self).__init__(*args,**kwargs)
+		self.fields['skills'].label = "Fähigkeiten"
+		self.fields['education'].label = "Ausbildung"
+		self.fields['role'].label = "Rolle im Gründerteam"
+		self.fields['seeks_opportunity'].label = "Nutzt Gelegenheit"
+		self.fields['delayed_gratifikation'].label = "Delayed Gratification"
+		self.fields['target_oriented'].label = "Zielorientiert"
+		self.fields['flexible_thinker'].label = "Kann schnell umdenken"
+		self.fields['social_stable'].label = "Soziale Stabilität"
+		self.fields['curious'].label = "Neugierig"
+		self.fields['responsible'].label = "Verantwortungsbewusst"
+		self.fields['risk_taking'].label = "Nimmt risiken in Kauf"
+		self.fields['determined'].label = "Selbstbestimmt"
+		self.fields['stamina'].label = "Durchhaltevermögen"
+		self.helper=FormHelper()
+		self.helper.form_tag = False
+		self.helper.layout=Layout(
+			Div(
+				'skills',
+				'education',
+				'role',
+				'seeks_opportunity',
+				'delayed_gratifikation',
+				'target_oriented',
+				'flexible_thinker',
+				'social_stable',
+				'curious',
+				'responsible',
+				'risk_taking',
+				'determined',
+				'stamina',
+			),
+		)
 
 class AgreementForm(forms.ModelForm):
 	"""Form für die Teilnehmervereinbarungen"""
