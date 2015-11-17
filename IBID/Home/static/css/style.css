@@ -37,3 +37,7 @@
 		right: 0;
 		min-height: 70px;
 	}
+
+	.borderless tbody tr td, .borderless tbody tr th, .borderless thead tr th {
+    	border: none;
+	}

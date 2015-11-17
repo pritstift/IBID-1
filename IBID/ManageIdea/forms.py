@@ -17,15 +17,13 @@ class PostForm(forms.ModelForm):
 	description_long = forms.CharField(widget=forms.Textarea)
 	class Meta:
 		model = Idea
-		exclude = ['date_added', 'members', 'measures']
+		exclude = ['originator','date_added', 'members', 'measures']
 	def __init__(self, *args, **kwargs):
 		super(PostForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
 		self.fields['title'].label ="Titel des Ideenpapiers"
-		self.fields['originator'].label = "Von wem kommt die Idee?"
-		self.fields['originator'].label_from_instance = lambda obj: "%s %s" % (obj.first_name, obj.last_name)
 		self.fields['tags'].label = "Stichworte"
-		self.fields['secret'].label = "Soll die Idee geheim gehalten werden?"
+		self.fields['secret'].label = "Die Idee unterliegt strenger Geheimhaltung"
 		self.fields['description_long'].label = "Was ist die Geschäftsidee?"
 		self.fields['description_short'].label = "Was ist das Angebot?"
 		self.fields['customer'].label = "An wen richtet sich das Angebot?(=Zielgruppe)"
@@ -39,13 +37,21 @@ class PostForm(forms.ModelForm):
 		self.fields['motivation'].label = "Was ist die Motivation?"
 		self.fields['support'].label = "Wie kann das TUGZ unterstützen?"
 		self.fields['status'].label = "Was ist der aktuelle Status der Geschäftsidee?"
-		
+		self.helper.form_class = 'form-inline'
+		self.helper.field_template = 'bootstrap3/layout/inline_field.html'
 		self.helper.layout=Layout(
 			Div(
-				'title',
-				'originator',
+				
+				Div(
+					'title',
+					css_class="col-md-8",
+				),
+				Div(
+					'secret',
+					css_class="col-md-4",
+				),
+				
 				'tags',
-				'secret',
 				'description_long',
 				'description_short',
 				'customer,'

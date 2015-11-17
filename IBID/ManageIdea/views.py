@@ -183,11 +183,11 @@ def edit(request, Idea_id):
 
 
 @login_required
-def post(request, **kwargs):
+def post(request, User_id):
 	if request.method == 'GET':
-		post_form = PostForm()
-		privacy_form = PrivacyForm()
-		return render(request, 'ManageIdea/upload.html', {'post_form':post_form,'privacy_form':privacy_form})
+		user=get_object_or_404(User, pk=User_id)
+		post_form = PostForm(initial={'originator':user})
+		return render(request, 'ManageIdea/upload.html', {'post_form':post_form})
 	elif request.method == 'POST':
 		#get PostForm data
 		post_form=PostForm(data=request.POST)
@@ -198,7 +198,7 @@ def post(request, **kwargs):
 			idea=post_form.save(commit=False)
 			# add user and save to database
 			if 'User_id' in kwargs:
-				idea.owner=User.objects.get(pk=kwargs['User_id'])
+				idea.owner=User.objects.get(pk=User_id)
 				idea.save()
 				Idea_id=idea.id
 				post_form.save_m2m()
@@ -206,13 +206,6 @@ def post(request, **kwargs):
 				privacy.instance = idea
 				privacy.save()
 				assign_permissions(user=idea.owner, instance=idea)
-			else:
-				idea.save()
-				Idea_id=idea.id
-				post_form.save_m2m()
-				privacy=privacy_form.save(commit=False)
-				privacy.instance = idea
-				privacy.save()
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
 		#if form data is invalid
 		else:

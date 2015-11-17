@@ -6,16 +6,13 @@
 <!-- tabs left -->
 
 
-{% block body_middle_block-1 %}
+{% block body_block %}
 
 
 
 
 <form action="" method="POST">
   {% csrf_token %}
-
-    <!-- Nav tabs -->
-
 
     {% crispy post_form %}
     <button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Idee anlegen</button>
