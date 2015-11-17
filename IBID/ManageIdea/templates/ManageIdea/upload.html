@@ -15,17 +15,11 @@
   {% csrf_token %}
 
     <!-- Nav tabs -->
-<ul class="nav nav-tabs" role="tablist">
-  <li role="presentation" class="active"><a href="#description" aria-controls="description" role="tab" data-toggle="tab">Description</a></li>
-  <li role="presentation"><a href="#files" aria-controls="files" role="tab" data-toggle="tab">Files</a></li>
-  <li role="presentation"><a href="#privacy" aria-controls="privacy" role="tab" data-toggle="tab">Privacy</a></li>
-  <li role="presentation"><button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Submit</button></li>
-</ul>
 
-<div class="tab-content" >
+
     {% crispy post_form %}
-    {% crispy privacy_form %}
-</div>
+    <button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Idee anlegen</button>
+
 
  </form>
 

@@ -9,7 +9,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from guardian.shortcuts import assign_perm, get_perms
 from ManageUsers.forms import UserForm, UserProfileForm, LoginForm,  PrivacyForm, UserEditForm, SubmitForm, RegisterForm, UserPersonalityForm
-from ManageUsers.models import UserProfile, UserProfilePrivacy, Agreement
+from ManageUsers.models import UserProfile, UserProfilePrivacy
 from ManageIdea.models import Idea
 from ManageIdea.views import assign_permissions
 from ManageConnections.models import Announcement
@@ -25,7 +25,6 @@ def userprofile(request,User_id):
 	user = get_object_or_404(User,pk = User_id)
 	userprofile = get_object_or_404(UserProfile,user=user)
 	announcements = Announcement.objects.filter(owner=user, idea=None)
-	agreement = Agreement.objects.filter(user=user)
 	privacy = get_object_or_404(UserProfilePrivacy,instance=userprofile)
 	ideas=Idea.objects.filter(originator=user)
 	perms = get_perms(request.user,userprofile)
@@ -34,7 +33,7 @@ def userprofile(request,User_id):
 	else:
 		edit_profile=False
 	if 'view' in perms:
-		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'announcements':announcements,'edit_profile':edit_profile, 'userprofile':userprofile, 'agreement':agreement})
+		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'announcements':announcements,'edit_profile':edit_profile, 'userprofile':userprofile})
 	else:
 		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'announcements':announcements, 'edit_profile':edit_profile,  'userprofile':get_ip_instance(privacy, UserProfile)})
 
@@ -168,3 +167,6 @@ def edit(request, User_id):
 			#render template
 			return render(request, 'ManageUsers/edit.html', {'user_form':user_form, 'profile_form': profile_form,'personality_form':personality_form,'privacy_form':privacy_form})
 
+def sign_agreement(request, User_id):
+	user = get_object_or_404(User,pk = User_id)
+	profile = get_object_or_404(UserProfile, user=user)

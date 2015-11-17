@@ -20,16 +20,26 @@ class Measure(models.Model):
 
 class Idea(models.Model):
 	title=models.CharField(max_length = 400, unique=True)
-	originator = models.CharField(max_length = 400, blank=True, null=True)
+	originator = models.ForeignKey(User, default=False)
 	secret = models.BooleanField(default=False)
 	date_added=models.DateField(default=timezone.now)
-	description_short=models.CharField(max_length=2048)
-	description_long=models.CharField(max_length=2048)
-	status = models.CharField(max_length=2048, blank=True)
+	description_long=models.CharField(max_length=2048, blank=True, null=True)
+	description_short=models.CharField(max_length=2048, blank=True, null=True)
+	customer = models.CharField(max_length=2048, blank=True, null=True)
+	problem=models.CharField(max_length=2048, blank=True, null=True)
+	current_solution=models.CharField(max_length=2048,blank=True, null=True)
+	gain=models.CharField(max_length=2048,blank=True, null=True)
+	market_size=models.CharField(max_length=2048,blank=True, null=True)
+	advantages=models.CharField(max_length=2048,blank=True, null=True)
+	
+	why_startup =models.CharField(max_length=2048, blank=True, null=True)
+	why_now=models.CharField(max_length=2048,blank=True, null=True)
+	motivation=models.CharField(max_length=2048,blank=True, null=True)
+	support=models.CharField(max_length=2048, blank=True, null=True)
+
+	status = models.CharField(max_length=2048, blank=True, null=True,)
 	tags = TaggableManager(help_text="A comma-separated list of tags.")
-	ressources = models.CharField(max_length=2048, blank=True)
-	pictures = models.ImageField(upload_to='pictures', blank=True)
-	files = models.FileField(upload_to='idea_files', blank=True)
+	
 	members = models.ManyToManyField(User, through='IdeaMembership', related_name='members')
 	measures=models.ManyToManyField(Measure, through='IdeaMeasures')
 	
@@ -41,7 +51,23 @@ class Idea(models.Model):
 
 	def __str__(self):
 		return self.title
-					
+
+
+
+# Was ist die Geschäftsidee?
+# •	Was ist das Angebot?
+# •	An wen richtet sich dieses Angebot? (= Zielgruppe)
+# •	Welches Problem löst das Angebot für die Zielgruppe?
+# •	Wie löst aktuell die Zielgruppe das Problem? / Welche Aufwendungen hat die Zielgruppe, um das Problem zu lösen?
+# •	Welchen Mehrwert bietet daher das neue Angebot für die Zielgruppe?
+# •	Wie umfangreich ist der Markt? (qualitativ)
+# •	Welche Vorteile bietet gerade die Geschäftsidee?
+# •	Warum ist gerade ein Startup in der Lage diese Geschäftsidee zu realisieren?
+# •	Warum ist gerade jetzt der richtige Zeitpunkt diese Geschäftsidee anzugehen?
+# •	Was ist Eure Motivation?
+# •	Wie kann Euch das TUGZ PT unterstützen?
+
+			
 
 class IdeaPrivacy(models.Model):
 	instance = models.ForeignKey(Idea)
@@ -56,13 +82,6 @@ class IdeaPrivacy(models.Model):
 	def __str__(self):
 		return self.instance.title
 
-
-class Steckbrief(models.Model):
-	"""
-	Description: Steckbrief zu Idee
-	"""
-	idea=models.ForeignKey(Idea)
-	date_added=models.DateField(default=timezone.now)
 
 
 class Comment(models.Model):

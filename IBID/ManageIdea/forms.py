@@ -17,27 +17,51 @@ class PostForm(forms.ModelForm):
 	description_long = forms.CharField(widget=forms.Textarea)
 	class Meta:
 		model = Idea
-		exclude = ['owner','date_added', 'members', 'measures']
+		exclude = ['date_added', 'members', 'measures']
 	def __init__(self, *args, **kwargs):
 		super(PostForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
+		self.fields['title'].label ="Titel des Ideenpapiers"
+		self.fields['originator'].label = "Von wem kommt die Idee?"
+		self.fields['originator'].label_from_instance = lambda obj: "%s %s" % (obj.first_name, obj.last_name)
+		self.fields['tags'].label = "Stichworte"
+		self.fields['secret'].label = "Soll die Idee geheim gehalten werden?"
+		self.fields['description_long'].label = "Was ist die Geschäftsidee?"
+		self.fields['description_short'].label = "Was ist das Angebot?"
+		self.fields['customer'].label = "An wen richtet sich das Angebot?(=Zielgruppe)"
+		self.fields['problem'].label = "Welches Probem löst die Idee für die Zielgruppe?"
+		self.fields['current_solution'].label = "Wie löst die Zielgruppe aktuell dieses Problem?"
+		self.fields['gain'].label = "Welchen Mehrwehrt bietet das neue Angebot für die Zielgruppe?"
+		self.fields['market_size'].label = "Wie umfangreich ist der Markt (qualitativ)?"
+		self.fields['advantages'].label = "Welchen Mehrwehrt bietet gerade diese Geschäftsidee?"
+		self.fields['why_startup'].label = "Warum ist gerade ein Startup in der Lage diese Geschäftsidee zu realisieren?"
+		self.fields['why_now'].label = "Warum ist gerade jetzt der richtige Zeitpunkt für die Geschäftsidee?"
+		self.fields['motivation'].label = "Was ist die Motivation?"
+		self.fields['support'].label = "Wie kann das TUGZ unterstützen?"
+		self.fields['status'].label = "Was ist der aktuelle Status der Geschäftsidee?"
+		
 		self.helper.layout=Layout(
 			Div(
 				'title',
-				'description_short',
-				'description_long',
-				'status',
-				'ressources',
+				'originator',
 				'tags',
+				'secret',
+				'description_long',
+				'description_short',
+				'customer,'
+				'problem',
+				'current_solution',
+				'gain',
+				'market_size',
+				'advantages',
+				'why_startup',
+				'why_now',
+				'motivation',
+				'support',
+				'status',
+				
 				css_class="tab-pane active",
 				css_id="description",
-				role="tabpanel" ,
-				),
-			Div(
-				'pictures',
-				'files',
-				css_class="tab-pane",
-				css_id="files",
 				role="tabpanel" ,
 				),
 		)

@@ -216,8 +216,17 @@ class UserPersonalityForm(forms.ModelForm):
 class AgreementForm(forms.ModelForm):
 	"""Form für die Teilnehmervereinbarungen"""
 	def __init__(self, arg):
-		super(AgreementForm, self).__init__()
-		self.arg = arg
+		super(AgreementForm, self).__init__(*args,**kwargs)
+		self.helper=FormHelper()
+		self.helper.form_tag=False
+		self.fields['homeless'].label = "Sind Sie obdachlos?"
+		self.fields['sex'].label = "welches Geschlecht haben Sie?"
+		self.fields['sex'].label = "welches Geschlecht haben Sie?"
+		self.helper.layout = Layout(
+			Div(
+
+			)
+		)
 		
 
 class SubmitForm(forms.Form):
@@ -236,3 +245,62 @@ class LoginForm(forms.Form):
 	password = forms.CharField(widget=forms.PasswordInput())
 
 
+# class Agreement(models.Model):
+# 	user=models.ForeignKey(User)
+# 	""" Daten für Teilnehmervereinbarung: """
+# 	homeless = models.BooleanField(default=False)
+# 	date_of_birth = models.DateField()
+# 	GENDER_CHOICES = (
+# 		('M', 'Männlich'),
+# 		('W', 'Weiblich'),
+# 	)
+# 	sex = models.CharField(max_length=1,choices=GENDER_CHOICES)
+# 	OCCUPATION_CHOICES = (
+# 		('A','Arbeitslos gemeldet'),
+# 		('B','Langzeitarbeitslos'),
+# 		('C','Nicht Erwerbstätig'),
+# 		('D','Keine Ausbildung'),
+# 		('E','Erwerbstätig'),
+# 	)
+# 	job_A = models.BooleanField(default=False)
+# 	job_B = models.BooleanField(default=False)
+# 	job_C = models.BooleanField(default=False)
+# 	job_D = models.BooleanField(default=False)
+# 	job_E = models.BooleanField(default=False)
+# 	AGE_GROUP_CHOICES = (
+# 		('A','Jünger als 25'),
+# 		('B','Älter als 54'),
+# 		('C','Arbeitslos gemeldet'),
+# 	)
+# 	age_group = models.CharField(max_length=1,choices=AGE_GROUP_CHOICES)
+# 	EDUCATION_CHOICES = (
+# 		('A','ISCED 0'),
+# 		('B','ISCED 1 -2'),
+# 		('C','ISCED 3-4'),
+# 		('D','ISCED 5-8'),
+# 	)
+# 	education = models.CharField(max_length=1,choices=EDUCATION_CHOICES)
+# 	DOMESTIC_CHOICES = (
+# 		('A','Erwerbslosenhaushalt'),
+# 		('B','Kinder'),
+# 		('C','Alleinerziehend'),
+# 	)
+# 	MIGRATION_CHOICES = (
+# 		('A','Ja'),
+# 		('B','Nein'),
+# 		('C','Keine Angabe'),
+# 	)
+# 	migration = models.CharField(max_length=1,choices=MIGRATION_CHOICES)
+# 	DISABILITY_CHOICES = (
+# 		('A','Ja'),
+# 		('B','Nein'),
+# 		('C','Keine Angabe'),
+# 	)
+# 	disability = models.CharField(max_length=1,choices=DISABILITY_CHOICES)
+# 	DISADVANTAGE_CHOICES = (
+# 		('A','Ja'),
+# 		('B','Nein'),
+# 		('C','Keine Angabe'),
+# 	)
+# 	disadvantage = models.CharField(max_length=1,choices=DISADVANTAGE_CHOICES)
+# 	date_added=models.DateField(default=timezone.now)
