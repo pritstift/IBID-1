@@ -1,4 +1,4 @@
-from ManageUsers.models import UserProfile, UserProfilePrivacy
+from ManageUsers.models import UserProfile, UserProfilePrivacy, UserComment
 from django.contrib.auth.models import User
 from django import forms
 from crispy_forms.helper import FormHelper
@@ -212,21 +212,6 @@ class UserPersonalityForm(forms.ModelForm):
 				'stamina',
 			),
 		)
-
-class AgreementForm(forms.ModelForm):
-	"""Form für die Teilnehmervereinbarungen"""
-	def __init__(self, arg):
-		super(AgreementForm, self).__init__(*args,**kwargs)
-		self.helper=FormHelper()
-		self.helper.form_tag=False
-		self.fields['homeless'].label = "Sind Sie obdachlos?"
-		self.fields['sex'].label = "welches Geschlecht haben Sie?"
-		self.fields['sex'].label = "welches Geschlecht haben Sie?"
-		self.helper.layout = Layout(
-			Div(
-
-			)
-		)
 		
 
 class SubmitForm(forms.Form):
@@ -244,6 +229,24 @@ class LoginForm(forms.Form):
 	username = forms.CharField()
 	password = forms.CharField(widget=forms.PasswordInput())
 
+class CommentForm(forms.ModelForm):
+	title = forms.CharField( required=True)
+	message = forms.CharField(widget=forms.Textarea, required=True)
+	class Meta:
+		model = UserComment
+		exclude = ['supervisor','user', 'date_added','idea']
+	def __init__(self, *args, **kwargs):
+		super(CommentForm, self).__init__(*args, **kwargs)
+		self.helper = FormHelper()
+		self.helper.form_tag = False
+		self.fields['title'].label = "Title"
+		self.fields['message'].label = "Message"
+		self.helper.layout = Layout(
+			Div(
+				'title',
+				'message',
+				),
+		)
 
 # class Agreement(models.Model):
 # 	user=models.ForeignKey(User)

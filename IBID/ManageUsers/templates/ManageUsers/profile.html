@@ -387,7 +387,7 @@
           <div class="col-md-1 col-sm-1">
             <div class="btn-group pull-right">
               {% if request.user|can_edit:userprofile %}
-              <a href="{% url 'ManageUsers:post_announcement' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+              <a href="{% url 'ManageUsers:createcomment' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
               </a>
               {% endif %}
             </div>
@@ -404,12 +404,12 @@
 
           <div class="col-md-10 col-sm-10">
             <p class="list-group-item-text">
-              <b>{{ comment.title }}</b>
+              <b>{{ comment.title }}</b> by {{ comment.supervisor.first_name }} {{ comment.supervisor.last_name }} vom {{ comment.date_added }}
               {% if request.user|has_group:'staff' %}
-                (<a href="{% url 'ManageIdea:createcomment' Idea.id %}">edit</a>)
+                (<a href="{% url 'ManageUsers:editcomment' comment.id %}">edit</a>)
               {% endif %}
             </p>
-            <p class="list-group-item-text">{{ comment.description_long | linebreaks }}</p>
+            <p class="list-group-item-text">{{ comment.message | linebreaks }}</p>
             <p>
             </p>
           </div>

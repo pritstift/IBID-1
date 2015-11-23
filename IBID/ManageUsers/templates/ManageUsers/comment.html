@@ -1,0 +1,21 @@
+
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+<!-- tabs left -->
+
+
+{% block body_middle_block-2 %}
+
+
+<form action="" method="POST">
+{% csrf_token %}
+
+
+    {% crispy comment_form %}
+
+       <button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Update</button> 
+</form>
+
+{% endblock %}

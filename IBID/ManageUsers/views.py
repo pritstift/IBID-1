@@ -8,13 +8,13 @@ from django.contrib.auth  import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from guardian.shortcuts import assign_perm, get_perms
-from ManageUsers.forms import UserForm, UserProfileForm, LoginForm,  PrivacyForm, UserEditForm, SubmitForm, RegisterForm, UserPersonalityForm
-from ManageUsers.models import UserProfile, UserProfilePrivacy
+from ManageUsers.forms import UserForm, UserProfileForm, LoginForm,  PrivacyForm, UserEditForm, SubmitForm, RegisterForm, UserPersonalityForm, CommentForm
+from ManageUsers.models import UserProfile, UserProfilePrivacy, UserComment
 from ManageIdea.models import Idea
 from ManageIdea.views import assign_permissions
 from ManageConnections.models import Announcement
 import Home
-from IBID.functions import get_ip_instance, Object
+from IBID.functions import get_ip_instance, Object, group_required
 import re
 import random
 import string
@@ -25,6 +25,7 @@ def userprofile(request,User_id):
 	user = get_object_or_404(User,pk = User_id)
 	userprofile = get_object_or_404(UserProfile,user=user)
 	announcements = Announcement.objects.filter(owner=user, idea=None)
+	comments=UserComment.objects.filter(user=user)
 	privacy = get_object_or_404(UserProfilePrivacy,instance=userprofile)
 	ideas=Idea.objects.filter(originator=user)
 	perms = get_perms(request.user,userprofile)
@@ -33,7 +34,7 @@ def userprofile(request,User_id):
 	else:
 		edit_profile=False
 	if 'view' in perms:
-		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'announcements':announcements,'edit_profile':edit_profile, 'userprofile':userprofile})
+		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'announcements':announcements,'edit_profile':edit_profile, 'userprofile':userprofile, 'comments':comments})
 	else:
 		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'announcements':announcements, 'edit_profile':edit_profile,  'userprofile':get_ip_instance(privacy, UserProfile)})
 
@@ -170,3 +171,64 @@ def edit(request, User_id):
 def sign_agreement(request, User_id):
 	user = get_object_or_404(User,pk = User_id)
 	profile = get_object_or_404(UserProfile, user=user)
+
+@group_required('staff')
+def createcomment(request, User_id):
+	user=get_object_or_404(User,pk=User_id)
+	if request.method =='POST':
+		comment_form=CommentForm(data=request.POST)
+		if comment_form.is_valid():
+			comment=comment_form.save(commit=False)
+			comment.user=user
+			comment.supervisor=request.user
+			comment.save()
+			staff = Group.objects.get(name='staff')
+			assign_perm('view', staff,comment)
+			assign_perm('edit', staff,comment)
+		else:
+			print(comment_form.errors)
+		return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[User_id,]))
+	
+	elif request.method=='GET':
+		comment_form=CommentForm()
+		return render(request, 'ManageUsers/comment.html',{'comment_form':comment_form})
+
+@group_required('staff')
+def editcomment(request,Comment_id):
+	comment=get_object_or_404(UserComment, pk=Comment_id)	
+	if request.method=='POST':
+		comment_form=CommentForm(data=request.POST, instance=comment)
+		if comment_form.is_valid():
+			comment=comment_form.save()
+			comment.save()
+		else:
+			print(comment_form.errors)
+		return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[comment.user.id,]))
+	elif request.method=='GET':
+		comment_form=CommentForm(instance=comment)
+		return render(request, 'ManageUsers/edit_comment.html',{'comment_form':comment_form, 'Comment':comment})		
+
+@group_required('staff')
+def removecomment(request,Comment_id):
+	comment=get_object_or_404(UserComment,pk=Comment_id)
+	user=comment.user
+	if not request.user.has_perm('edit',comment):
+			return HttpResponse('No!')
+	comment.delete()
+	return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[user.id,]))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
