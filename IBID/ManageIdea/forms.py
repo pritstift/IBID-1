@@ -2,7 +2,7 @@ from django import forms
 from ManageIdea.models import Idea, IdeaPrivacy, Comment, IdeaMembership, IdeaMeasures
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Button, Div, HTML, MultiField, Field
-from crispy_forms.bootstrap import FormActions, InlineRadios
+from crispy_forms.bootstrap import FormActions, InlineRadios, Accordion, AccordionGroup
 
 from ManageUsers.models import UserProfile
 from django.contrib.auth.models import User
@@ -15,6 +15,13 @@ from datetimewidget.widgets import DateWidget
 
 class PostForm(forms.ModelForm):
 	description_long = forms.CharField(widget=forms.Textarea)
+	description_short = forms.CharField(widget=forms.Textarea)
+	customer = forms.CharField(widget=forms.Textarea)
+	problem = forms.CharField(widget=forms.Textarea)
+	current_solution = forms.CharField(widget=forms.Textarea)
+	gain = forms.CharField(widget=forms.Textarea)
+	market_size = forms.CharField(widget=forms.Textarea)
+	advantages = forms.CharField(widget=forms.Textarea)
 	class Meta:
 		model = Idea
 		exclude = ['originator','date_added', 'members', 'measures']
@@ -37,29 +44,88 @@ class PostForm(forms.ModelForm):
 		self.fields['motivation'].label = "Was ist die Motivation?"
 		self.fields['support'].label = "Wie kann das TUGZ unterstützen?"
 		self.fields['status'].label = "Was ist der aktuelle Status der Geschäftsidee?"
-		self.helper.form_class = 'form-inline'
-		self.helper.field_template = 'bootstrap3/layout/inline_field.html'
+		# self.helper.form_class = 'form-inline'
+		# self.helper.field_template = 'bootstrap3/layout/inline_field.html'
 		self.helper.layout=Layout(
 			Div(
-				
-				Div(
-					'title',
-					css_class="col-md-8",
+				Accordion(
+    				AccordionGroup(
+    					'Beschreibung',
+						Div(
+							Div(
+								'title',
+								css_class="col-md-8",
+							),
+							Div(
+								'secret',
+								css_class="col-md-4",
+							),
+							css_class="row",
+						),
+						Div(
+							Div(
+								'tags',
+								css_class="col-md-12",
+							),
+							css_class="row",
+						),
+						Div(
+							Div(
+								'description_long',
+								css_class="col-md-6",
+							),
+							Div(
+								'description_short',
+								css_class="col-md-6",
+							),
+							css_class="row",
+						),
+					),
+					AccordionGroup(
+						'Zielgruppe und Markt',
+						Div(
+							Div(
+								'customer',
+								css_class="col-md-6",
+							),
+							Div(
+								'problem',
+								css_class="col-md-6",
+							),
+							css_class="row",
+						),
+						Div(
+							Div(
+								'current_solution',
+								css_class="col-md-6",
+							),
+							Div(
+								'gain',
+								css_class="col-md-6",
+							),
+							css_class="row",
+						),
+						Div(
+							Div(
+								'market_size',
+								css_class="col-md-6",
+							),
+							Div(
+								'advantages',
+								css_class="col-md-6",
+							),
+							css_class="row",
+						),
+					),
 				),
-				Div(
-					'secret',
-					css_class="col-md-4",
-				),
 				
-				'tags',
-				'description_long',
-				'description_short',
-				'customer,'
-				'problem',
-				'current_solution',
-				'gain',
-				'market_size',
-				'advantages',
+				
+				
+				
+
+				
+				
+				
 				'why_startup',
 				'why_now',
 				'motivation',
@@ -69,7 +135,7 @@ class PostForm(forms.ModelForm):
 				css_class="tab-pane active",
 				css_id="description",
 				role="tabpanel" ,
-				),
+			),
 		)
 		self.helper.form_tag = False
 
