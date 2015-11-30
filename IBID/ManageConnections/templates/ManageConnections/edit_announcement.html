@@ -7,8 +7,12 @@
   {% csrf_token %}
   {% crispy announcement_form %}
   <button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Update</button>
-  <a class="btn btn-danger"  href="{% url 'ManageIdea:remove_announcement' announcement.idea.id announcement.id %}">Remove Announcement</a>
-
+  
+{% if isidea %}
+  <a class="btn btn-danger"  href="{% url 'ManageIdea:remove_announcement' announcement.idea.id announcement.id %}">Gesuch Löschen</a>
+{% else%}
+	<a class="btn btn-danger"  href="{% url 'ManageUsers:remove_announcement' announcement.owner.id announcement.id %}">Gesuch Löschen</a>
+{% endif %}
 </form>
 
 {% endblock %}

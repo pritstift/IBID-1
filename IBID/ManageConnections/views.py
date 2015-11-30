@@ -21,16 +21,18 @@ def index(request):
 
 @login_required
 def post_announcement(request,**kwargs):
+	if "Idea_id" in kwargs:
+		Idea_id = kwargs["Idea_id"]
+		idea = get_object_or_404(Idea,pk=Idea_id)
+	else:
+		User_id = kwargs["User_id"]
+		user=get_object_or_404(User, pk=User_id)
+		userprofile = get_object_or_404(UserProfile,user=user)
 	if request.method == 'GET':
 		if "Idea_id" in kwargs:
-			Idea_id = kwargs["Idea_id"]
-			idea = get_object_or_404(Idea,pk=Idea_id)
 			if not "edit" in get_perms(request.user,idea):
 				return HttpResponse("You have no permission for this idea")
-		else:
-			User_id = kwargs["User_id"]
-			user=get_object_or_404(User, pk=User_id)
-			userprofile = get_object_or_404(UserProfile,user=user)
+		elif "User_id" in kwargs:
 			if not "edit" in get_perms(request.user,userprofile):
 				return HttpResponse(" You have no permission for this Userprofile")
 		post_form = AnnouncementForm()
@@ -43,8 +45,6 @@ def post_announcement(request,**kwargs):
 			announcement=post_form.save(commit=False)
 			# add user and save to database
 			if "Idea_id" in kwargs:
-				Idea_id = kwargs["Idea_id"]
-				idea = get_object_or_404(Idea,pk=Idea_id)
 				announcement.idea=idea
 				announcement.owner=idea.owner
 			else:
@@ -53,7 +53,10 @@ def post_announcement(request,**kwargs):
 			staff = Group.objects.get(name='staff')
 			assign_perm('edit', announcement.owner,announcement)
 			assign_perm('edit', staff,announcement)
-			return HttpResponseRedirect(reverse('ManageConnections:detail_announcement',args=[announcement.id]))
+			if "Idea_id" in kwargs:
+				return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id]))
+			elif "User_id" in kwargs:
+				return HttpResponseRedirect(reverse('ManageUsers:userprofile',args=[user.id]))
 		#if form data is invalid
 		else:
 			print(post_form.errors)
@@ -67,6 +70,13 @@ def detail_announcement(request, Request_id):
 
 @login_required
 def edit_announcement(request, **kwargs):
+	if "Idea_id" in kwargs:
+		Idea_id = kwargs["Idea_id"]
+		idea = get_object_or_404(Idea,pk=Idea_id)
+	else:
+		User_id = kwargs["User_id"]
+		user=get_object_or_404(User, pk=User_id)
+		userprofile = get_object_or_404(UserProfile,user=user)
 	Request_id=kwargs["Request_id"]
 	announcement=get_object_or_404(Announcement, pk=Request_id)
 	if request.method=='POST':
@@ -84,7 +94,10 @@ def edit_announcement(request, **kwargs):
 				return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[kwargs["User_id"],]))
 	elif request.method=='GET':
 		announcement_form=AnnouncementForm(instance=announcement)
-		return render(request,'ManageConnections/edit_announcement.html',{'announcement':announcement,'announcement_form':announcement_form})
+		if "Idea_id" in kwargs:
+			return render(request,'ManageConnections/edit_announcement.html',{'announcement':announcement,'announcement_form':announcement_form,'isidea':True})
+		elif "User_id" in kwargs:
+			return render(request,'ManageConnections/edit_announcement.html',{'announcement':announcement,'announcement_form':announcement_form,'isidea':False})
 
 @login_required
 def remove_announcement(request, **kwargs):

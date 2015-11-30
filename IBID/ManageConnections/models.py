@@ -8,7 +8,7 @@ from ManageUsers.models import UserProfile
 
 
 class Announcement(models.Model):
-    title = models.CharField(max_length = 400, unique=True)
+    title = models.CharField(max_length = 400, unique=False)
     owner = models.ForeignKey(User)
     idea = models.ForeignKey(Idea, blank=True, null=True)
     date_added = models.DateField(default=timezone.now)
