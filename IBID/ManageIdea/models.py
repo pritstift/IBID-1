@@ -37,8 +37,8 @@ class Idea(models.Model):
 	motivation=models.CharField(max_length=2048,blank=True, null=True)
 	support=models.CharField(max_length=2048, blank=True, null=True)
 
-	status = models.CharField(max_length=2048, blank=True, null=True,)
-	tags = TaggableManager(help_text="A comma-separated list of tags.")
+	status = models.CharField(max_length=2048, blank=True, null=True)
+	tags = TaggableManager(help_text="A comma-separated list of tags."	)
 	
 	members = models.ManyToManyField(User, through='IdeaMembership', related_name='members')
 	measures=models.ManyToManyField(Measure, through='IdeaMeasures')

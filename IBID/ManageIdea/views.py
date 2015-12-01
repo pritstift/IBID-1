@@ -24,7 +24,10 @@ def detail(request, Idea_id):
 	ideaprivacy = get_object_or_404(IdeaPrivacy, instance=idea)
 	comments=Comment.objects.filter(idea=idea)
 	commentform=CommentForm()
-	detail_form = DisplayIdeaForm(instance=idea)
+	detail_form = PostForm(instance=idea)
+	print(detail_form.fields)
+	for key in detail_form.fields:
+		detail_form.fields[key].widget.attrs['readonly'] = True
 	announcements = Announcement.objects.filter(idea=idea)
 	perms = get_perms(request.user, idea)
 	return render(request, 'ManageIdea/detail.html', {'Idea':idea,'IdeaPrivacy':ideaprivacy, 'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'commentform':commentform})
@@ -184,8 +187,8 @@ def edit(request, Idea_id):
 
 @login_required
 def post(request, User_id):
+	user=get_object_or_404(User, pk=User_id)
 	if request.method == 'GET':
-		user=get_object_or_404(User, pk=User_id)
 		post_form = PostForm(initial={'originator':user})
 		return render(request, 'ManageIdea/upload.html', {'post_form':post_form})
 	elif request.method == 'POST':
@@ -197,15 +200,13 @@ def post(request, User_id):
 		if post_form.is_valid() and privacy_form.is_valid():
 			idea=post_form.save(commit=False)
 			# add user and save to database
-			if 'User_id' in kwargs:
-				idea.owner=User.objects.get(pk=User_id)
-				idea.save()
-				Idea_id=idea.id
-				post_form.save_m2m()
-				privacy=privacy_form.save(commit=False)
-				privacy.instance = idea
-				privacy.save()
-				assign_permissions(user=idea.owner, instance=idea)
+			idea.originator=user
+			idea.save()
+			post_form.save_m2m()
+			privacy=privacy_form.save(commit=False)
+			privacy.instance = idea
+			privacy.save()
+			assign_permissions(user=idea.originator, instance=idea)
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
 		#if form data is invalid
 		else:

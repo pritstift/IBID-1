@@ -12,7 +12,7 @@ class IdeaMembershipInline(admin.TabularInline):
 
 
 class IdeaAdmin(GuardedModelAdmin):
-	fields = ['title', 'owner','date_added', 'description_short','description_long']
+	fields = ['title', 'originator','date_added', 'description_short','description_long']
 	ordering = ('-date_added',)
 	inlines = (IdeaMembershipInline,)
 	@property

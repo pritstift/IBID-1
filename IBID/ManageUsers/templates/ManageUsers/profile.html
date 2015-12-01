@@ -278,8 +278,8 @@
           <div class="col-md-10 col-sm-10">
             <p class="list-group-item-text">
               <b>{{ idea.title }}</b>
-              {% if request.user|can_edit:Idea %}
-                (<a href="{% url 'ManageIdea:edit' Idea.id %}">edit</a>)
+              {% if request.user|can_edit:idea %}
+                (<a href="{% url 'ManageIdea:edit' idea.id %}">edit</a>)
               {% endif %}
             </p>
             <p class="list-group-item-text">{{ idea.description_long | linebreaks }}</p>

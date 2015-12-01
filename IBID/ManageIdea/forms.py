@@ -16,12 +16,17 @@ from datetimewidget.widgets import DateWidget
 class PostForm(forms.ModelForm):
 	description_long = forms.CharField(widget=forms.Textarea)
 	description_short = forms.CharField(widget=forms.Textarea)
-	customer = forms.CharField(widget=forms.Textarea)
-	problem = forms.CharField(widget=forms.Textarea)
-	current_solution = forms.CharField(widget=forms.Textarea)
-	gain = forms.CharField(widget=forms.Textarea)
-	market_size = forms.CharField(widget=forms.Textarea)
-	advantages = forms.CharField(widget=forms.Textarea)
+	customer = forms.CharField(widget=forms.Textarea, required=False)
+	problem = forms.CharField(widget=forms.Textarea, required=False)
+	current_solution = forms.CharField(widget=forms.Textarea, required=False)
+	gain = forms.CharField(widget=forms.Textarea, required=False)
+	market_size = forms.CharField(widget=forms.Textarea, required=False)
+	advantages = forms.CharField(widget=forms.Textarea, required=False)
+	why_startup = forms.CharField(widget=forms.Textarea, required=False)
+	why_now = forms.CharField(widget=forms.Textarea, required=False)
+	motivation = forms.CharField(widget=forms.Textarea, required=False)
+	support = forms.CharField(widget=forms.Textarea, required=False)
+	status = forms.CharField(widget=forms.Textarea, required=False)
 	class Meta:
 		model = Idea
 		exclude = ['originator','date_added', 'members', 'measures']
@@ -47,7 +52,7 @@ class PostForm(forms.ModelForm):
 		# self.helper.form_class = 'form-inline'
 		# self.helper.field_template = 'bootstrap3/layout/inline_field.html'
 		self.helper.layout=Layout(
-			Div(
+			Div('originator',
 				Accordion(
     				AccordionGroup(
     					'Beschreibung',
@@ -117,24 +122,41 @@ class PostForm(forms.ModelForm):
 							css_class="row",
 						),
 					),
+					AccordionGroup(
+						'Sonstiges',
+						Div(
+							Div(
+								'why_startup',
+								css_class="col-md-6",
+							),
+							Div(
+								'why_now',
+								css_class="col-md-6",
+							),
+							css_class="row",
+						),
+						Div(
+							Div(
+								'status',
+								css_class="col-md-6",
+							),
+							Div(
+								'motivation',
+								css_class="col-md-6",
+							),
+							css_class="row",
+						),
+						Div(
+							Div(
+								'support',
+								css_class="col-md-12",
+							),
+							css_class="row",
+						),
+					),
 				),
 				
 				
-				
-				
-
-				
-				
-				
-				'why_startup',
-				'why_now',
-				'motivation',
-				'support',
-				'status',
-				
-				css_class="tab-pane active",
-				css_id="description",
-				role="tabpanel" ,
 			),
 		)
 		self.helper.form_tag = False
