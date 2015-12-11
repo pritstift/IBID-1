@@ -2,6 +2,7 @@ from django.conf.urls import patterns, url
 
 from ManageUsers import views
 from ManageConnections.views import post_announcement, edit_announcement, remove_announcement
+from ManageProjects.views import create_project
 urlpatterns = patterns('',
     # ex: /users/sascha/
     url('^login/',views.user_login, name='login'),
@@ -14,5 +15,6 @@ urlpatterns = patterns('',
     url(r'^(?P<User_id>\d+)/request/post/$', post_announcement, name='post_announcement'),
     url(r'^(?P<User_id>\d+)/request/edit/(?P<Request_id>\d+)$', edit_announcement, name='edit_announcement'),
     url(r'^(?P<User_id>\d+)/request/remove/(?P<Request_id>\d+)$', remove_announcement, name='remove_announcement'),
+    url(r'^(?P<User_id>\d+)/project/create/$', create_project, name='create_project'),
     url(r'^(?P<User_id>\d+)/$', views.userprofile, name='userprofile'),
 )

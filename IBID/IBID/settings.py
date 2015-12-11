@@ -39,6 +39,7 @@ INSTALLED_APPS = (
 	'ManageIdea',
 	'ManageUsers',
 	'ManageConnections',
+	'ManageProjects',
 	'Home',
 	'taggit',
 	'taggit_selectize',

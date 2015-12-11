@@ -277,7 +277,7 @@
 
           <div class="col-md-10 col-sm-10">
             <p class="list-group-item-text">
-              <b>{{ idea.title }}</b>
+              <b>{{ idea.title }}</b> vom {{ idea.date_added }}
               {% if request.user|can_edit:idea %}
                 (<a href="{% url 'ManageIdea:edit' idea.id %}">edit</a>)
               {% endif %}
@@ -302,7 +302,7 @@
           <div class="col-md-1 col-sm-1">
             <div class="btn-group pull-right">
               {% if request.user|can_edit:userprofile %}
-              <a href="{% url 'ManageUsers:post_announcement' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+              <a href="{% url 'ManageUsers:create_project' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
               </a>
               {% endif %}
             </div>
@@ -319,14 +319,14 @@
 
           <div class="col-md-10 col-sm-10">
             <p class="list-group-item-text">
-              <b>{{ project.title }}</b>
-              {% if request.user|can_edit:project %}
-                (<a href="{% url 'ManageIdea:edit_announcement' Idea.id announcement.id %}">edit</a>)
+              <b>{{ project.title }}</b> vom {{ project.date_added }}
+              {% if request.user|can_view:project %}
+                (<a href="{% url 'ManageProjects:detail' project.id %}">details</a>)
               {% endif %}
             </p>
-            <p class="list-group-item-text">{{ announcement.description_long | linebreaks }}</p>
-            <p>
-            </p>
+            {% if project.dexcription %}
+            <p class="list-group-item-text">{{ project.description | linebreaks }}</p>
+            {% endif %}
           </div>
           <div class="col-md-1 col-sm-1">
           </div>
@@ -382,7 +382,7 @@
           <div class="col-md-1 col-sm-1">
           </div>
           <div class="col-md-10 col-sm-10">
-            <b><center>Betreuerkommentare</center></b>
+            <b><center>Notizen</center></b>
           </div>
           <div class="col-md-1 col-sm-1">
             <div class="btn-group pull-right">
@@ -404,7 +404,7 @@
 
           <div class="col-md-10 col-sm-10">
             <p class="list-group-item-text">
-              <b>{{ comment.title }}</b> by {{ comment.supervisor.first_name }} {{ comment.supervisor.last_name }} vom {{ comment.date_added }}
+              <b>{{ comment.title }}</b> von {{ comment.supervisor.first_name }} {{ comment.supervisor.last_name }} vom {{ comment.date_added }}
               {% if request.user|has_group:'staff' %}
                 (<a href="{% url 'ManageUsers:editcomment' comment.id %}">edit</a>)
               {% endif %}

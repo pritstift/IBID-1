@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load idea_extras %}
+
+{% block body_middle_block-6 %}
+
+ <div class="panel panel-default">
+    <div class="panel-heading clearfix" >
+      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>Projektdetails <b>  {{profile.title }}</b>
+      </h3>
+      <div class="btn-group pull-right">
+        {% if request.user|can_edit:project %}
+          <a href="{% url 'ManageProjects:edit_project' project.id%}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+          </a>
+        {% endif %}
+      </div>
+    </div>
+    <div class="panel-body">
+      <b><center>Allgemeines</center></b></br>
+      <div class="row">
+        <div class="col-sm-6 text">
+          <div class="list-group">
+            <b class="list-group-item-heading">Beschreibung</b></br>
+            <div class="list-group-item-text">lhbaföhbsdf</div>
+            <div class="list-group-item-text">hösfgiungöiundf</div>
+          </div>
+        </div>
+        <div class="col-sm-6 text">
+          <div class="list-group">
+            <b class="list-group-item-heading">Beschreibung</b></br>
+            <div class="list-group-item-text">lhbaföhbsdf</div>
+            <div class="list-group-item-text">hösfgiungöiundf</div>
+          </div>
+        </div>
+      </div> <hr>      
+    </div>
+  /div>
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+

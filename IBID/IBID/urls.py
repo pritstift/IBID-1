@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     url(r'^requests/', include('ManageConnections.urls',namespace="ManageConnections")),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^users/', include('ManageUsers.urls', namespace="ManageUsers")),
+    url(r'^projects/', include('ManageProjects.urls', namespace="ManageProjects")),
     url(r'^$', include('Home.urls',namespace="Home")),
 )

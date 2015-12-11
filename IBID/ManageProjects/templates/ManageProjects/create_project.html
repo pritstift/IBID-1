@@ -1,0 +1,23 @@
+
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+<!-- tabs left -->
+
+
+{% block body_block %}
+
+
+
+
+<form action="" method="POST">
+  {% csrf_token %}
+
+    {% crispy project_form %}
+    <button type="submit" class="btn btn-primary" name="next" value="{{ next }}">Projekt anlegen</button>
+
+
+ </form>
+
+{% endblock %}

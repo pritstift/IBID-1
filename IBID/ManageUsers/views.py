@@ -13,6 +13,7 @@ from ManageUsers.models import UserProfile, UserProfilePrivacy, UserComment
 from ManageIdea.models import Idea
 from ManageIdea.views import assign_permissions
 from ManageConnections.models import Announcement
+from ManageProjects.models import Project, ProjectGroup
 import Home
 from IBID.functions import get_ip_instance, Object, group_required
 import re
@@ -23,18 +24,19 @@ import string
 @login_required
 def userprofile(request,User_id):
 	user = get_object_or_404(User,pk = User_id)
-	userprofile = get_object_or_404(UserProfile,user=user)
-	announcements = Announcement.objects.filter(owner=user, idea=None)
-	comments=UserComment.objects.filter(user=user)
-	privacy = get_object_or_404(UserProfilePrivacy,instance=userprofile)
-	ideas=Idea.objects.filter(originator=user)
+	userprofile = get_object_or_404(UserProfile,user = user)
+	projects = Project.objects.filter(projectgroup__user = user)
+	announcements = Announcement.objects.filter(owner = user, idea=None)
+	comments = UserComment.objects.filter(user = user)
+	privacy = get_object_or_404(UserProfilePrivacy,instance = userprofile)
+	ideas = Idea.objects.filter(originator = user)
 	perms = get_perms(request.user,userprofile)
 	if 'edit' in perms:
 		edit_profile = user.id
 	else:
 		edit_profile=False
 	if 'view' in perms:
-		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'announcements':announcements,'edit_profile':edit_profile, 'userprofile':userprofile, 'comments':comments})
+		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'projects':projects,'announcements':announcements,'edit_profile':edit_profile, 'userprofile':userprofile, 'comments':comments})
 	else:
 		return render(request, 'ManageUsers/profile.html', {'ideas':ideas,'announcements':announcements, 'edit_profile':edit_profile,  'userprofile':get_ip_instance(privacy, UserProfile)})
 

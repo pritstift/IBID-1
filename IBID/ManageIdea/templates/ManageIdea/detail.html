@@ -64,7 +64,7 @@
 		</div>
 		{% endif %}
 		<hr>
-		<div class="list-group">
+		<!-- <div class="list-group">
 			<div class="row">
 				<div class="col-md-1 col-sm-1">
 				</div>
@@ -105,18 +105,17 @@
 			</div>
 			{% endfor %}
 		</div>
-		<hr>
-
+		<hr> -->
+		{% if request.user|has_group:"staff" %}
 		<div class="list-group">
 			<div class="row">
 				<div class="col-md-1 col-sm-1">
 				</div>
 				<div class="col-md-10 col-sm-10">
-					<b><center>Comments by staff users</center></b>
+					<b><center>Notizen</center></b>
 				</div>
 				<div class="col-md-1 col-sm-1">
 					<div class="btn-group pull-right">
-						{% if request.user|has_group:"staff" %}
 						<a class="btn btn-default btn-sm" data-toggle="modal" data-target="#createCommentModal">
 							<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 						</a>
@@ -140,7 +139,7 @@
 								</div>
 							</div>
 						</div>
-						{% endif %}
+						
 					</div>
 				</div>
 			</div>
@@ -168,7 +167,8 @@
 			{% endif %}
 			{% endfor %}
 		</div>  
-		<hr>
+		{% endif %}
+		<!-- <hr>
 		<div class="list-group">
 			<div class="row">
 				<div class="col-md-1 col-sm-1">
@@ -215,7 +215,7 @@
 				</div>
 			</div>
 			{% endfor %}
-		</div> 
+		</div>  -->
 	</div>
 </div>
 {% endblock %}
