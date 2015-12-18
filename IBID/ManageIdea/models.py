@@ -40,7 +40,7 @@ class Idea(models.Model):
 	status = models.CharField(max_length=2048, blank=True, null=True)
 	tags = TaggableManager(help_text="A comma-separated list of tags."	)
 	
-	members = models.ManyToManyField(User, through='IdeaMembership', related_name='members')
+	members = models.ManyToManyField(User, through='ManageConnections.Membership', related_name='members')
 	measures=models.ManyToManyField(Measure, through='IdeaMeasures')
 	
 	class Meta:
@@ -97,22 +97,6 @@ class Comment(models.Model):
 			('view', 'View Comment'),
 			('edit', 'Edit Comment'),
 		)
-
-class IdeaMembership(models.Model):
-	idea = models.ForeignKey(Idea)
-	member = models.ForeignKey(User)
-	task = models.CharField(max_length=64, blank=True, null=True)
-	date_added = models.DateTimeField(default = timezone.now)
-	class Meta:
-		permissions = (
-			('view', 'View Membership'),
-			('edit', 'Edit Membership'),
-		)
-		unique_together = (
-			'idea',
-			'member',
-			)
-
 
 	
 class IdeaMeasures(models.Model):

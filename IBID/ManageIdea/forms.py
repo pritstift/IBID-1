@@ -243,63 +243,6 @@ class CommentForm(forms.ModelForm):
 				),
 		)
 
-class AddMemberForm(forms.ModelForm):
-	username = forms.CharField(required=True)
-	can_edit = forms.BooleanField(required=False, initial = False)
-	class Meta:
-		model = IdeaMembership
-		exclude = ['idea', 'member', 'date_added']
-	
-	def __init__(self, *args, **kwargs):
-		super(AddMemberForm, self).__init__(*args, **kwargs)
-		self.helper = FormHelper()
-		self.fields['username'].label = "Username"
-		self.fields['task'].label = "Task"
-		self.fields['can_edit'].label = "Allow this user to edit the idea?"
-		self.helper.layout = Layout(
-			Div(
-				'username',
-				'task',
-				'can_edit'
-				),
-			FormActions(
-				Submit('save', 'Submit'),
-			),
-		)
-
-	def clean_username(self):
-		username=self.cleaned_data.get('username')
-
-		if not User.objects.filter(username=username).count():
-			raise forms.ValidationError('There is no user with that username')
-		
-		if IdeaMembership.objects.filter(member=User.objects.get(username=username)).count():
-			raise forms.ValidationError('You already added this user')
-		return username
-
-class EditMemberForm(forms.ModelForm):
-	can_edit = forms.BooleanField(required=False, initial = False)
-	class Meta:
-		model = IdeaMembership
-		exclude = ['idea', 'date_added']
-	
-	def __init__(self, *args, **kwargs):
-		super(EditMemberForm, self).__init__(*args, **kwargs)
-		self.helper = FormHelper()
-		self.fields['member'].label = "User"
-		self.fields['task'].label = "Task"
-		self.fields['can_edit'].label = "Allow this user to edit the idea?"
-		self.helper.form_tag = False
-		self.helper.layout = Layout(
-			Div(
-				'member',
-				readonly="readonly",
-				),
-			Div(
-				'task',
-				'can_edit',
-				),
-		)
 
 class AddIdeaMeasureForm(forms.ModelForm):
 	class Meta:

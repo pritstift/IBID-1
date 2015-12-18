@@ -52,7 +52,7 @@
 				<div class="col-md-10 col-sm-10">
 					<p class="list-group-item-text">
 						<b><a href="{% url 'ManageUsers:userprofile' membership.member.id %}">{{ membership.member }}</a></b> 
-						{% if request.user|can_edit:Idea %}(<a href="{% url 'ManageIdea:edit_member' membership.id %}">edit</a>)
+						{% if request.user|can_edit:Idea %}(<a href="{% url 'ManageConnections:edit_membership' membership.id %}">edit</a>)
 						{% endif %}
 					</p>
 					<p>{{membership.member|get_task:Idea}}</p>
