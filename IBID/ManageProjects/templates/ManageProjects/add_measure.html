@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block body_middle_block-2 %}
+<b> Maßnahme  </b>
+<form action="" method="POST">
+  {% csrf_token %}
+  {% crispy ProjectMeasureForm %}
+   <button type="submit" class="btn btn-primary" name="next" value="{{ next }}"> Maßnahme hinzufügen </button>
+
+</form>
+{% endblock %}

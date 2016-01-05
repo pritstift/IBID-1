@@ -9,8 +9,8 @@ from guardian.shortcuts import assign_perm, get_perms, remove_perm
 from django.forms.models import modelform_factory
 from django.forms.formsets import formset_factory
 import re
-from ManageIdea.models import Idea, IdeaPrivacy, Comment, Measure, IdeaMeasures
-from ManageIdea.forms import PostForm, PrivacyForm, DisplayIdeaForm, CommentForm, AddIdeaMeasureForm
+from ManageIdea.models import Idea, IdeaPrivacy, Comment
+from ManageIdea.forms import PostForm, PrivacyForm, DisplayIdeaForm, CommentForm
 from ManageConnections.models import Announcement, Membership
 
 from IBID.functions import get_ip_instance, assign_permissions, group_required
@@ -32,17 +32,6 @@ def detail(request, Idea_id):
 	perms = get_perms(request.user, idea)
 	return render(request, 'ManageIdea/detail.html', {'Idea':idea,'IdeaPrivacy':ideaprivacy, 'detail_form':detail_form, 'announcements':announcements,'comments':comments, 'commentform':commentform})
 
-
-
-@login_required
-def removemember(request, Membership_id):
-	membership=get_object_or_404(IdeaMembership,pk=Membership_id)
-	idea=membership.idea
-	if not 'edit' in get_perms(request.user, idea):
-		return HttpResponse('No!')	
-	membership.delete()
-	return HttpResponseRedirect(reverse('ManageIdea:detail', args=[idea.id,]))
-	
 
 @group_required('staff')
 def createcomment(request, Idea_id):
@@ -163,37 +152,3 @@ def post(request, User_id):
 			print(post_form.errors)
 			return render(request, 'ManageIdea/upload.html', {'post_form':post_form,'privacy_form':privacy_form})
 
-@group_required('admin', 'staff')
-def add_idea_measure(request, Idea_id):
-	idea=get_object_or_404(Idea, pk=Idea_id)
-	if request.method=='POST':
-		ideameasure_form=AddIdeaMeasureForm(data=request.POST)
-		if ideameasure_form.is_valid():
-			ideameasure=ideameasure_form.save(commit=False)
-			ideameasure.idea=idea
-			ideameasure.save()
-			return HttpResponseRedirect(reverse('ManageIdea:detail', args=[idea.id,]))
-	elif request.method=='GET':
-		ideameasure_form=AddIdeaMeasureForm()
-	return render(request, 'ManageIdea/add_measure.html', {'Idea':idea, 'IdeaMeasureForm':ideameasure_form})
-
-@group_required('admin', 'staff')
-def edit_measure(request,Measure_id):
-	ideameasure=get_object_or_404(IdeaMeasures, pk=Measure_id)
-	if request.method=='POST':
-		ideameasure_form=AddIdeaMeasureForm(data=request.POST, instance=ideameasure)
-		if ideameasure_form.is_valid():
-			ideameasure=ideameasure_form.save()
-			ideameasure.save()
-			return HttpResponseRedirect(reverse('ManageIdea:detail', args=[ideameasure.idea.id,]))
-
-	elif request.method=='GET':
-		ideameasure_form=AddIdeaMeasureForm(instance=ideameasure)
-	return render(request, 'ManageIdea/edit_measure.html', {'Measure':ideameasure,'IdeaMeasureForm':ideameasure_form})
-
-@group_required('admin', 'staff')
-def remove_measure(request, Measure_id):
-	ideameasure=get_object_or_404(IdeaMeasures, pk=Measure_id)
-	idea=ideameasure.idea
-	ideameasure.delete()
-	return HttpResponseRedirect(reverse('ManageIdea:detail', args=[idea.id,]))

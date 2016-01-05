@@ -11,7 +11,7 @@ from ManageProjects.models import Project
 from ManageUsers.models import UserProfile
 from django.contrib.auth.models import User, Group
 from guardian.shortcuts import assign_perm, get_perms, remove_perm
-from IBID.functions import get_ip_instance, assign_permissions, group_required
+from IBID.functions import get_ip_instance, assign_permissions, group_required, assign_staff_permissions
 
 def index(request):
 	announcements = Announcement.objects.all()
@@ -61,7 +61,6 @@ def post_announcement(request,**kwargs):
 				return HttpResponseRedirect(reverse('ManageUsers:userprofile',args=[user.id]))
 		#if form data is invalid
 		else:
-			print(post_form.errors)
 			return render(request, 'ManageConnections/post_announcement.html', {'post_form':post_form})
 
 @login_required
@@ -126,12 +125,12 @@ def addmember(request, **kwargs):
 		add_member_form = AddMemberForm(data=request.POST)
 		if add_member_form.is_valid():
 			membership = add_member_form.save(commit=False)
-			print(add_member_form)
 			if idea_flag:
 				membership.idea = idea
 			else :
 				membership.project = project
 			membership.save()
+			assign_staff_permissions(instance=membership)
 			can_edit=membership.can_edit
 			if can_edit:
 				if idea_flag :
@@ -140,15 +139,15 @@ def addmember(request, **kwargs):
 					assign_permissions(user=membership.member, instance = project)
 			else:
 				if idea_flag:
-					assign_perm('view', membership.member, idea) 
+					assign_perm('view', membership.member, idea)  
 				else:
-					assign_perm('view', membership.member, project) 
-
+					assign_perm('view', membership.member, project)  
 			if idea_flag:
 				assign_permissions(user=idea.originator, instance=membership) 
-			return HttpResponseRedirect(reverse('ManageIdea:detail', args=[Idea_id,]))
+				return HttpResponseRedirect(reverse('ManageIdea:detail', args=[Idea_id,]))
+			else:
+				return HttpResponseRedirect(reverse('ManageProjects:detail', args=[Project_id,]))
 		else:
-			print(add_member_form.errors)
 			if idea_flag:
 				return render(request, 'ManageConnections/add_member.html',{'Idea':idea, 'add_member_form':add_member_form} )
 			else:
@@ -185,7 +184,6 @@ def edit_membership(request, **kwargs):
 	elif request.method == 'POST':
 		edit_member_form = EditMemberForm(data=request.POST, instance=membership)
 		if edit_member_form.is_valid():
-			print("is valid")
 			membership=edit_member_form.save()
 			if 'can_edit' in edit_member_form.changed_data:
 				can_edit=edit_member_form.cleaned_data.get('can_edit')
@@ -213,6 +211,6 @@ def remove_membership(Request_id,**kwargs):
 	memberhsip.delete()
 	if "Idea_id" in kwargs:
 		return HttpResponseRedirect(reverse('ManageIdea:detail', args=[kwargs["Idea_id"],]))
-	elif "User_id" in kwargs:
-		return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[kwargs["User_id"],]))
+	elif "Project_id" in kwargs:
+		return HttpResponseRedirect(reverse('ManageProjects:detail', args=[kwargs["Project_id"],]))
 	

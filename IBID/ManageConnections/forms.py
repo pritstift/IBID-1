@@ -30,8 +30,8 @@ class AnnouncementForm(forms.ModelForm):
 
 class AddMemberForm(forms.ModelForm):
 	# member = autocomplete_light.ModelChoiceField('UserAutocomplete')
-	project = forms.ModelChoiceField(queryset=Project.objects.all(), widget=forms.HiddenInput())
-	idea = forms.ModelChoiceField(queryset=Idea.objects.all(), widget=forms.HiddenInput())
+	project = forms.ModelChoiceField(queryset=Project.objects.all(), widget=forms.HiddenInput(), required=False)
+	idea = forms.ModelChoiceField(queryset=Idea.objects.all(), widget=forms.HiddenInput(), required=False)
 	class Meta:
 		model = Membership
 		exclude = ['date_added']
@@ -59,15 +59,10 @@ class AddMemberForm(forms.ModelForm):
 		member = self.cleaned_data.get('member')
 		idea = self.cleaned_data.get('idea')
 		project = self.cleaned_data.get('project')
-		# idea = self.__dict__["fields"]["idea"]
-		# project = self.__dict__["fields"]["project"]
-		print('vlidation')
-		print(project,idea)
 		if idea is not None:
 			if Membership.objects.filter(member=member,idea=idea).count():
 				raise forms.ValidationError('Dieser Nutzer ist bereits Mitglied im Ideenpapier')
 		elif project is not None:
-			print(Membership.objects.filter(member=member,project=project).count())
 			if Membership.objects.filter(member=member,project=project).count():
 				raise forms.ValidationError('Dieser Nutzer ist bereits Mitglied im Projekt')
 		return member

@@ -10,13 +10,7 @@ from django.contrib import admin
 
 from taggit.managers import TaggableManager
 
-class Measure(models.Model):
-	title=models.CharField(max_length=64, blank=False, unique=True)
-	description_long=models.TextField(max_length=2048, blank=False)
-	date_added=models.DateTimeField(default=timezone.now)
-	
-	def __str__(self):
-		return self.title
+
 
 class Idea(models.Model):
 	title=models.CharField(max_length = 400, unique=True)
@@ -41,7 +35,6 @@ class Idea(models.Model):
 	tags = TaggableManager(help_text="A comma-separated list of tags."	)
 	
 	members = models.ManyToManyField(User, through='ManageConnections.Membership', related_name='members')
-	measures=models.ManyToManyField(Measure, through='IdeaMeasures')
 	
 	class Meta:
 		permissions = (
@@ -97,17 +90,3 @@ class Comment(models.Model):
 			('view', 'View Comment'),
 			('edit', 'Edit Comment'),
 		)
-
-	
-class IdeaMeasures(models.Model):
-	measure=models.ForeignKey(Measure)
-	idea=models.ForeignKey(Idea)
-	start_date=models.DateField(blank=True, null=True)
-	end_date=models.DateField(blank=True, null=True)
-	date_added=models.DateTimeField(default=timezone.now)
-	class Meta:
-		unique_together=(
-			'idea',
-			'measure',
-			)
-

@@ -61,3 +61,7 @@ def assign_permissions(**kwargs):
 	assign_perm('edit', staff,kwargs["instance"])
 	assign_perm('edit', kwargs["user"],kwargs["instance"])
 
+def assign_staff_permissions(**kwargs):
+	staff = Group.objects.get(name='staff')
+	assign_perm('view', staff,kwargs["instance"])
+	assign_perm('edit', staff,kwargs["instance"])

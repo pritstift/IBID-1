@@ -26,10 +26,20 @@
         <div class="col-sm-4 text">
           <b class="list-group-item-heading">Projektteilnehmer</b></br>
           <div class="list-group">
-            {% for member in members%}
-              <a href="{% url 'ManageUsers:userprofile' member.id %}">{{ member.first_name }} {{ member.last_name }}</a> <br>
+            {% for membership in project.membership_set.all%}
+              <a href="{% url 'ManageUsers:userprofile' membership.member.id %}">
+                {{ membership.member.first_name }} {{ membership.member.last_name }}
+              </a>
+              {% if request.user|can_edit:membership %}
+                (<a href="{% url 'ManageProjects:edit_membership' project.id membership.id  %}"> edit </a>)
+              {% endif %}
+              <br>
             {% endfor %}
-            <a href="{% url 'ManageProjects:addmember' project.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+            {% if request.user|can_edit:project %}
+            <a href="{% url 'ManageProjects:addmember' project.id %}" class="btn btn-default btn-xs">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </a>
+            {% endif %}
           </div>
           <b class="list-group-item-heading">Status</b></br>
           <div class="list-group">

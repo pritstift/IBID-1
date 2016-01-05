@@ -23,7 +23,14 @@ class ProjectState(models.Model):
     date_added = models.DateField(default = timezone.now)
     def __str__(self):
     	return self.title
-    
+ 
+class Measure(models.Model):
+	title=models.CharField(max_length=64, blank=False, unique=True)
+	description_long=models.TextField(max_length=2048, blank=False)
+	date_added=models.DateTimeField(default=timezone.now)
+	
+	def __str__(self):
+		return self.title
 
 class Project(models.Model):
 	"""
@@ -36,6 +43,8 @@ class Project(models.Model):
 
 	members = models.ManyToManyField(User, through = 'ProjectGroup')
 	ideas = models.ManyToManyField(Idea, through = 'ProjectIdeas')
+
+	members = models.ManyToManyField(User, through='ManageConnections.Membership', related_name="ProjectMembers")
 
 	class Meta:
 		permissions = (
@@ -83,4 +92,16 @@ class ProjectIdeas(models.Model):
 		unique_together = (
 			'project',
 			'idea',
+			)
+
+class ProjectMeasures(models.Model):
+	measure=models.ForeignKey(Measure)
+	project=models.ForeignKey(Project)
+	start_date=models.DateField(blank=True, null=True)
+	end_date=models.DateField(blank=True, null=True)
+	date_added=models.DateTimeField(default=timezone.now)
+	class Meta:
+		unique_together=(
+			'project',
+			'measure',
 			)

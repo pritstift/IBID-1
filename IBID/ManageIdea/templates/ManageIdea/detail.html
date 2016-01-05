@@ -52,7 +52,7 @@
 				<div class="col-md-10 col-sm-10">
 					<p class="list-group-item-text">
 						<b><a href="{% url 'ManageUsers:userprofile' membership.member.id %}">{{ membership.member }}</a></b> 
-						{% if request.user|can_edit:Idea %}(<a href="{% url 'ManageIdea:edit_membership' Idea.id membership.id %}">edit</a>)
+						{% if request.user|can_edit:membership %}(<a href="{% url 'ManageIdea:edit_membership' Idea.id membership.id %}">edit</a>)
 						{% endif %}
 					</p>
 					<p>{{membership.task}}</p>
@@ -168,54 +168,6 @@
 			{% endfor %}
 		</div>  
 		{% endif %}
-		<!-- <hr>
-		<div class="list-group">
-			<div class="row">
-				<div class="col-md-1 col-sm-1">
-				</div>
-				<div class="col-md-10 col-sm-10">
-					<b><center>Measures</center></b>
-				</div>
-				<div class="col-md-1 col-sm-1">
-					<div class="btn-group pull-right">
-						{% if request.user|has_group:'staff' %}
-						<a href="{% url 'ManageIdea:add_idea_measure' Idea.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-						</a>
-						{% endif %}
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="list-group">
-			{% for measure in Idea.ideameasures_set.all %}
-			<div class="row">
-				<div class="col-md-1 col-sm-1">
-					<span class="glyphicon glyphicon-road" aria-hidden="true"></span>
-				</div>
-
-				<div class="col-md-10 col-sm-10">
-					<p class="list-group-item-text">
-						<b>{{ measure.measure }}</b>
-						{% if request.user|has_group:'staff' %} 
-							(<a href="{% url 'ManageIdea:edit_measure' measure.id %}">edit</a>)
-						{% endif %}
-						
-						<p>
-							{% if measure.start_date %}
-								{{measure.start_date}}
-							{% endif %}
-							{% if measure.end_date %} 
-								- {{measure.end_date}}
-							{% endif %}
-						</p>
-					</p>
-				</div>
-				<div class="col-md-1 col-sm-1">
-				</div>
-			</div>
-			{% endfor %}
-		</div>  -->
 	</div>
 </div>
 {% endblock %}
