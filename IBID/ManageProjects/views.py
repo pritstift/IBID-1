@@ -55,4 +55,8 @@ def detail(request, Project_id):
 @login_required
 def edit_project(request,Project_id):
 	pass
+
+@login_required
+def add_member(request, Project_id):
+	pass
 	

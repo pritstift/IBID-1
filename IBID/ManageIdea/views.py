@@ -9,9 +9,9 @@ from guardian.shortcuts import assign_perm, get_perms, remove_perm
 from django.forms.models import modelform_factory
 from django.forms.formsets import formset_factory
 import re
-from ManageIdea.models import Idea, IdeaPrivacy, Comment, IdeaMembership, Measure, IdeaMeasures
+from ManageIdea.models import Idea, IdeaPrivacy, Comment, Measure, IdeaMeasures
 from ManageIdea.forms import PostForm, PrivacyForm, DisplayIdeaForm, CommentForm, AddIdeaMeasureForm
-from ManageConnections.models import Announcement
+from ManageConnections.models import Announcement, Membership
 
 from IBID.functions import get_ip_instance, assign_permissions, group_required
 
@@ -154,7 +154,9 @@ def post(request, User_id):
 			privacy=privacy_form.save(commit=False)
 			privacy.instance = idea
 			privacy.save()
+			membership=Membership.objects.create(idea=idea, member=idea.originator, task="Ideengeber")
 			assign_permissions(user=idea.originator, instance=idea)
+			assign_permissions(user=idea.originator, instance=membership)
 			return HttpResponseRedirect(reverse('ManageIdea:detail',args=[idea.id,]))
 		#if form data is invalid
 		else:

@@ -10,8 +10,13 @@
 {% block body_middle_block-1 %}
 
 
-<b> you are now adding another user to your idea {{Idea}} !</b><br>
-Please enter an username
+<b> Nutzer zum 
+
+	{% if Idea %}
+		Ideensteckbrief {{Idea}} hinzufügen
+	{% elif Project %}
+		Projekt {{Project}} hinzufügen {% endif %}</b><br>
+Nutzer auswählen
 
     {% crispy add_member_form %}
 

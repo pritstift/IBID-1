@@ -43,7 +43,7 @@
 		</div>
 
 		<div class="list-group">
-			{% for membership in Idea.ideamembership_set.all %}
+			{% for membership in Idea.membership_set.all %}
 			<div class="row">
 				<div class="col-md-1 col-sm-1">
 					<span class="glyphicon glyphicon-pawn" aria-hidden="true"></span>
@@ -52,10 +52,10 @@
 				<div class="col-md-10 col-sm-10">
 					<p class="list-group-item-text">
 						<b><a href="{% url 'ManageUsers:userprofile' membership.member.id %}">{{ membership.member }}</a></b> 
-						{% if request.user|can_edit:Idea %}(<a href="{% url 'ManageConnections:edit_membership' membership.id %}">edit</a>)
+						{% if request.user|can_edit:Idea %}(<a href="{% url 'ManageIdea:edit_membership' Idea.id membership.id %}">edit</a>)
 						{% endif %}
 					</p>
-					<p>{{membership.member|get_task:Idea}}</p>
+					<p>{{membership.task}}</p>
 				</div>
 				<div class="col-md-1 col-sm-1">
 				</div>

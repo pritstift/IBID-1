@@ -1,0 +1,28 @@
+
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+
+<!-- tabs left -->
+
+
+{% block body_middle_block-2 %}
+
+
+
+
+<form action="" method="POST">
+{% csrf_token %}
+
+
+    {% crispy edit_member_form %}
+
+       <button type="submit" class="btn btn-primary" name="next" value="{{ next }}"> Update </button> 
+       {% if idea_flag %}
+       <a href="{% url 'ManageIdea:remove_membership' Membership.idea.id Membership.id %}" class="btn btn-danger"> Mitgliedshaft kündigen </a>
+       {% elif not idea_flag %}
+       <a href="{% url 'ManageProjects:remove_membership' Membership.project.id Membership.id %}" class="btn btn-danger"> Mitgliedshaft kündigen </a>
+       {% endif %}
+</form>
+
+{% endblock %}

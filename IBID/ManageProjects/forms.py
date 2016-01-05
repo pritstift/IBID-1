@@ -23,6 +23,6 @@ class ProjectForm(forms.ModelForm):
 		self.helper.form_tag = False
 		self.fields['title'].label = "Name des Projekts"
 		self.fields['description'].label = "Kurze Beschreibung"
-		self.fields['active'].label = "Aktiv"
+		self.fields['status'].label = "Aktiv"
 
 		

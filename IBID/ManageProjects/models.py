@@ -5,13 +5,33 @@ from django.contrib.auth.models import User
 from ManageIdea.models import Idea
 from ManageUsers.models import UserProfile
 
+class ProjectState(models.Model):
+    """
+    Description: Projektstatus
+    """
+    title = models.CharField(max_length = 256, unique = True)
+    description = models.CharField(max_length = 2048, blank=True, null=True)
+    APPEARANCECHOICELIST = (
+    		('default','Default'),
+    		('primary','Primary'),
+    		('info','Info'),
+    		('success','Success'),
+    		('warning','Warning'),
+    		('danger','Danger'),
+    	)
+    appearance = models.CharField(max_length = 7, choices=APPEARANCECHOICELIST, default = 'default')
+    date_added = models.DateField(default = timezone.now)
+    def __str__(self):
+    	return self.title
+    
+
 class Project(models.Model):
 	"""
 	Description: project class
 	"""
 	title = models.CharField(max_length = 256, unique=True)
 	description = models.CharField(max_length = 2048, blank=True, null=True)
-	active = models.BooleanField(default=True)
+	status = models.ForeignKey(ProjectState, null=True, blank = True)
 	date_added = models.DateField(default = timezone.now)
 
 	members = models.ManyToManyField(User, through = 'ProjectGroup')

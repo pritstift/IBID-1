@@ -6,7 +6,7 @@
 
  <div class="panel panel-default">
     <div class="panel-heading clearfix" >
-      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-user" aria-hidden="true"></span>Projektdetails <b>  {{profile.title }}</b>
+      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-gift" aria-hidden="true"></span> <b>  {{ project.title }}</b>
       </h3>
       <div class="btn-group pull-right">
         {% if request.user|can_edit:project %}
@@ -16,25 +16,32 @@
       </div>
     </div>
     <div class="panel-body">
-      <b><center>Allgemeines</center></b></br>
       <div class="row">
-        <div class="col-sm-6 text">
+        <div class="col-sm-8 text">
           <div class="list-group">
             <b class="list-group-item-heading">Beschreibung</b></br>
-            <div class="list-group-item-text">lhbaföhbsdf</div>
-            <div class="list-group-item-text">hösfgiungöiundf</div>
+            {{ project.description | linebreaks }}
           </div>
         </div>
-        <div class="col-sm-6 text">
+        <div class="col-sm-4 text">
+          <b class="list-group-item-heading">Projektteilnehmer</b></br>
           <div class="list-group">
-            <b class="list-group-item-heading">Beschreibung</b></br>
-            <div class="list-group-item-text">lhbaföhbsdf</div>
-            <div class="list-group-item-text">hösfgiungöiundf</div>
+            {% for member in members%}
+              <a href="{% url 'ManageUsers:userprofile' member.id %}">{{ member.first_name }} {{ member.last_name }}</a> <br>
+            {% endfor %}
+            <a href="{% url 'ManageProjects:addmember' project.id %}" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a>
+          </div>
+          <b class="list-group-item-heading">Status</b></br>
+          <div class="list-group">
+            {% if project.status %}
+              <span class="label label-{{project.status.appearance}}">{{project.status}}</span>
+            {% endif %}
           </div>
         </div>
+        
       </div> <hr>      
     </div>
-  /div>
+  </div>
 
 
 

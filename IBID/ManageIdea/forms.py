@@ -1,5 +1,5 @@
 from django import forms
-from ManageIdea.models import Idea, IdeaPrivacy, Comment, IdeaMembership, IdeaMeasures
+from ManageIdea.models import Idea, IdeaPrivacy, Comment, IdeaMeasures
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Button, Div, HTML, MultiField, Field
 from crispy_forms.bootstrap import FormActions, InlineRadios, Accordion, AccordionGroup
@@ -278,3 +278,4 @@ class AddIdeaMeasureForm(forms.ModelForm):
 			else:
 				raise forms.ValidationError('Leave empty or provide a start date ')    			
 		return end_date
+

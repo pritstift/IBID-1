@@ -1,5 +1,8 @@
 from django import forms
+# import autocomplete_light.shortcuts as autocomplete_light
+from django.contrib.auth.models import User
 from ManageIdea.models import Idea
+from ManageProjects.models import Project
 from ManageConnections.models import Announcement, Membership
 
 from crispy_forms.helper import FormHelper
@@ -23,52 +26,63 @@ class AnnouncementForm(forms.ModelForm):
 		)
 		self.helper.form_tag = False
 
+
+
 class AddMemberForm(forms.ModelForm):
-	username = forms.CharField(required=True)
-	can_edit = forms.BooleanField(required=False, initial = False)
+	# member = autocomplete_light.ModelChoiceField('UserAutocomplete')
+	project = forms.ModelChoiceField(queryset=Project.objects.all(), widget=forms.HiddenInput())
+	idea = forms.ModelChoiceField(queryset=Idea.objects.all(), widget=forms.HiddenInput())
 	class Meta:
 		model = Membership
-		exclude = ['idea','project', 'member', 'date_added']
+		exclude = ['date_added']
 	
 	def __init__(self, *args, **kwargs):
 		super(AddMemberForm, self).__init__(*args, **kwargs)
 		self.helper = FormHelper()
-		self.fields['username'].label = "Username"
+		self.fields['member'].label = "Nutzer"
 		self.fields['task'].label = "Task"
 		self.fields['can_edit'].label = "Kann Instanz editieren"
 		self.helper.layout = Layout(
 			Div(
-				'username',
+				'member',
 				'task',
-				'can_edit'
+				'can_edit',
+				'project',
+				'idea',
 				),
 			FormActions(
 				Submit('save', 'Submit'),
 			),
 		)
 
-	def clean_username(self):
-		username=self.cleaned_data.get('username')
-
-		if not User.objects.filter(username=username).count():
-			raise forms.ValidationError('There is no user with that username')
-		
-		if IdeaMembership.objects.filter(member=User.objects.get(username=username)).count():
-			raise forms.ValidationError('You already added this user')
-		return username
+	def clean_member(self):
+		member = self.cleaned_data.get('member')
+		idea = self.cleaned_data.get('idea')
+		project = self.cleaned_data.get('project')
+		# idea = self.__dict__["fields"]["idea"]
+		# project = self.__dict__["fields"]["project"]
+		print('vlidation')
+		print(project,idea)
+		if idea is not None:
+			if Membership.objects.filter(member=member,idea=idea).count():
+				raise forms.ValidationError('Dieser Nutzer ist bereits Mitglied im Ideenpapier')
+		elif project is not None:
+			print(Membership.objects.filter(member=member,project=project).count())
+			if Membership.objects.filter(member=member,project=project).count():
+				raise forms.ValidationError('Dieser Nutzer ist bereits Mitglied im Projekt')
+		return member
 
 class EditMemberForm(forms.ModelForm):
-	can_edit = forms.BooleanField(required=False, initial = False)
 	class Meta:
 		model = Membership
 		exclude = ['idea','project', 'date_added']
 	
 	def __init__(self, *args, **kwargs):
-		super(Membership, self).__init__(*args, **kwargs)
+		super(EditMemberForm, self).__init__(*args, **kwargs)
 		self.helper = FormHelper()
 		self.fields['member'].label = "User"
 		self.fields['task'].label = "Task"
-		self.fields['can_edit'].label = "Kann Instanz editieren"
+		self.fields['can_edit'].label = "Kann editieren"
 		self.helper.form_tag = False
 		self.helper.layout = Layout(
 			Div(
