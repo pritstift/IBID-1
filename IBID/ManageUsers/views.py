@@ -20,6 +20,9 @@ import re
 import random
 import string
 
+@login_required
+def index(request):
+	pass
 
 @login_required
 def userprofile(request,User_id):

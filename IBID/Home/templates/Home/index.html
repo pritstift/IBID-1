@@ -9,32 +9,11 @@
 {%endblock%}
 
 	
-{% block body_middle_block-1 %}
+{% block body_block %}
 
 	<h1>Welcome To IBID</h1><hr>
 <div class="row">	
-	<div class=" col-sm-6 col-md-6 col-lg-6" align="center">
-		<div class="panel panel-default">
-		    <div class="panel-heading clearfix" >
-		      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-grain" aria-hidden="true"></span>  Neueste Ideen</h3>
-		      <div class="btn-group pull-right">
-		          <a href="{% url 'ManageIdea:post_idea' %}" class="btn btn-success btn-sm" aria-haspopup="true"> Idee anlegen</a>
-		          </a>
-		      </div>
-		    </div>
-		    <div class="panel-body">
-		    	{% for idea in ideas %}
-			        <div class="list-group">
-			          <a href="{% url 'ManageIdea:detail' idea.id %}" class="list-group-item ">
-			            <h4 class="list-group-item-heading">{{ idea }}</h4>
-			            <p class="list-group-item-text">{{ idea.description_short }}</p>
-			          </a>
-			        </div>
-			      {% endfor %}
-		    </div>
-		</div>
-	</div>
-	<div class="col-sm-6 col-md-6 col-lg-6" align="center">
+	<div class="col-sm-4 col-md-4 col-lg-4" align="center">
 	
 		<div class="panel panel-default">
 		    <div class="panel-heading clearfix" >
@@ -48,8 +27,51 @@
 		    	{% for profile in profiles %}
 			        <div class="list-group">
 			          <a href="{% url 'ManageUsers:userprofile' profile.user.id %}" class="list-group-item ">
-			            <h4 class="list-group-item-heading">{{ profile.user.first_name }} {{ profile.user.last_name }}</h4>
-			            <p class="list-group-item-text">{{ profile.user.username }}</p>
+			            <h4 class="list-group-item-heading break">{{ profile.user.first_name }} {{ profile.user.last_name }}</h4>
+			            <p class="list-group-item-text break">{{ profile.user.username }}</p>
+			          </a>
+			        </div>
+			      {% endfor %}
+		    </div>
+		</div>
+	</div>
+	<div class=" col-sm-4 col-md-4 col-lg-4" align="center">
+		<div class="panel panel-default">
+		    <div class="panel-heading clearfix" >
+		      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-grain" aria-hidden="true"></span>  Neueste Ideen</h3>
+		      <!-- <div class="btn-group pull-right">
+		          <a href="{% url 'ManageIdea:post_idea' %}" class="btn btn-success btn-sm" aria-haspopup="true"> Idee anlegen</a>
+		          </a>
+		      </div> -->
+		    </div>
+		    <div class="panel-body">
+		    	{% for idea in ideas %}
+			        <div class="list-group">
+			          <a href="{% url 'ManageIdea:detail' idea.id %}" class="list-group-item ">
+			            <h4 class="list-group-item-heading break">{{ idea }}</h4>
+			            <p class="list-group-item-text">{{ idea.description_short }}</p>
+			          </a>
+			        </div>
+			      {% endfor %}
+		    </div>
+		</div>
+	</div>
+	<div class="col-sm-4 col-md-4 col-lg-4" align="center">
+	
+		<div class="panel panel-default">
+		    <div class="panel-heading clearfix" >
+		      <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-gift" aria-hidden="true"></span>  Neueste Projekte</h3>
+		      <!-- <div class="btn-group pull-right">
+		          <a href="{% url 'ManageUsers:register' %}" class="btn btn-primary btn-sm">Teilnehmer anlegen
+		          </a>
+		      </div> -->
+		    </div>
+		    <div class="panel-body">
+		    	{% for project in projects %}
+			        <div class="list-group">
+			          <a href="{% url 'ManageProjects:detail' project.id %}" class="list-group-item ">
+			            <h4 class="list-group-item-heading break">{{ project.title }} </h4>
+			            <p class="list-group-item-text"> vom {{ project.date_added }}</p>
 			          </a>
 			        </div>
 			      {% endfor %}
@@ -58,10 +80,9 @@
 	</div>
 	
 </div>
-{% endblock %}
 
 
-
+{%endblock%}
 
 
 

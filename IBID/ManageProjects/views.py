@@ -23,6 +23,9 @@ from ManageConnections.models import Membership
 
 from guardian.shortcuts import assign_perm, get_perms
 
+@login_required
+def index(request):
+	pass
 
 @login_required
 def create_project(request,User_id):

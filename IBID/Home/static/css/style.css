@@ -41,3 +41,8 @@
 	.borderless tbody tr td, .borderless tbody tr th, .borderless thead tr th {
     	border: none;
 	}
+
+	.break {
+		word-wrap:break-word;	
+	}
+	

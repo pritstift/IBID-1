@@ -15,7 +15,9 @@ from ManageConnections.models import Announcement, Membership
 
 from IBID.functions import get_ip_instance, assign_permissions, group_required
 
-
+@login_required
+def index(request):
+	pass
 
 @login_required
 def detail(request, Idea_id):
