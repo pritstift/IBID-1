@@ -8,7 +8,7 @@ from django.contrib.auth  import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required
 from guardian.shortcuts import assign_perm, get_perms
-from ManageUsers.forms import UserForm, UserProfileForm, LoginForm,  PrivacyForm, UserEditForm, SubmitForm, RegisterForm, UserPersonalityForm, CommentForm
+from ManageUsers.forms import UserForm, UserProfileForm, LoginForm,  PrivacyForm, UserEditForm, SubmitForm, RegisterForm, UserPersonalityForm, CommentForm, PersonalityForm
 from ManageUsers.models import UserProfile, UserProfilePrivacy, UserComment
 from ManageIdea.models import Idea
 from ManageIdea.views import assign_permissions
@@ -140,7 +140,6 @@ def user_login(request):
 def edit(request, User_id):
 	user = get_object_or_404(User,pk = User_id)
 	profile = get_object_or_404(UserProfile, user=user)
-	privacy=get_object_or_404(UserProfilePrivacy, instance=profile)
 	if not 'edit' in get_perms(request.user, profile):
 		return HttpResponse('You have no permissions to edit this profile')
 	else:
@@ -148,17 +147,11 @@ def edit(request, User_id):
 			#grab information form from the POST data
 			user_form=UserEditForm(data=request.POST, instance=user)
 			profile_form = UserProfileForm(data=request.POST, instance=profile)
-			privacy_form = PrivacyForm(data=request.POST, instance=privacy)
 			personality_form=UserPersonalityForm(data=request.POST, instance=profile)
 			#if the form is valid
-			if  user_form.is_valid() and profile_form.is_valid() and privacy_form.is_valid() and personality_form.is_valid():
+			if  user_form.is_valid() and profile_form.is_valid() and personality_form.is_valid():
 				user_form.save()
 				profile.save()
-				privacy.street_ip=privacy_form.cleaned_data['address_ip']
-				privacy.house_number_ip=privacy_form.cleaned_data['address_ip']
-				privacy.zip_code_ip=privacy_form.cleaned_data['address_ip']
-				privacy.city_ip=privacy_form.cleaned_data['address_ip']
-				privacy.save()
 				return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[user.id,]))
 			else:
 				print('not valid')
@@ -169,9 +162,7 @@ def edit(request, User_id):
 			user_form=UserEditForm(instance=user)
 			profile_form = UserProfileForm(instance=profile)
 			personality_form = UserPersonalityForm(instance=profile)
-			privacy_form = PrivacyForm(instance=privacy)
-			#render template
-			return render(request, 'ManageUsers/edit.html', {'user_form':user_form, 'profile_form': profile_form,'personality_form':personality_form,'privacy_form':privacy_form})
+		return render(request, 'ManageUsers/edit.html', {'user_form':user_form, 'profile_form': profile_form,'personality_form':personality_form,})
 
 def sign_agreement(request, User_id):
 	user = get_object_or_404(User,pk = User_id)
@@ -223,7 +214,17 @@ def removecomment(request,Comment_id):
 	return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[user.id,]))
 
 
-
+def edit_ability(request,User_id):
+	user = get_object_or_404(User, pk=User_id)
+	userprofile = get_object_or_404(UserProfile,user=user)
+	if request.method == 'GET':
+		abilityform=PersonalityForm(instance = userprofile)
+	elif request.method == 'POST':
+		abilityform = PersonalityForm(data=request.POST, instance = userprofile)
+		if abilityform.is_valid():
+			abilityform.save()
+			return HttpResponseRedirect(reverse('ManageUsers:userprofile', args=[user.id,]))
+	return render(request, 'simple.html', {'form':abilityform})
 
 
 

@@ -5,6 +5,9 @@ from django.core.validators import RegexValidator
 
 
 class UserType(models.Model):
+	"""
+	Description: Hustler, Hipster, Hacker?
+	"""
 	title = models.CharField(max_length=32)
 	description = models.CharField(max_length=256)
 	date_added = models.DateField(default=timezone.now)
@@ -40,22 +43,22 @@ class UserProfile(models.Model):
 	Description: Felder, um die Eignung des Gründers zu erkennen
 	"""
 	PERSONALITY_CHOICES = (
-		('1','Ja'),
-		('0','Nein'),
+		('Ja','Ja'),
+		('Nein','Nein'),
 	)
 	skills = models.TextField(blank=True, null=True, default=None)
 	education = models.TextField(null=True, blank=True, default=None)
-	role = models.ForeignKey(UserRole, blank=True, null=True, default=None)
-	seeks_opportunity = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
-	delayed_gratifikation = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
-	target_oriented = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
-	flexible_thinker = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
-	social_stable = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
-	curious = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
-	responsible = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
-	risk_taking = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
-	determined = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
-	stamina = models.CharField(max_length=1,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	role = models.ManyToManyField(UserRole, blank=True, null=True, default=None)
+	seeks_opportunity = models.CharField(max_length=4,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	delayed_gratifikation = models.CharField(max_length=4,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	target_oriented = models.CharField(max_length=4,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	flexible_thinker = models.CharField(max_length=4,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	social_stable = models.CharField(max_length=4,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	curious = models.CharField(max_length=4,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	responsible = models.CharField(max_length=4,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	risk_taking = models.CharField(max_length=4,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	determined = models.CharField(max_length=4,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
+	stamina = models.CharField(max_length=4,choices=PERSONALITY_CHOICES, blank=True, null=True, default=None)
 	# Override the __unicode__() method to return out something meaningful!
 	class Meta:
 		permissions = (

@@ -47,8 +47,8 @@ class RegisterForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(RegisterForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
-		self.fields['first_name'].label = "First name"
-		self.fields['last_name'].label = "Last name"
+		self.fields['first_name'].label = "Vorname"
+		self.fields['last_name'].label = "Nachname"
 		self.fields['username'].label = "Email"
 		''' FOR INTERNAL USE OUTCOMMENTED
 		self.fields['password1'].label = "Password"
@@ -67,7 +67,7 @@ class RegisterForm(forms.ModelForm):
 				'''
 				),
 			FormActions(
-				Submit('save', 'Next'),
+				Submit('save', 'Nutzer Anlegen'),
 			),
 		)
 	''' FOR INTERNAL USE OUTCOMMENTED	
@@ -84,7 +84,7 @@ class RegisterForm(forms.ModelForm):
 	def clean_email(self):
 		email = self.cleaned_data.get('email')
 		if email and UserProfile.objects.filter(email_adress=email).count():
-			raise forms.ValidationError('Email already exists')
+			raise forms.ValidationError('Diese Email existiert bereits')
 		return email
 
 	def save(self, commit=True):
@@ -96,6 +96,7 @@ class RegisterForm(forms.ModelForm):
 		if commit:
 			user.save()
 		return user
+    
 
 class UserEditForm(forms.ModelForm):
 	first_name=forms.CharField(required=True)
@@ -107,8 +108,8 @@ class UserEditForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super(UserEditForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
-		self.fields['first_name'].label = "First name"
-		self.fields['last_name'].label = "Last name"
+		self.fields['first_name'].label = "Vorname"
+		self.fields['last_name'].label = "Nachnahme"
 		self.fields['username'].label = "Email"
 		self.helper.layout=Layout(
 				Div(
@@ -127,13 +128,13 @@ class UserProfileForm(forms.ModelForm):
 		super(UserProfileForm, self).__init__(*args, **kwargs)
 		self.helper=FormHelper()
 		self.fields['website'].label = "Web"
-		self.fields['phone_number'].label = "Phone"
-		self.fields['street'].label = "Street name"
-		self.fields['house_number'].label = "House number"
-		self.fields['zip_code'].label = "ZIP"
-		self.fields['city'].label = "City"
-		self.fields['company'].label = "Company"
-		self.fields['user_type'].label = "User type"
+		self.fields['phone_number'].label = "Telefon"
+		self.fields['street'].label = "Straße"
+		self.fields['house_number'].label = "Hausnummer"
+		self.fields['zip_code'].label = "PLZ"
+		self.fields['city'].label = "Ort"
+		self.fields['company'].label = "Firmenname"
+		self.fields['user_type'].label = "Nutzertyp"
 		self.helper.layout=Layout(
 			Div(
 				'user_type',
@@ -177,11 +178,28 @@ class UserPersonalityForm(forms.ModelForm):
 	""" Form für die Erfassung der Gründereignung """
 	class Meta:
 		model=UserProfile
-		exclude =['user','date_joined', 'street', 'house_number', 'zip_code', 'city', 'company', 'website','phone_number', 'user_type']
+		fields =['education','skills']
 	def __init__(self,*args,**kwargs):
 		super(UserPersonalityForm,self).__init__(*args,**kwargs)
 		self.fields['skills'].label = "Fähigkeiten"
 		self.fields['education'].label = "Ausbildung"
+		self.helper=FormHelper()
+		self.helper.form_tag = False
+		self.helper.layout=Layout(
+			Div(
+				'skills',
+				'education',
+
+			),
+		)
+		
+class PersonalityForm(forms.ModelForm):
+	""" Form für die Erfassung der Gründereignung """
+	class Meta:
+		model=UserProfile
+		exclude =['education','sklills','user','date_joined', 'street', 'house_number', 'zip_code', 'city', 'company', 'website','phone_number', 'user_type']
+	def __init__(self,*args,**kwargs):
+		super(PersonalityForm,self).__init__(*args,**kwargs)
 		self.fields['role'].label = "Rolle im Gründerteam"
 		self.fields['seeks_opportunity'].label = "Nutzt Gelegenheit"
 		self.fields['delayed_gratifikation'].label = "Delayed Gratification"
@@ -197,8 +215,6 @@ class UserPersonalityForm(forms.ModelForm):
 		self.helper.form_tag = False
 		self.helper.layout=Layout(
 			Div(
-				'skills',
-				'education',
 				'role',
 				'seeks_opportunity',
 				'delayed_gratifikation',
@@ -212,7 +228,7 @@ class UserPersonalityForm(forms.ModelForm):
 				'stamina',
 			),
 		)
-		
+
 
 class SubmitForm(forms.Form):
 	def __init__(self, *args, **kwargs):

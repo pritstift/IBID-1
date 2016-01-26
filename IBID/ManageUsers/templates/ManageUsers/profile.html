@@ -9,15 +9,18 @@
       <h3 class="panel-title pull-left" style="padding-top: 5px;"><span class="glyphicon glyphicon-user" aria-hidden="true"></span><b>  {{userprofile.user.first_name }} {{userprofile.user.last_name }}</b>
       {% if userprofile.user_type %}({{userprofile.user_type}}){% endif %}
       </h3>
-      <div class="btn-group pull-right">
-        {% if edit_profile %}
-          <a href="{% url 'ManageUsers:edit' userprofile.user.id%}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-          </a>
-        {% endif %}
-      </div>
+      
     </div>
     <div class="panel-body">
-      <b><center>Grunddaten</center></b></br>
+      <div class="clearfix">
+        <div class="pull-right">
+          {% if edit_profile %}
+            <a href="{% url 'ManageUsers:edit' userprofile.user.id%}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+            </a>
+          {% endif %}
+        </div>
+        <h4> Grunddaten </h4>
+      </div><hr>
       <div class="row">
         <div class="col-sm-6 text">
           <b class="list-group-item-heading">Kontakt</b></br>
@@ -85,31 +88,30 @@
             </div>
           </div>
         </div>
-      </div> <hr>
-      <div class="list-group">
-        <div class="row">
-          <div class="col-md-1 col-sm-1">
-          </div>
-          <div class="col-md-10 col-sm-10">
-            <b><center>Einschätzung der Gründerfertigkeiten</center></b>
-          </div>
-          <div class="col-md-1 col-sm-1">
-            <div class="btn-group pull-right">
-              {% if request.user|has_group:'staff' %}
-              <a href="{% url 'ManageIdea:post' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
-              </a>
-              {% endif %}
-            </div>
-          </div>
-        </div>
       </div>
+      
+        
+      <div class="clearfix">
+        <div class="pull-right">
+          {% if request.user|has_group:'staff' %}
+          <a href="{% url 'ManageUsers:edit_ability' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+          </a>
+          {% endif %}
+        </div>
+        <h4> Einschätzung des Gründereignung </h4>
+      </div><hr>
+      
       <div class="list-group">
         <table class="table table-hover">
           <tr>
-            {% if userprofile.role %}
+            {% if userprofile.role.all.count %}
               <td class="col-md-6 success">Gründertyp/Rolle: </td>
               <td class="col-md-6 success">
-                <b>{{ userprofile.role }} </b>
+                <b> 
+                  {% for role in userprofile.role.all %}
+                  {{ role }}</br>
+                  {% endfor %} 
+                </b>
               </td>  
             {% else %}
               <td class="col-md-6 warning"> Gründertyp/Rolle: </td>
@@ -119,9 +121,14 @@
             {% endif %}
           </tr>
           <tr>
-            {% if userprofile.seeks_opportunity %}
+            {% if userprofile.seeks_opportunity == "Ja"  %}
               <td class="col-md-6 success"> Sucht nach Gelegenheiten etwas in der Welt besser zu machen: </td>
               <td class="col-md-6 success">
+                <b>{{ userprofile.seeks_opportunity }} </b>
+              </td>  
+            {% elif userprofile.seeks_opportunity == "Nein"  %}
+              <td class="col-md-6 danger"> Sucht nach Gelegenheiten etwas in der Welt besser zu machen: </td>
+              <td class="col-md-6 danger">
                 <b>{{ userprofile.seeks_opportunity }} </b>
               </td>  
             {% else %}
@@ -132,9 +139,14 @@
             {% endif %}
           </tr>
           <tr>
-            {% if userprofile.delayed_gratifikation %}
+            {% if userprofile.delayed_gratifikation == "Ja" %}
               <td class="col-md-6 success"> Nimmt kurz- und mittelfristig Opfer in Kauf, um langfristig eine bessere Zukunft zu haben (Delayed Gratification): </td>
               <td class="col-md-6 success">
+                <b>{{ userprofile.delayed_gratifikation }} </b>
+              </td>  
+            {% elif userprofile.delayed_gratifikation == "Nein" %}
+              <td class="col-md-6 danger"> Nimmt kurz- und mittelfristig Opfer in Kauf, um langfristig eine bessere Zukunft zu haben (Delayed Gratification): </td>
+              <td class="col-md-6 danger">
                 <b>{{ userprofile.delayed_gratifikation }} </b>
               </td>  
             {% else %}
@@ -145,9 +157,14 @@
             {% endif %}
           </tr>
           <tr>
-            {% if userprofile.target_oriented %}
+            {% if userprofile.target_oriented == "Ja" %}
               <td class="col-md-6 success"> Ist verliebt in ein Ziel und nicht in sein Produkt (Menschen Finden Dinge vs. Suchmaschine): </td>
               <td class="col-md-6 success">
+                <b>{{ userprofile.target_oriented }} </b>
+              </td>  
+            {% elif userprofile.target_oriented == "Nein" %}
+              <td class="col-md-6 danger"> Ist verliebt in ein Ziel und nicht in sein Produkt (Menschen Finden Dinge vs. Suchmaschine): </td>
+              <td class="col-md-6 danger">
                 <b>{{ userprofile.target_oriented }} </b>
               </td>  
             {% else %}
@@ -158,9 +175,14 @@
             {% endif %}
           </tr>
           <tr>
-            {% if userprofile.flexible_thinker %}
+            {% if userprofile.flexible_thinker = "ja" %}
               <td class="col-md-6 success"> Kann schnell umdenken: </td>
               <td class="col-md-6 success">
+                <b>{{ userprofile.flexible_thinker }} </b>
+              </td>
+            {% elif userprofile.flexible_thinker = "Nein" %}
+              <td class="col-md-6 danger"> Kann schnell umdenken: </td>
+              <td class="col-md-6 danger">
                 <b>{{ userprofile.flexible_thinker }} </b>
               </td>  
             {% else %}
@@ -171,9 +193,14 @@
             {% endif %}
           </tr>
           <tr>
-            {% if userprofile.social_stable %}
+            {% if userprofile.social_stable = "Ja" %}
               <td class="col-md-6 success"> Ist sozial stabil und hat eine stabile Umgebung: </td>
               <td class="col-md-6 success">
+                <b>{{ userprofile.social_stable }} </b>
+              </td>  
+             {% elif userprofile.social_stable = "Nein" %}
+              <td class="col-md-6 danger"> Ist sozial stabil und hat eine stabile Umgebung: </td>
+              <td class="col-md-6 danger">
                 <b>{{ userprofile.social_stable }} </b>
               </td>  
             {% else %}
@@ -184,9 +211,14 @@
             {% endif %}
           </tr>
           <tr>
-            {% if userprofile.curious %}
+            {% if userprofile.curious == "Ja" %}
               <td class="col-md-6 success"> Kann zwar noch nicht alles, will es aber kennen lernen: </td>
               <td class="col-md-6 success">
+                <b>{{ userprofile.curious }} </b>
+              </td>
+            {% elif userprofile.curious == "Nein" %}
+              <td class="col-md-6 danger"> Kann zwar noch nicht alles, will es aber kennen lernen: </td>
+              <td class="col-md-6 danger">
                 <b>{{ userprofile.curious }} </b>
               </td>  
             {% else %}
@@ -197,11 +229,16 @@
             {% endif %}
           </tr>
           <tr>
-            {% if userprofile.responsible %}
+            {% if userprofile.responsible == "Ja" %}
               <td class="col-md-6 success"> Übernimmt die Verantwortung für sein Handeln und etwaige Konsequenzen: </td>
               <td class="col-md-6 success">
                 <b>{{ userprofile.responsible }} </b>
-              </td>  
+              </td>
+            {% elif userprofile.responsible == "Nein" %}
+              <td class="col-md-6 danger"> Übernimmt die Verantwortung für sein Handeln und etwaige Konsequenzen: </td>
+              <td class="col-md-6 danger">
+                <b>{{ userprofile.responsible }} </b>
+              </td>    
             {% else %}
               <td class="col-md-6 warning"> Übernimmt die Verantwortung für sein Handeln und etwaige Konsequenzen: </td>
               <td class="col-md-6 warning">
@@ -210,11 +247,16 @@
             {% endif %}
           </tr>
           <tr>
-            {% if userprofile.risk_taking %}
+            {% if userprofile.risk_taking == "Ja" %}
               <td class="col-md-6 success"> Ist bereit (absehbare) Risiken einzugehen: </td>
               <td class="col-md-6 success">
                 <b>{{ userprofile.risk_taking }} </b>
-              </td>  
+              </td>
+              {% elif userprofile.risk_taking == "Nein" %}
+              <td class="col-md-6 danger"> Ist bereit (absehbare) Risiken einzugehen: </td>
+              <td class="col-md-6 danger">
+                <b>{{ userprofile.risk_taking }} </b>
+              </td>
             {% else %}
               <td class="col-md-6 warning"> Ist bereit (absehbare) Risiken einzugehen: </td>
               <td class="col-md-6 warning">
@@ -223,50 +265,52 @@
             {% endif %}
           </tr>
           <tr>
-            {% if userprofile.determined %}
+            {% if userprofile.determined == "Ja" %}
               <td class="col-md-6 success"> Keine Angst vor Autoritäten: </td>
               <td class="col-md-6 success">
-                <b>{{ userprofile.determined }} </b>
+                <center><b>{{ userprofile.determined }} </b> </center>
+              </td>
+            {% elif userprofile.determined == "Nein" %}
+              <td class="col-md-6 danger"> Keine Angst vor Autoritäten: </td>
+              <td class="col-md-6 danger">
+                <center><b>{{ userprofile.determined }} </b> </center>
               </td>  
             {% else %}
               <td class="col-md-6 warning"> Keine Angst vor Autoritäten: </td>
               <td class="col-md-6 warning">
-                <b><em> keine Einschätzung </em> </b>
+                <center><b><em> keine Einschätzung </em> </b> </center>
               </td>
             {% endif %}
           </tr>
           <tr>
-            {% if userprofile.stamina %}
+            {% if userprofile.stamina == "Ja" %}
               <td class="col-md-6 success"> Hat Biss und Durchhaltevermögen und lässt sich durch Hürden nicht abschrecken: </td>
               <td class="col-md-6 success">
-                <b>{{ userprofile.stamina }} </b>
+                <center><b>{{ userprofile.stamina }} </b></center>
+              </td>
+            {% elif userprofile.stamina == "Nein" %}
+              <td class="col-md-6 danger"> Hat Biss und Durchhaltevermögen und lässt sich durch Hürden nicht abschrecken: </td>
+              <td class="col-md-6 danger">
+                <center><b>{{ userprofile.stamina }} </b></center>
               </td>  
             {% else %}
               <td class="col-md-6 warning"> Hat Biss und Durchhaltevermögen und lässt sich durch Hürden nicht abschrecken: </td>
               <td class="col-md-6 warning">
-                <b><em> keine Einschätzung </em> </b>
+                <center><b><em> keine Einschätzung </em> </b></center>
               </td>
             {% endif %}
           </tr>
         </table>        
-      </div><hr>
-      <div class="list-group">
-        <div class="row">
-          <div class="col-md-1 col-sm-1">
-          </div>
-          <div class="col-md-10 col-sm-10">
-            <b><center>Ideenpapiere</center></b>
-          </div>
-          <div class="col-md-1 col-sm-1">
-            <div class="btn-group pull-right">
-              {% if request.user|can_edit:userprofile %}
-              <a href="{% url 'ManageIdea:post' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-              </a>
-              {% endif %}
-            </div>
-          </div>
-        </div>
       </div>
+      <div class="clearfix">
+        <div class="pull-right">
+          {% if request.user|can_edit:userprofile %}
+          <a href="{% url 'ManageIdea:post' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </a>
+          {% endif %}
+        </div>
+        <h4> Ideenpapiere </h4>
+      </div><hr>
 
       <div class="list-group">
         {% for idea in ideas %}
@@ -295,30 +339,22 @@
         </div>
         {% endfor %}
       </div>
-      <hr>
-      <div class="list-group">
-        <div class="row">
-          <div class="col-md-1 col-sm-1">
-          </div>
-          <div class="col-md-10 col-sm-10">
-            <b><center>Projekte</center></b>
-          </div>
-          <div class="col-md-1 col-sm-1">
-            <div class="btn-group pull-right">
-              {% if request.user|can_edit:userprofile %}
-              <a href="{% url 'ManageUsers:create_project' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-              </a>
-              {% endif %}
-            </div>
-          </div>
+      <div class="clearfix">
+        <div class="pull-right">
+          {% if request.user|can_edit:userprofile %}
+          <a href="{% url 'ManageUsers:create_project' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </a>
+          {% endif %}
         </div>
-      </div>
+        <h4> Projekte </h4>
+      </div><hr>
+     
 
       <div class="list-group">
         {% for project in projects %}
         <div class="row">
           <div class="col-md-1 col-sm-1">
-            <span class="glyphicon glyphicon-pushpin" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-gift" aria-hidden="true"></span>
           </div>
 
           <div class="col-md-10 col-sm-10">
@@ -337,26 +373,16 @@
         </div>
         {% endfor %}
       </div>
-      <hr>
 
-      <div class="list-group">
-        <div class="row">
-          <div class="col-md-1 col-sm-1">
-          </div>
-          <div class="col-md-10 col-sm-10">
-            <b><center>Gesuche</center></b>
-          </div>
-          <div class="col-md-1 col-sm-1">
-            <div class="btn-group pull-right">
-              {% if request.user|can_edit:userprofile %}
-              <a href="{% url 'ManageUsers:post_announcement' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-              </a>
-              {% endif %}
-            </div>
-          </div>
+      <div class="clearfix">
+        <div class="pull-right">
+          {% if request.user|can_edit:userprofile %}
+          <a href="{% url 'ManageUsers:post_announcement' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </a>
+          {% endif %}
         </div>
-      </div>
-
+        <h4> Gesuche </h4>
+      </div><hr>
       <div class="list-group">
         {% for announcement in announcements %}
         <div class="row">
@@ -380,25 +406,15 @@
         </div>
         {% endfor %}
       </div>
-      <hr>
-      <div class="list-group">
-        <div class="row">
-          <div class="col-md-1 col-sm-1">
-          </div>
-          <div class="col-md-10 col-sm-10">
-            <b><center>Notizen</center></b>
-          </div>
-          <div class="col-md-1 col-sm-1">
-            <div class="btn-group pull-right">
-              {% if request.user|can_edit:userprofile %}
-              <a href="{% url 'ManageUsers:createcomment' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-              </a>
-              {% endif %}
-            </div>
-          </div>
+      <div class="clearfix">
+        <div class="pull-right">
+          {% if request.user|can_edit:userprofile %}
+          <a href="{% url 'ManageUsers:createcomment' userprofile.user.id %}" class="btn btn-default btn-sm"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+          </a>
+          {% endif %}
         </div>
-      </div>
-
+        <h4> Notizen </h4>
+      </div><hr>
       <div class="list-group">
         {% for comment in comments %}
         <div class="row">
@@ -422,7 +438,7 @@
         </div>
         {% endfor %}
       </div>
-      <hr>
+
 
 
 
