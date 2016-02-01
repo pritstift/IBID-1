@@ -1,0 +1,10 @@
+Pillow
+django
+django-bootstrap3
+django-crispy-forms
+django-taggit
+taggit-selectize
+django-guardian
+django-widget-tweaks
+django-bootstrap-form
+django-datetime-widget
