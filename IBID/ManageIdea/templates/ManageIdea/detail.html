@@ -11,7 +11,13 @@
 			<span class="glyphicon glyphicon-grain" aria-hidden="true"></span> 
 			<b>{{ Idea.title }}</b> 
 			{% if Idea.originator %}
-				von <b><a href="{% url 'ManageUsers:userprofile' Idea.originator.id %}">{{ Idea.originator.first_name }} {{ Idea.originator.last_name }}</a></b> 
+				von
+				{% for member in Idea.members.all %} 
+					{% if not forloop.first %},{% endif %}
+					{% if forloop.last %} und {% endif %}
+					<b><a href="{% url 'ManageUsers:userprofile' member.id %}">{{ member.first_name }} {{ member.last_name }}</a></b>
+
+				{% endfor %} 
 			{% endif %}
 		</h3>  
 	</div>
