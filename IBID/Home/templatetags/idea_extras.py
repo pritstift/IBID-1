@@ -4,7 +4,8 @@ from django.contrib.auth.models import Group
 from ManageIdea.models import Idea
 from ManageUsers.models import UserProfile
 from ManageConnections.models import Membership
-
+from ManageProjects.models import Note
+from datetime import timedelta as td
 register = template.Library()
 
 @register.filter(name='can_view')
@@ -37,3 +38,20 @@ def get_all_ideas(user):
 	for membership in Membership.objects.filter(member=user, idea=None):
 		projects.append(membership.project)
 	return  projects
+
+@register.filter(name='format_duration')
+def format_duration(duration):
+	t=dict()
+	t["hours"], rem = divmod(duration.seconds,3600)
+	t["minutes"], rem = divmod(rem,60)
+	return str(t["hours"]) + 'h und ' + str(t["minutes"]) +'m'
+@register.filter(name='total_duration')
+def total_duration(notes):
+	total=td(seconds=0)
+	for note in notes:
+		total=total+note.time_spend
+	t=dict()
+	t["hours"], rem = divmod(total.seconds,3600)
+	t["minutes"], rem = divmod(rem,60)
+	return str(t["hours"]) + 'h und ' + str(t["minutes"]) +'m'
+	

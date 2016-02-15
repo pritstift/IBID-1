@@ -1,10 +1,12 @@
+import datetime as dt
+
 from django import forms
 from django.contrib.auth.models import User
 from datetimewidget.widgets import DateWidget
 
 # from ManageIdea.models import Idea, IdeaPrivacy, Comment, IdeaMembership, IdeaMeasures
 # from ManageUsers.models import UserProfile
-from ManageProjects.models import Project, ProjectGroup
+from ManageProjects.models import Project, ProjectGroup, Note
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Button, Div, HTML, MultiField, Field
@@ -13,7 +15,7 @@ from guardian.shortcuts import assign_perm, get_perms, remove_perm
 
 class ProjectForm(forms.ModelForm):
 	"""Form zum anlegen einer Projektgruppe"""
-	description = forms.CharField(widget=forms.Textarea)
+	supervisor = forms.ModelChoiceField(queryset=User.objects.filter(groups__name__in=['staff']))
 	class Meta:
 		model = Project
 		exclude =['date_added','members', 'ideas']
@@ -22,8 +24,31 @@ class ProjectForm(forms.ModelForm):
 		self.helper = FormHelper()
 		self.helper.form_tag = False
 		self.fields['title'].label = "Name des Projekts"
-		self.fields['description'].label = "Kurze Beschreibung"
-		self.fields['status'].label = "Aktiv"
+		self.fields['description_short'].label = "Kurze Beschreibung"
+		self.fields['description_long'].label = "Lange Beschreibung"
+		self.fields['general_note'].label= 'Allgemeine Bemerkung'
+		self.fields['start_date'].label= 'Startdatum'
+		self.fields['end_date'].label= 'Enddatum'
+		self.fields['supervisor'].label= 'Hauptbetreuer'
+		self.fields['status'].label = "Status des Projektes"
+
+class NoteForm(forms.ModelForm):
+	hours = forms.IntegerField()
+	minutes = forms.IntegerField()
+	#time_spend = forms.DurationField(widget=forms.HiddenInput())
+	class Meta:
+		model = Note
+		exclude = ('supervisor','date_added','time_spend','project')
+		widgets = {
+		'action_date': DateWidget(attrs={'id':"action_date_id"}, usel10n = True, bootstrap_version=3),
+		}
+	def __init__(self, *args,**kwargs):
+		super(NoteForm, self).__init__(*args,**kwargs)
+		self.helper = FormHelper()
+		self.helper.form_tag = False
+		self.fields['action_date'].label = "Wann?"
+		self.fields['contact_type'].label = "Kontaktart"
+		self.fields['text'].label = "Notiz"
 
 
 # class AddIdeaMeasureForm(forms.ModelForm):

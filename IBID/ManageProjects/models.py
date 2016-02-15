@@ -27,7 +27,9 @@ class ProjectState(models.Model):
 class Measure(models.Model):
 	title=models.CharField(max_length=64, blank=False, unique=True)
 	description_long=models.TextField(max_length=2048, blank=False)
-	date_added=models.DateTimeField(default=timezone.now)
+	
+	start_date=models.DateTimeField(default=timezone.now)
+	end_date=models.DateTimeField(default=timezone.now)
 	
 	def __str__(self):
 		return self.title
@@ -37,25 +39,47 @@ class Project(models.Model):
 	Description: project class
 	"""
 	title = models.CharField(max_length = 256, unique=True)
-	description = models.CharField(max_length = 2048, blank=True, null=True)
+	description_long = models.TextField(max_length = 2048, blank=True, null=True)
+	description_short=models.TextField(max_length=2048, blank=True, null=True)
+	general_note=models.TextField(max_length=2048, blank=True, null=True)
 	status = models.ForeignKey(ProjectState, null=True, blank = True)
-	date_added = models.DateField(default = timezone.now)
-
-	members = models.ManyToManyField(User, through = 'ProjectGroup')
-	ideas = models.ManyToManyField(Idea, through = 'ProjectIdeas')
-
+	start_date = models.DateField(default = timezone.now)
+	end_date = models.DateField(default = timezone.now)
 	members = models.ManyToManyField(User, through='ManageConnections.Membership', related_name="ProjectMembers")
-
+	ideas = models.ManyToManyField(Idea, through = 'ProjectIdeas')
+	supervisor = models.ForeignKey(User, null=True, blank=True)
 	class Meta:
 		permissions = (
-			('view', 'View Idea'),
-			('edit', 'Edit Idea'),
+			('view', 'View Project'),
+			('edit', 'Edit Project'),
 		)
 
 	def __str__(self):
 		return self.title
 
-
+class Note(models.Model):
+    """
+    Description: Notizen zum Kontakt mit dem Team
+    """
+    supervisor = models.ForeignKey(User)
+    CONTACTCHOICELIST=(
+    	('Persönlich', 'Persönlich'),
+    	('Telefonisch', 'Telefonisch'),
+    	('Mail', 'Mail'),
+    )
+    contact_type = models.CharField(max_length=64, choices=CONTACTCHOICELIST, null=True, blank=True)
+    action_date = models.DateField(default=timezone.now)
+    text = models.TextField(max_length=2048)
+    time_spend = models.DurationField(null=True,blank=True)
+    project = models.ForeignKey(Project, null=True, blank=True)
+    date_added = models.DateTimeField(default=timezone.now)
+    class Meta:
+    	"""docstring for Meta"""
+    	ordering = ('-date_added',)	
+    	permissions = (
+			('view', 'View Note'),
+			('edit', 'Edit Note'),
+		)
 	
 class ProjectGroup(models.Model):
 	"""
@@ -105,3 +129,4 @@ class ProjectMeasures(models.Model):
 			'project',
 			'measure',
 			)
+

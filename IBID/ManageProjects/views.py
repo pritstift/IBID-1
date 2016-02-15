@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 import re
 import random
 import string
@@ -13,8 +13,8 @@ from django.contrib.auth.decorators import login_required
 
 from IBID.functions import get_ip_instance, Object, group_required
 
-from ManageProjects.models import Project, ProjectGroup, ProjectIdeas
-from ManageProjects.forms import ProjectForm
+from ManageProjects.models import Project, ProjectGroup, ProjectIdeas, Note
+from ManageProjects.forms import ProjectForm, NoteForm
 
 from ManageIdea.models import Idea
 from ManageIdea.views import assign_permissions
@@ -49,7 +49,26 @@ def create_project(request,User_id):
 
 	return render(request, 'ManageProjects/create_project.html',{'project_form':project_form})
 		
-
+@group_required('admin', 'staff')
+def create_note(request, Project_id):
+	project=get_object_or_404(Project,pk=Project_id)
+	if request.method=='POST':
+		note_form = NoteForm(data=request.POST)
+		if note_form.is_valid():
+			note=note_form.save(commit=False)
+			note.supervisor=request.user
+			hours=note_form.cleaned_data["hours"]
+			minutes=note_form.cleaned_data["minutes"]
+			note.time_spend=timedelta(hours=hours, minutes=minutes)
+			note.project=project
+			note.save()
+			staff=Group.objects.get(name='staff')
+			assign_perm('view', staff,note)
+			assign_perm('edit', request.user,note)
+			return HttpResponseRedirect(reverse('ManageProjects:detail',args=[project.id,]))
+	elif request.method=='GET':
+		note_form = NoteForm()
+	return render(request,'simple.html',{'form':note_form})
 
 @login_required
 def detail(request, Project_id):
@@ -59,11 +78,16 @@ def detail(request, Project_id):
 
 @login_required
 def edit_project(request,Project_id):
-	pass
+	project=get_object_or_404(Project,pk=Project_id)
+	if request.method == 'POST':
+		project_form = ProjectForm(instance=project,data = request.POST)
+		if project_form.is_valid():
+			project_form.save()
+			return HttpResponseRedirect(reverse('ManageProjects:detail',args=[project.id,]))
+	else:
+		project_form=ProjectForm(instance=project)
+	return render(request, 'ManageProjects/create_project.html', {'project_form':project_form})				
 
-@login_required
-def add_member(request, Project_id):
-	pass
 
 @group_required('admin', 'staff')
 def add_measure(request, Project_id):

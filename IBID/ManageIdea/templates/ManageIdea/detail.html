@@ -54,7 +54,7 @@
 
 				<div class="col-md-10 col-sm-10">
 					<p class="list-group-item-text">
-						<b><a href="{% url 'ManageUsers:userprofile' membership.member.id %}">{{ membership.member }}</a></b> 
+						<b><a href="{% url 'ManageUsers:userprofile' membership.member.id %}">{{ membership.member.first_name }} {{ membership.member.last_name }}</a></b> 
 						{% if request.user|can_edit:membership %}(<a href="{% url 'ManageIdea:edit_membership' Idea.id membership.id %}">edit</a>)
 						{% endif %}
 					</p>
@@ -90,7 +90,6 @@
 										<input type="submit" class="btn btn-submit col-md-offset-2">
 									</form>
 								</div>
-
 							</div>
 						</div>
 					</div>

@@ -6,7 +6,11 @@
 
   <h1>Login to IBID</h1>
 
-  <form role="form" action="." method="post">
+{% if next %}
+  <form action="/users/login/?next={{next}}" method="post" >
+  {%else%}
+  <form action="/users/login/" method="post" >
+  {% endif %}
     {% csrf_token %}
     {% if login_form.username.errors %}
       <div class="form-group has-error">
