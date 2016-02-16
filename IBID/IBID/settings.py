@@ -17,7 +17,7 @@ PROJECT_PATH = os.path.dirname(__file__)
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'e%llyn^uewra_6kd9(ghiy!^c&9#za9&_igx0il521zxcfc81g'
+SECRET_KEY = '(#bj8uj%w3dm(xy)(=$4%tn!=1=yh))m(=y=fqt-+y!#$*z+38'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
